@@ -3,12 +3,11 @@ package com.jordanfoster;
 import com.jordanfoster.FileHandler.WatchListFile;
 import com.jordanfoster.HTTPHandler.BinanceAPI;
 import com.jordanfoster.JSONHandler.PriceFeedJSON;
+import com.jordanfoster.TradingBot.PriceFeed;
 
 public class BinanceTradingBot{
 
-    private BinanceAPI binanceAPI = new BinanceAPI();
-    private PriceFeedJSON priceFeedJSON = new PriceFeedJSON();
-    private WatchListFile watchListFile = new WatchListFile();
+    private PriceFeed priceFeed = new PriceFeed();
 
     public static void main(String[] arg) {
         BinanceTradingBot btb = new BinanceTradingBot();
@@ -16,12 +15,7 @@ public class BinanceTradingBot{
     }
 
     public void start(){
-        //binanceAPI.getServerTime();
-//        String priceFeed = binanceAPI.getTickerPrice();
-//
-//        priceFeedJSON.readPriceJSON(priceFeed);
-
-        watchListFile.getContent();
+        priceFeed.updatePriceFeed();
     }
 
     public void stop(){

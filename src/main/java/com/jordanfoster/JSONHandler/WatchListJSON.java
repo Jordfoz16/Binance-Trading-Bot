@@ -1,5 +1,6 @@
 package com.jordanfoster.JSONHandler;
 
+import com.jordanfoster.FileHandler.WatchListFile;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -9,13 +10,20 @@ import java.util.ArrayList;
 
 public class WatchListJSON {
 
-    public ArrayList<JSONObject> parseWatchList(String watchlist){
+    private ArrayList<JSONObject> watchlist = new ArrayList<JSONObject>();
+    private WatchListFile watchlistFile = new WatchListFile();
+
+    public WatchListJSON(){
+        parseWatchList(watchlistFile.getContent());
+    }
+
+    public void parseWatchList(String content){
 
         JSONParser parser = new JSONParser();
 
         try {
             //Loads price feed into a JSON Array
-            JSONArray jsonArray = (JSONArray) parser.parse(watchlist);
+            JSONArray jsonArray = (JSONArray) parser.parse(content);
 
             ArrayList<JSONObject> watchListArray = new ArrayList<JSONObject>();
 
@@ -25,13 +33,14 @@ public class WatchListJSON {
                 watchListArray.add(jsonObject);
             }
 
-            return watchListArray;
+            watchlist = watchListArray;
 
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
 
-
-        return null;
+    public ArrayList<JSONObject> getWatchlist(){
+        return watchlist;
     }
 }

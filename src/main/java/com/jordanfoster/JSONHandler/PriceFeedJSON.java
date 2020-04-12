@@ -5,18 +5,21 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PriceFeedJSON {
 
-    public ArrayList<JSONObject> readPriceJSON(String priceFeed){
+    private ArrayList<JSONObject> priceFeed = new ArrayList<JSONObject>();
+
+    public void readPriceJSON(String content){
 
         JSONParser parser = new JSONParser();
 
         try {
             //Loads price feed into a JSON Array
-            JSONArray jsonArray = (JSONArray) parser.parse(priceFeed);
+            JSONArray jsonArray = (JSONArray) parser.parse(content);
 
             ArrayList<JSONObject> priceList = new ArrayList<JSONObject>();
 
@@ -26,12 +29,14 @@ public class PriceFeedJSON {
                 priceList.add(jsonObject);
             }
 
-            return priceList;
+            priceFeed = priceList;
 
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
 
-        return null;
+    public ArrayList<JSONObject> getPriceFeed(){
+        return priceFeed;
     }
 }

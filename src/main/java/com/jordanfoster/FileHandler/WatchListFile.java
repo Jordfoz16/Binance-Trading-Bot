@@ -1,7 +1,6 @@
 package com.jordanfoster.FileHandler;
 
 import com.jordanfoster.JSONHandler.WatchListJSON;
-import netscape.javascript.JSObject;
 import org.json.simple.JSONObject;
 
 import java.io.*;
@@ -12,7 +11,7 @@ public class WatchListFile {
     private String filename = "watchlist.txt";
     private File watchlistFile = new File(filename);
 
-    private ArrayList<JSONObject> watchListContent = new ArrayList<JSONObject>();
+    private String watchlistContent = new String();
 
     public  WatchListFile(){
         if(!watchlistFile.exists()){
@@ -37,8 +36,7 @@ public class WatchListFile {
                     content.append(line);
                 }
 
-                WatchListJSON watchListJSON = new WatchListJSON();
-                watchListContent = watchListJSON.parseWatchList(content.toString());
+                watchlistContent = content.toString();
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -70,7 +68,7 @@ public class WatchListFile {
         }
     }
 
-    public ArrayList<JSONObject> getContent(){
-        return watchListContent;
+    public String getContent(){
+        return watchlistContent;
     }
 }
