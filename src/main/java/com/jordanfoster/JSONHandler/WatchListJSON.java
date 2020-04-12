@@ -6,35 +6,31 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class PriceHandler {
+public class WatchListJSON {
 
-    public PriceHandler(){
-
-    }
-
-    public ArrayList<JSONObject> readPriceJSON(String priceFeed){
+    public ArrayList<JSONObject> parseWatchList(String watchlist){
 
         JSONParser parser = new JSONParser();
 
         try {
             //Loads price feed into a JSON Array
-            JSONArray jsonArray = (JSONArray) parser.parse(priceFeed);
+            JSONArray jsonArray = (JSONArray) parser.parse(watchlist);
 
-            ArrayList<JSONObject> priceList = new ArrayList<JSONObject>();
+            ArrayList<JSONObject> watchListArray = new ArrayList<JSONObject>();
 
             for(int i = 0; i < jsonArray.size(); i++){
                 //Access each element of the array
                 JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-                priceList.add(jsonObject);
+                watchListArray.add(jsonObject);
             }
 
-            return priceList;
+            return watchListArray;
 
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
 
         return null;
     }

@@ -1,0 +1,11 @@
+[
+  	{
+		"symbol": "BTCUSDT"
+	},
+	{
+		"symbol": "LTCUSDT"
+	},
+	{
+		"symbol": "ETHUSDT"
+	}
+]
