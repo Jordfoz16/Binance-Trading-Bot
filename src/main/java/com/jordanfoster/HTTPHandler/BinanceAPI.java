@@ -68,16 +68,16 @@ public class BinanceAPI {
         return apiRequest("time", null);
     }
 
+    public String getTickerPrice(){
+
+        return apiRequest("ticker/price", null);
+    }
+
     public String getTickerPrice(String ticker){
 
         Map<String, String> parameters = new HashMap<String, String>();
         parameters.put("symbol", ticker);
 
         return apiRequest("ticker/price", parameters);
-    }
-
-    public String getTickerPrice(){
-
-        return apiRequest("ticker/price", null);
     }
 }
