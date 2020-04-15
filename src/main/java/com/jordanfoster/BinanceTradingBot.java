@@ -1,24 +1,21 @@
 package com.jordanfoster;
 
-import com.jordanfoster.FileHandler.WatchListFile;
-import com.jordanfoster.HTTPHandler.BinanceAPI;
-import com.jordanfoster.JSONHandler.PriceFeedJSON;
-import com.jordanfoster.TradingBot.PriceFeed;
+import com.jordanfoster.TradingBot.PriceFeed.PriceFeed;
+import com.jordanfoster.TradingBot.TradingBot;
+import com.jordanfoster.TradingBot.Wallet.Wallet;
 
-public class BinanceTradingBot{
+public class BinanceTradingBot {
 
-    private PriceFeed priceFeed = new PriceFeed();
+    public static boolean priceFeedRunning = true;
 
-    public static void main(String[] arg) {
-        BinanceTradingBot btb = new BinanceTradingBot();
-        btb.start();
-    }
+    TradingBot tradingBot = new TradingBot();
 
     public void start(){
-        priceFeed.updatePriceFeed();
+        tradingBot.start();
     }
 
-    public void stop(){
-
+    public static void main(String[] arg){
+        BinanceTradingBot btb = new BinanceTradingBot();
+        btb.start();
     }
 }
