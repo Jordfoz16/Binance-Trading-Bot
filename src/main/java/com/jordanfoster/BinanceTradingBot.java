@@ -17,7 +17,7 @@ public class BinanceTradingBot extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("/UserInterface/MainPage.fxml"));
         primaryStage.setTitle("Binance Trading Bot");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setScene(new Scene(root, 600, 500));
         primaryStage.show();
     }
 

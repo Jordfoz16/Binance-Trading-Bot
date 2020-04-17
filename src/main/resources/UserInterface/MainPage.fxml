@@ -1,11 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane fx:controller="com.jordanfoster.UserInterface.MainPage"
-          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
-</GridPane>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jordanfoster.UserInterface.MainPage">
+   <children>
+      <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <tabs>
+          <Tab text="Main">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <LineChart fx:id="chartPrice" layoutX="14.0" layoutY="152.0" prefHeight="201.0" prefWidth="574.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+                          <xAxis>
+                            <CategoryAxis side="BOTTOM" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis side="LEFT" />
+                          </yAxis>
+                        </LineChart>
+                        <Label layoutX="14.0" layoutY="14.0" text="Polling Rate" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
+                        <TextField fx:id="txtPollingRate" alignment="CENTER_RIGHT" layoutX="116.0" layoutY="9.0" promptText="Milliseconds" text="10000" AnchorPane.leftAnchor="116.0" AnchorPane.topAnchor="9.0" />
+                        <TextArea layoutX="344.0" layoutY="14.0" prefHeight="245.0" prefWidth="242.0" text="Symbol                 Amount                 Price&#10;BTCUSDT                0.1                     7000" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Wallet">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="14.0" text="Available Balance" />
+                        <TextArea layoutX="14.0" layoutY="43.0" prefHeight="162.0" prefWidth="569.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+                        <Label layoutX="14.0" layoutY="225.0" text="Locked Balance" />
+                        <TextArea layoutX="14.0" layoutY="256.0" prefHeight="162.0" prefWidth="568.0" AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+            <Tab text="EMA">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <CheckBox fx:id="cbEnableEMA" layoutX="25.0" layoutY="22.0" mnemonicParsing="false" text="Enable EMA" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
+                     </children></AnchorPane>
+            </content>
+        </Tab>
+            <Tab text="Account">
+                <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextField fx:id="txtAPIKey" layoutX="117.0" layoutY="14.0" prefHeight="27.0" prefWidth="470.0" promptText="Enter your API key from binance" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="14.0" />
+                        <TextField fx:id="txtSecret" layoutX="117.0" layoutY="55.0" prefHeight="27.0" prefWidth="470.0" promptText="Enter your Secret Key from binance" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="55.0" />
+                        <Label layoutX="14.0" layoutY="19.0" text="API Key" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="19.0" />
+                        <Label layoutX="14.0" layoutY="60.0" text="Secret Key" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="60.0" />
+                        <Button fx:id="btnSave" layoutX="273.0" layoutY="106.0" mnemonicParsing="false" text="Save" AnchorPane.leftAnchor="273.0" AnchorPane.rightAnchor="272.5" AnchorPane.topAnchor="106.0" />
+                     </children></AnchorPane>
+                </content>
+            </Tab>
+            <Tab text="Log">
+                <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextArea fx:id="txtLog" disable="true" layoutX="14.0" layoutY="14.0" prefHeight="439.0" prefWidth="573.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
+                     </children></AnchorPane>
+                </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>
