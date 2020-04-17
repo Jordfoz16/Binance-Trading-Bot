@@ -1,5 +1,6 @@
 package com.jordanfoster.TradingBot.TradingStrategy.EMA;
 
+import com.jordanfoster.TradingBot.BoughtCurrency;
 import com.jordanfoster.TradingBot.PriceFeed.Price;
 
 import java.util.ArrayList;
@@ -9,27 +10,65 @@ public class EMA {
     private double N = 360;
     private double K = 2 / (N + 1);
 
-    private ArrayList<ValueEMA> valueEMA = new ArrayList<ValueEMA>();
+    private int numberOfCurrency = 1;
+
+    private ArrayList<ResultsEMA> resultsEMA = new ArrayList<ResultsEMA>();
+    private ArrayList<Price> tradingPairPriceFeed = new ArrayList<Price>();
 
     public EMA(ArrayList<Price> prices){
         for(int i = 0; i < prices.size(); i++){
-            valueEMA.add(new ValueEMA());
+            resultsEMA.add(new ResultsEMA());
             double firstPrice = prices.get(i).getPriceList().get(0);
-            valueEMA.get(i).setLastEMA(firstPrice);
+            resultsEMA.get(i).setLastEMA(firstPrice);
         }
     }
 
-    public void updateEMA(ArrayList<Price> prices){
-        for(int i = 0; i < prices.size(); i++){
-            double currentPrice = prices.get(i).getLastPrice();
-            double lastEMA = valueEMA.get(i).getLastEMA();
+    public void updateEMA(ArrayList<Price> tradingPairPriceFeed){
+        this.tradingPairPriceFeed = tradingPairPriceFeed;
 
-            double EMA = currentPrice * K + lastEMA * (1 - K);
-            valueEMA.get(i).setCurrentEMA(EMA);
+        for(int i = 0; i < tradingPairPriceFeed.size(); i++){
+            double currentPrice = tradingPairPriceFeed.get(i).getLastPrice();
+            double lastEMA = resultsEMA.get(i).getLastEMA();
+
+            double currentEMA = currentPrice * K + lastEMA * (1 - K);
+            resultsEMA.get(i).setCurrentEMA(currentEMA);
+        }
+
+        updateBuy();
+        updateSell();
+    }
+
+    public void updateBuy(){
+        for(int i = 0; i < numberOfCurrency; i++){
+
+            double currencyPrice = tradingPairPriceFeed.get(i).getLastPrice();
+            double emaPrice = resultsEMA.get(i).getCurrentEMA();
+
+            if(currencyPrice > emaPrice) {
+
+                if(resultsEMA.get(i).getBought()){ return; }
+
+                resultsEMA.get(i).setBuy(true);
+            }
         }
     }
 
-    public ArrayList<ValueEMA> getEMA(){
-        return valueEMA;
+    public void updateSell(){
+        for(int i = 0; i < numberOfCurrency; i++){
+
+            double currencyPrice = tradingPairPriceFeed.get(i).getLastPrice();
+            double emaPrice = resultsEMA.get(i).getCurrentEMA();
+
+            if(currencyPrice < emaPrice) {
+
+                if(!resultsEMA.get(i).getBought()){ return; }
+
+                resultsEMA.get(i).setSell(true);
+            }
+        }
+    }
+
+    public ArrayList<ResultsEMA> getEMA(){
+        return resultsEMA;
     }
 }
