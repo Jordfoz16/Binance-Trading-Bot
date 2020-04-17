@@ -14,6 +14,8 @@ public class TradingBot extends Thread{
     //Polling rate in milliseconds
     private int pollingRate = 2000;
 
+    private double totalProfit = 0;
+
     Wallet wallet = new Wallet();
     PriceFeed priceFeed = new PriceFeed();
     EMA ema;
@@ -46,23 +48,21 @@ public class TradingBot extends Thread{
         priceFeed.update();
         ema.updateEMA(priceFeed.getTradingPairs());
 
-        printBTC();
-
-        System.out.println("Buy: " + ema.getEMA().get(0).getBuy() +
-                ", Sell: " + ema.getEMA().get(0).getSell() + ", Bought: " +
-                ema.getEMA().get(0).getBought());
+        //printBTC();
 
         buy();
         sell();
+
+        System.out.println("Profit: " + totalProfit);
     }
 
     public void buy(){
 
         for(int i = 0; i < priceFeed.getTradingPairs().size(); i++){
-            if(ema.getEMA().get(0).getBuy()){
+            if(ema.getEMA().get(i).getBuy()){
 
                 //SEND BUY CALL
-                ema.getEMA().get(0).setBought(true, priceFeed.getTradingPairs().get(i).getLastPrice());
+                ema.getEMA().get(i).setBought(true, priceFeed.getTradingPairs().get(i).getLastPrice());
             }
         }
     }
@@ -70,10 +70,19 @@ public class TradingBot extends Thread{
     public void sell(){
 
         for(int i = 0; i < priceFeed.getTradingPairs().size(); i++){
-            if(ema.getEMA().get(0).getSell()){
+            if(ema.getEMA().get(i).getSell()){
 
                 //SEND SELL CALL
-                ema.getEMA().get(0).setBought(false);
+
+                double boughtPrice = ema.getEMA().get(i).getBoughtPrice();
+                double soldPrice = priceFeed.getTradingPairs().get(i).getLastPrice();
+                double profit = soldPrice - boughtPrice;
+
+                System.out.println("Sold Price: " + soldPrice + ", Bought Price: " + boughtPrice);
+
+                totalProfit += profit;
+
+                ema.getEMA().get(i).setBought(false);
             }
         }
     }
@@ -81,7 +90,8 @@ public class TradingBot extends Thread{
     public void printBTC(){
         double btcPrice = priceFeed.getTradingPairs().get(0).getLastPrice();
         double emaPrice = ema.getEMA().get(0).getLastEMA();
+        boolean bought = ema.getEMA().get(0).getBought();
 
-        System.out.println("BTC: " + btcPrice + ",\t EMA: " + emaPrice);
+        System.out.println("BTC: " + btcPrice + ",\t EMA: " + emaPrice + ",\t Bought: " + bought);
     }
 }

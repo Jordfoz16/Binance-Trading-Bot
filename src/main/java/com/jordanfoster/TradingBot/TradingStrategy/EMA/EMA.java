@@ -1,6 +1,5 @@
 package com.jordanfoster.TradingBot.TradingStrategy.EMA;
 
-import com.jordanfoster.TradingBot.BoughtCurrency;
 import com.jordanfoster.TradingBot.PriceFeed.Price;
 
 import java.util.ArrayList;
@@ -9,6 +8,9 @@ public class EMA {
 
     private double N = 360;
     private double K = 2 / (N + 1);
+
+    private double buyThreshold = 1.0015;
+    //private double multiplayer = 1;
 
     private int numberOfCurrency = 1;
 
@@ -44,7 +46,7 @@ public class EMA {
             double currencyPrice = tradingPairPriceFeed.get(i).getLastPrice();
             double emaPrice = resultsEMA.get(i).getCurrentEMA();
 
-            if(currencyPrice > emaPrice) {
+            if(currencyPrice > (emaPrice * buyThreshold)) {
 
                 if(resultsEMA.get(i).getBought()){ return; }
 
