@@ -1,20 +1,32 @@
 package com.jordanfoster;
 
-import com.jordanfoster.TradingBot.PriceFeed.PriceFeed;
 import com.jordanfoster.TradingBot.TradingBot;
-import com.jordanfoster.TradingBot.Wallet.Wallet;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-public class BinanceTradingBot {
+public class BinanceTradingBot extends Application {
 
     public static boolean priceFeedRunning = true;
 
     TradingBot tradingBot = new TradingBot();
 
+    @Override
+    public void start(Stage primaryStage) throws Exception{
+        Parent root = FXMLLoader.load(getClass().getResource("/UserInterface/MainPage.fxml"));
+        primaryStage.setTitle("Binance Trading Bot");
+        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.show();
+    }
+
     public void start(){
         tradingBot.start();
     }
 
-    public static void main(String[] arg){
+    public static void main(String[] args){
+        launch(args);
         BinanceTradingBot btb = new BinanceTradingBot();
         btb.start();
     }
