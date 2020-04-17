@@ -4,6 +4,8 @@ import com.jordanfoster.BinanceTradingBot;
 import com.jordanfoster.TradingBot.PriceFeed.PriceFeed;
 import com.jordanfoster.TradingBot.TradingStrategy.EMA.EMA;
 import com.jordanfoster.TradingBot.Wallet.Wallet;
+import com.jordanfoster.UserInterface.Logging.LineChartData;
+import com.jordanfoster.UserInterface.Logging.Log;
 
 import javax.sound.midi.SysexMessage;
 import java.lang.reflect.Array;
@@ -28,12 +30,11 @@ public class TradingBot extends Thread{
 
     public void run(){
 
-        //wallet.update();
-        //wallet.printBalance();
-
+        new Log("Starting Trading Bot");
+        wallet.start();
         long lastTime = System.currentTimeMillis();
 
-        while(BinanceTradingBot.priceFeedRunning){
+        while(BinanceTradingBot.isRunning){
             long nowTime = System.currentTimeMillis();
 
             if(nowTime - lastTime > pollingRate){
@@ -44,16 +45,17 @@ public class TradingBot extends Thread{
 
     }
 
+    LineChartData lineChartData = new LineChartData();
+
     public void update(){
         priceFeed.update();
         ema.updateEMA(priceFeed.getTradingPairs());
 
-        //printBTC();
-
         buy();
         sell();
 
-        System.out.println("Profit: " + totalProfit);
+        lineChartData.addData(priceFeed.getTradingPairs().get(0).getLastPrice());
+        new Log().setProfit(totalProfit);
     }
 
     public void buy(){
@@ -63,6 +65,11 @@ public class TradingBot extends Thread{
 
                 //SEND BUY CALL
                 ema.getEMA().get(i).setBought(true, priceFeed.getTradingPairs().get(i).getLastPrice());
+
+                String symbol = priceFeed.getTradingPairs().get(i).getSymbol();
+                double boughtPrice = priceFeed.getTradingPairs().get(i).getLastPrice();
+
+                new Log("Buy - \t" + symbol + "\t\tPrice - " + String.format("%.4f",boughtPrice));
             }
         }
     }
@@ -78,7 +85,9 @@ public class TradingBot extends Thread{
                 double soldPrice = priceFeed.getTradingPairs().get(i).getLastPrice();
                 double profit = soldPrice - boughtPrice;
 
-                System.out.println("Sold Price: " + soldPrice + ", Bought Price: " + boughtPrice);
+                String symbol = priceFeed.getTradingPairs().get(i).getSymbol();
+
+                new Log("Sold - \t" + symbol + "\t\tPrice -  " + String.format("%.4f",soldPrice));
 
                 totalProfit += profit;
 

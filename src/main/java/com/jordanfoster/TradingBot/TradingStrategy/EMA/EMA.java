@@ -9,8 +9,8 @@ public class EMA {
     private double N = 360;
     private double K = 2 / (N + 1);
 
-    private double buyThreshold = 1.0015;
-    //private double multiplayer = 1;
+    //private double buyThreshold = 1.0015;
+    private double buyThreshold = 1;
 
     private int numberOfCurrency = 1;
 

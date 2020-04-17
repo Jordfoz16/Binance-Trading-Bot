@@ -2,6 +2,7 @@ package com.jordanfoster.TradingBot.Wallet;
 
 import com.jordanfoster.BinanceTradingBot;
 import com.jordanfoster.JSONHandler.JSONHandler;
+import com.jordanfoster.UserInterface.Logging.Log;
 import com.jordanfoster.Networking.BinanceAPI;
 import org.json.simple.JSONObject;
 
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 
 public class Wallet extends Thread{
 
-    private int pollingRate = 60000;
+    private int pollingRate = 10000;
 
     private BinanceAPI binanceAPI = new BinanceAPI();
     private JSONHandler jsonHandler = new JSONHandler();
@@ -24,9 +25,12 @@ public class Wallet extends Thread{
     }
 
     public void run(){
+
+        new Log("Loading Wallet");
+
         long lastTime = System.currentTimeMillis();
 
-        while(BinanceTradingBot.priceFeedRunning){
+        while(BinanceTradingBot.isRunning){
             long nowTime = System.currentTimeMillis();
 
             if(nowTime - lastTime > pollingRate){
@@ -61,7 +65,9 @@ public class Wallet extends Thread{
                 }
             }
 
-            System.out.println("Updated Wallet");
+            BinanceTradingBot.mainController.updateAvailableBalance(printBalance());
+            new Log("Wallet Updated");
+
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (InvalidKeyException e) {
@@ -71,14 +77,19 @@ public class Wallet extends Thread{
         }
     }
 
-    public void printBalance(){
+    public String printBalance(){
+
+        StringBuilder stringBuilder = new StringBuilder();
+
         for(int i = 0; i < availableBalance.size(); i++){
 
             String symbol = availableBalance.get(i).getSymbol();
             String free = String.format("%.8f", availableBalance.get(i).getAvailableBalance());
             String locked = String.format("%.8f", availableBalance.get(i).getLockedBalance());
 
-            System.out.println("Symbol: " + symbol + "  \t Free: " + free + "  \t Locked: " + locked);
+            stringBuilder.append("Symbol:\t" + symbol + "\t\tAvailable:\t" + free + "\n");
         }
+
+        return stringBuilder.toString();
     }
 }

@@ -28,7 +28,7 @@ public class PriceFeed extends Thread{
 
         long lastTime = System.currentTimeMillis();
 
-        while(BinanceTradingBot.priceFeedRunning){
+        while(BinanceTradingBot.isRunning){
             long nowTime = System.currentTimeMillis();
 
             if(nowTime - lastTime > pollingRate){
