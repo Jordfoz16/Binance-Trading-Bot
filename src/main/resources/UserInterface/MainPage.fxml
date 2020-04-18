@@ -12,12 +12,12 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <LineChart fx:id="lineChart" axisSortingPolicy="NONE" layoutX="14.0" layoutY="152.0" prefHeight="201.0" prefWidth="574.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+                        <LineChart fx:id="lineChart" animated="false" axisSortingPolicy="NONE" createSymbols="false" layoutX="14.0" layoutY="152.0" prefHeight="201.0" prefWidth="574.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
                           <xAxis>
-                            <NumberAxis side="BOTTOM" fx:id="xAxis"/>
+                            <NumberAxis side="BOTTOM" fx:id="xAxis" />
                           </xAxis>
                           <yAxis>
-                            <NumberAxis side="LEFT" fx:id="yAxis"/>
+                            <NumberAxis fx:id="yAxis" side="LEFT" />
                           </yAxis>
                         </LineChart>
                         <Label layoutX="18.0" layoutY="19.0" text="Polling Rate" AnchorPane.leftAnchor="18.0" AnchorPane.topAnchor="19.0" />
@@ -29,13 +29,13 @@
                               <TableColumn prefWidth="75.0" text="Amount" />
                           </columns>
                         </TableView>
-                        <Label layoutX="18.0" layoutY="71.0" text="Total Profit" />
+                        <Label layoutX="18.0" layoutY="71.0" text="Total Profit $" />
                         <Label layoutX="18.0" layoutY="124.0" text="Trades #" />
                         <TextField fx:id="txtProfit" alignment="CENTER_RIGHT" editable="false" layoutX="120.0" layoutY="66.0" promptText="\$0.00" />
                         <TextField fx:id="txtTrades" alignment="CENTER_RIGHT" editable="false" layoutX="120.0" layoutY="119.0" promptText="0" />
                         <Button fx:id="btnStart" layoutX="185.0" layoutY="220.0" mnemonicParsing="false" onAction="#handleStartButton" prefHeight="27.0" prefWidth="67.0" text="Start" AnchorPane.leftAnchor="185.0" AnchorPane.rightAnchor="348.0" />
                         <Button fx:id="btnStop" layoutX="274.0" layoutY="220.0" mnemonicParsing="false" onAction="#handleStopButton" prefHeight="27.0" prefWidth="67.0" text="Stop" AnchorPane.leftAnchor="274.0" AnchorPane.rightAnchor="259.0" />
-                        <ComboBox fx:id="cmbSymbol" layoutX="18.0" layoutY="220.0" prefWidth="150.0" promptText="Select Symbol" AnchorPane.leftAnchor="18.0" AnchorPane.topAnchor="220.0" />
+                        <ComboBox fx:id="cmbSymbol" layoutX="18.0" layoutY="220.0" onAction="#handleComboBox" prefWidth="150.0" promptText="Select Symbol" AnchorPane.leftAnchor="18.0" AnchorPane.topAnchor="220.0" />
                         <Button fx:id="btnApplyMain" layoutX="293.0" layoutY="14.0" mnemonicParsing="false" text="Apply" />
                      </children></AnchorPane>
             </content>

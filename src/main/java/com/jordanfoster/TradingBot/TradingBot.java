@@ -20,17 +20,21 @@ public class TradingBot extends Thread{
 
     Wallet wallet = new Wallet();
     PriceFeed priceFeed = new PriceFeed();
+    public static LineChartData lineChartData;
     EMA ema;
 
     public TradingBot(){
         super("tradingBotThread");
         priceFeed.update();
         ema = new EMA(priceFeed.getTradingPairs());
+        lineChartData = new LineChartData(priceFeed.getTradingPairs());
     }
 
     public void run(){
 
         new Log("Starting Trading Bot");
+        BinanceTradingBot.mainController.addComboBox(priceFeed.getTradingPairs());
+
         wallet.start();
         long lastTime = System.currentTimeMillis();
 
@@ -45,8 +49,6 @@ public class TradingBot extends Thread{
 
     }
 
-    LineChartData lineChartData = new LineChartData();
-
     public void update(){
         priceFeed.update();
         ema.updateEMA(priceFeed.getTradingPairs());
@@ -54,7 +56,7 @@ public class TradingBot extends Thread{
         buy();
         sell();
 
-        lineChartData.addData(priceFeed.getTradingPairs().get(0).getLastPrice());
+        lineChartData.addData(priceFeed.getTradingPairs());
         new Log().setProfit(totalProfit);
     }
 

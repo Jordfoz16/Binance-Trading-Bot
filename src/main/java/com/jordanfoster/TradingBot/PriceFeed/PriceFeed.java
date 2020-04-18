@@ -42,8 +42,6 @@ public class PriceFeed extends Thread{
 
         try {
 
-            //System.out.println("Updating Price Feed");
-
             String result = binanceAPI.getTickerPrice();
 
             ArrayList<JSONObject> jsonObjects = jsonHandler.parseJSON(result);
