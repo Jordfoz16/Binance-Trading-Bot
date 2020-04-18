@@ -20,20 +20,18 @@ public class TradingBot extends Thread{
 
     Wallet wallet = new Wallet();
     PriceFeed priceFeed = new PriceFeed();
-    public static LineChartData lineChartData;
     EMA ema;
 
     public TradingBot(){
         super("tradingBotThread");
         priceFeed.update();
         ema = new EMA(priceFeed.getTradingPairs());
-        lineChartData = new LineChartData(priceFeed.getTradingPairs());
     }
 
     public void run(){
 
         new Log("Starting Trading Bot");
-        BinanceTradingBot.mainController.addComboBox(priceFeed.getTradingPairs());
+        BinanceTradingBot.mainController.updatePriceFeed(priceFeed.getTradingPairs());
 
         wallet.start();
         long lastTime = System.currentTimeMillis();
@@ -56,7 +54,7 @@ public class TradingBot extends Thread{
         buy();
         sell();
 
-        lineChartData.addData(priceFeed.getTradingPairs());
+        BinanceTradingBot.mainController.updatePriceFeed(priceFeed.getTradingPairs());
         new Log().setProfit(totalProfit);
     }
 
@@ -96,13 +94,5 @@ public class TradingBot extends Thread{
                 ema.getEMA().get(i).setBought(false);
             }
         }
-    }
-
-    public void printBTC(){
-        double btcPrice = priceFeed.getTradingPairs().get(0).getLastPrice();
-        double emaPrice = ema.getEMA().get(0).getLastEMA();
-        boolean bought = ema.getEMA().get(0).getBought();
-
-        System.out.println("BTC: " + btcPrice + ",\t EMA: " + emaPrice + ",\t Bought: " + bought);
     }
 }

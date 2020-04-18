@@ -2,22 +2,17 @@ package com.jordanfoster.UserInterface;
 
 import com.jordanfoster.BinanceTradingBot;
 import com.jordanfoster.TradingBot.PriceFeed.Price;
-import com.jordanfoster.TradingBot.TradingBot;
+import com.jordanfoster.UserInterface.Logging.LineChartData;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import sun.security.krb5.internal.APRep;
 
-import javax.annotation.Resources;
-import javax.sound.midi.SysexMessage;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class MainPageController {
@@ -32,7 +27,12 @@ public class MainPageController {
     @FXML private NumberAxis xAxis;
     @FXML private NumberAxis yAxis;
 
+    private boolean init = false;
+
     private XYChart.Series<Integer, Double> series;
+    private ArrayList<Price> priceFeed = new ArrayList<Price>();
+
+    public LineChartData lineChartData;
 
     @FXML protected void initialize(){
         series = new XYChart.Series<Integer, Double>();
@@ -42,48 +42,36 @@ public class MainPageController {
         xAxis.setLowerBound(0);
         xAxis.setUpperBound(30);
         xAxis.setTickUnit(1);
-//
-//        yAxis.setAutoRanging(false);
-//        yAxis.setLowerBound(7000);
-//        yAxis.setUpperBound(7100);
-//        yAxis.setTickUnit(10);
 
         lineChart.setAnimated(false);
         lineChart.getData().add(series);
     }
 
-    @FXML protected void handleStartButton(ActionEvent event){
-        BinanceTradingBot.startTradingBot = true;
+    public void initPriceFeed(){
+
+        if(!init){
+            for(int i = 0; i < priceFeed.size(); i++){
+                cmbSymbol.getItems().add(i, priceFeed.get(i).getSymbol());
+            }
+
+            lineChartData = new LineChartData(priceFeed);
+            init = true;
+        }
     }
 
-    @FXML protected void handleStopButton(ActionEvent event){
-        BinanceTradingBot.startTradingBot = false;
-    }
+    public void updatePriceFeed(ArrayList<Price> priceFeed){
+        this.priceFeed = priceFeed;
 
-    public void addLog(String msg){
-        txtLog.appendText("\n" + msg);
-    }
+        initPriceFeed();
 
-    public void updateAvailableBalance(String msg){
-        txtAvailable.setText(msg);
-    }
-
-    public void updateLockedBalance(){
-
+        if(lineChartData != null){
+            lineChartData.addData(priceFeed);
+        }
     }
 
     public void setProfit(double profit){
         String formattedProfit = String.format("%.4f", profit);
         txtProfit.setText(formattedProfit);
-    }
-
-    ArrayList<Price> priceFeed = new ArrayList<Price>();
-
-    public void addComboBox(ArrayList<Price> priceFeed){
-        this.priceFeed = priceFeed;
-        for(int i = 0; i < priceFeed.size(); i++){
-            cmbSymbol.getItems().add(i, priceFeed.get(i).getSymbol());
-        }
     }
 
     @FXML protected void handleComboBox(ActionEvent event){
@@ -95,7 +83,7 @@ public class MainPageController {
             }
         }
 
-        TradingBot.lineChartData.setSymbol(index);
+        lineChartData.setSymbol(index);
         yAxis.autosize();
         yAxis.setForceZeroInRange(false);
 
@@ -119,5 +107,25 @@ public class MainPageController {
                 yAxis.setForceZeroInRange(false);
             }
         });
+    }
+
+    @FXML protected void handleStartButton(ActionEvent event){
+        BinanceTradingBot.startTradingBot = true;
+    }
+
+    @FXML protected void handleStopButton(ActionEvent event){
+        BinanceTradingBot.startTradingBot = false;
+    }
+
+    public void addLog(String msg){
+        txtLog.appendText("\n" + msg);
+    }
+
+    public void updateAvailableBalance(String msg){
+        txtAvailable.setText(msg);
+    }
+
+    public void updateLockedBalance(){
+
     }
 }
