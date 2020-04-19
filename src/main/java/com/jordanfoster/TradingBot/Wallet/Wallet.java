@@ -30,7 +30,7 @@ public class Wallet extends Thread{
 
         long lastTime = System.currentTimeMillis();
 
-        while(BinanceTradingBot.isRunning){
+        while(true){
             long nowTime = System.currentTimeMillis();
 
             if(nowTime - lastTime > pollingRate){

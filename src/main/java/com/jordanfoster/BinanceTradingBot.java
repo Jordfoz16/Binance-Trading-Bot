@@ -4,19 +4,19 @@ import com.jordanfoster.TradingBot.TradingBot;
 import com.jordanfoster.TradingBot.Wallet.Wallet;
 import com.jordanfoster.UserInterface.MainPageController;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class BinanceTradingBot extends Application {
 
-    public static boolean startTradingBot = true;
-    public static boolean isRunning = false;
-
     public static MainPageController mainController;
 
-    private TradingBot tradingBot;
+    public static TradingBot tradingBot;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -25,32 +25,19 @@ public class BinanceTradingBot extends Application {
         primaryStage.setTitle("Binance Trading Bot");
         primaryStage.setScene(new Scene(root, 600, 500));
         primaryStage.setResizable(false);
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent e) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
         primaryStage.show();
 
         mainController = loader.<MainPageController>getController();
 
         tradingBot = new TradingBot();
-        startTradingBot();
-    }
-
-    public void startTradingBot(){
-
-        if(isRunning == false){
-            if(startTradingBot == true){
-                //Start Trading Bot
-                tradingBot.start();
-                isRunning = true;
-            }
-        }
-    }
-
-    public void stopTradingBot(){
-
-        if(isRunning == true){
-            if(startTradingBot == false){
-                //Stop Trading Bot
-            }
-        }
+        tradingBot.start();
     }
 
     public static void main(String[] args){

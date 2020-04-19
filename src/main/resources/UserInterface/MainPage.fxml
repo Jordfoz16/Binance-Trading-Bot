@@ -23,11 +23,7 @@
                         <Label layoutX="18.0" layoutY="19.0" text="Polling Rate" AnchorPane.leftAnchor="18.0" AnchorPane.topAnchor="19.0" />
                         <TextField fx:id="txtPollingRate" alignment="CENTER_RIGHT" layoutX="120.0" layoutY="14.0" promptText="In Milliseconds" text="10000" AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="14.0" />
                         <TableView fx:id="tbBoughtTable" editable="true" layoutX="363.0" layoutY="12.0" prefHeight="244.0" prefWidth="223.0">
-                          <columns>
-                            <TableColumn prefWidth="75.0" text="Symbol" />
-                            <TableColumn prefWidth="75.0" text="Price" />
-                              <TableColumn prefWidth="75.0" text="Amount" />
-                          </columns>
+
                         </TableView>
                         <Label layoutX="18.0" layoutY="71.0" text="Total Profit $" />
                         <Label layoutX="18.0" layoutY="124.0" text="Trades #" />

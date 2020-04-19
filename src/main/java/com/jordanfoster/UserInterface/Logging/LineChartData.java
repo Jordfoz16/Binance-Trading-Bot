@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class LineChartData {
 
-    private int graphSize = 240;
+    private int graphSize = 600;
     private int selectedSymbol = 0;
 
     private ArrayList<Double> priceData = new ArrayList<Double>();

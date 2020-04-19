@@ -10,9 +10,9 @@ public class EMA {
     private double K = 2 / (N + 1);
 
     //private double buyThreshold = 1.0015;
-    private double buyThreshold = 1;
+    private double buyThreshold = 1.0005;
 
-    private int numberOfCurrency = 1;
+    private int numberOfCurrency = 100;
 
     private ArrayList<ResultsEMA> resultsEMA = new ArrayList<ResultsEMA>();
     private ArrayList<Price> tradingPairPriceFeed = new ArrayList<Price>();
@@ -48,7 +48,7 @@ public class EMA {
 
             if(currencyPrice > (emaPrice * buyThreshold)) {
 
-                if(resultsEMA.get(i).getBought()){ return; }
+                if(resultsEMA.get(i).getBought()){ continue; }
 
                 resultsEMA.get(i).setBuy(true);
             }
@@ -63,7 +63,7 @@ public class EMA {
 
             if(currencyPrice < emaPrice) {
 
-                if(!resultsEMA.get(i).getBought()){ return; }
+                if(!resultsEMA.get(i).getBought()){ continue; }
 
                 resultsEMA.get(i).setSell(true);
             }
