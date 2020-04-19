@@ -25,7 +25,7 @@ public class Price {
         return priceList;
     }
 
-    public double getLastPrice(){
+    public double getCurrentPrice(){
         return priceList.get(priceList.size() - 1);
     }
 

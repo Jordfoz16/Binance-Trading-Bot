@@ -29,7 +29,7 @@ public class EMA {
         this.tradingPairPriceFeed = tradingPairPriceFeed;
 
         for(int i = 0; i < tradingPairPriceFeed.size(); i++){
-            double currentPrice = tradingPairPriceFeed.get(i).getLastPrice();
+            double currentPrice = tradingPairPriceFeed.get(i).getCurrentPrice();
             double lastEMA = resultsEMA.get(i).getLastEMA();
 
             double currentEMA = currentPrice * K + lastEMA * (1 - K);
@@ -43,7 +43,7 @@ public class EMA {
     public void updateBuy(){
         for(int i = 0; i < numberOfCurrency; i++){
 
-            double currencyPrice = tradingPairPriceFeed.get(i).getLastPrice();
+            double currencyPrice = tradingPairPriceFeed.get(i).getCurrentPrice();
             double emaPrice = resultsEMA.get(i).getCurrentEMA();
 
             if(currencyPrice > (emaPrice * buyThreshold)) {
@@ -58,7 +58,7 @@ public class EMA {
     public void updateSell(){
         for(int i = 0; i < numberOfCurrency; i++){
 
-            double currencyPrice = tradingPairPriceFeed.get(i).getLastPrice();
+            double currencyPrice = tradingPairPriceFeed.get(i).getCurrentPrice();
             double emaPrice = resultsEMA.get(i).getCurrentEMA();
 
             if(currencyPrice < emaPrice) {

@@ -4,32 +4,52 @@ import com.jordanfoster.BinanceTradingBot;
 import com.jordanfoster.TradingBot.PriceFeed.Price;
 import javafx.scene.chart.XYChart;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class LineChartData {
 
-    private int graphSize = 30;
+    private int graphSize = 240;
     private int selectedSymbol = 0;
+
     private ArrayList<Double> priceData = new ArrayList<Double>();
+    private ArrayList<Double> indicatorData = new ArrayList<Double>();
 
-    private ArrayList<Price> lastestPrice = new ArrayList<Price>();
+    public void updateLineChartData(ArrayList<Price> latestPrice) {
 
-    public LineChartData(ArrayList<Price> priceFeed){
-        for(int i = 0; i < graphSize; i++){
-            priceData.add(i, priceFeed.get(selectedSymbol).getLastPrice());
-        }
-    }
+        priceData.add(latestPrice.get(selectedSymbol).getCurrentPrice());
 
-    public void addData(ArrayList<Price> priceFeed){
-        lastestPrice = priceFeed;
-        if(priceData.size() > 30){
+        if(priceData.size() > graphSize) {
             priceData.remove(0);
         }
 
-        priceData.add(graphSize, priceFeed.get(selectedSymbol).getLastPrice());
+        XYChart.Series<Integer, Double> priceSeries = new XYChart.Series<Integer, Double>();
 
-        BinanceTradingBot.mainController.updateLineChart(priceData);
+        priceSeries.setName(latestPrice.get(selectedSymbol).getSymbol());
+
+        for(int i = 0; i < priceData.size(); i++){
+            priceSeries.getData().add(new XYChart.Data<Integer, Double>(i, priceData.get(i)));
+        }
+
+        BinanceTradingBot.mainController.addLineChartSeries(priceSeries);
+    }
+
+    public void updateLineChartIndicator(double indicatorValue){
+
+        indicatorData.add(indicatorValue);
+
+        if(indicatorData.size() > graphSize){
+            indicatorData.remove(0);
+        }
+
+        XYChart.Series<Integer, Double> emaSeries = new XYChart.Series<Integer, Double>();
+
+        emaSeries.setName("EMA Value");
+
+        for(int i = 0; i < priceData.size(); i++){
+            emaSeries.getData().add(new XYChart.Data<Integer, Double>(i, indicatorData.get(i)));
+        }
+
+        BinanceTradingBot.mainController.addLineChartSeries(emaSeries);
     }
 
     public void setSymbol(int selectedSymbol){
@@ -38,9 +58,12 @@ public class LineChartData {
     }
 
     public void resetData(){
+
         priceData.clear();
-        for(int i = 0; i < graphSize; i++){
-            priceData.add(i, lastestPrice.get(selectedSymbol).getLastPrice());
-        }
+        indicatorData.clear();
+    }
+
+    public int getSelectedIndex(){
+        return selectedSymbol;
     }
 }

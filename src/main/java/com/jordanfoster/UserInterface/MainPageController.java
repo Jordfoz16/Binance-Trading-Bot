@@ -2,6 +2,7 @@ package com.jordanfoster.UserInterface;
 
 import com.jordanfoster.BinanceTradingBot;
 import com.jordanfoster.TradingBot.PriceFeed.Price;
+import com.jordanfoster.TradingBot.TradingStrategy.EMA.ResultsEMA;
 import com.jordanfoster.UserInterface.Logging.LineChartData;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -14,6 +15,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 import java.util.ArrayList;
+import java.util.Observable;
 
 public class MainPageController {
 
@@ -29,14 +31,13 @@ public class MainPageController {
 
     private boolean init = false;
 
-    private XYChart.Series<Integer, Double> series;
     private ArrayList<Price> priceFeed = new ArrayList<Price>();
 
     public LineChartData lineChartData;
 
     @FXML protected void initialize(){
-        series = new XYChart.Series<Integer, Double>();
-        series.setName("Bitcoin Price");
+
+        lineChartData = new LineChartData();
 
         xAxis.setAutoRanging(false);
         xAxis.setLowerBound(0);
@@ -44,17 +45,15 @@ public class MainPageController {
         xAxis.setTickUnit(1);
 
         lineChart.setAnimated(false);
-        lineChart.getData().add(series);
     }
 
-    public void initPriceFeed(){
+    public void initComboBox(){
 
         if(!init){
             for(int i = 0; i < priceFeed.size(); i++){
                 cmbSymbol.getItems().add(i, priceFeed.get(i).getSymbol());
             }
 
-            lineChartData = new LineChartData(priceFeed);
             init = true;
         }
     }
@@ -62,10 +61,17 @@ public class MainPageController {
     public void updatePriceFeed(ArrayList<Price> priceFeed){
         this.priceFeed = priceFeed;
 
-        initPriceFeed();
+        initComboBox();
 
         if(lineChartData != null){
-            lineChartData.addData(priceFeed);
+            lineChartData.updateLineChartData(priceFeed);
+        }
+    }
+
+    public void updateIndicator(ArrayList<ResultsEMA> indicatorValue){
+
+        if(lineChartData != null){
+            lineChartData.updateLineChartIndicator(indicatorValue.get(lineChartData.getSelectedIndex()).getCurrentEMA());
         }
     }
 
@@ -76,6 +82,7 @@ public class MainPageController {
 
     @FXML protected void handleComboBox(ActionEvent event){
         String selected = (String) cmbSymbol.getValue();
+
         int index = 0;
         for(int i = 0; i < priceFeed.size(); i++){
             if(selected.equals(priceFeed.get(i).getSymbol())){
@@ -83,26 +90,32 @@ public class MainPageController {
             }
         }
 
+        //Reset the line charts yAxis
         lineChartData.setSymbol(index);
+        lineChart.getData().clear();
         yAxis.autosize();
         yAxis.setForceZeroInRange(false);
 
     }
 
-    public void updateLineChart(ArrayList<Double> data){
-
-        final ArrayList<Double> priceData = data;
+    public void addLineChartSeries(XYChart.Series<Integer, Double> newSeries){
 
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                if (lineChart.getData().size() > 0){
-                    lineChart.getData().get(0).getData().clear();
+
+                if(newSeries.getData().size() > 30){
+                    xAxis.setUpperBound(newSeries.getData().size());
                 }
 
-                for(int i = 0; i < priceData.size(); i++){
+                if(lineChart.getData().size() < 2){
+                    lineChart.getData().add(newSeries);
+                }
 
-                    lineChart.getData().get(0).getData().add(new XYChart.Data<Integer, Double>(i, priceData.get(i)));
+                for(int i = 0; i < lineChart.getData().size(); i++){
+                    if(lineChart.getData().get(i).getName().equals(newSeries.getName())){
+                        lineChart.getData().get(i).setData(newSeries.getData());
+                    }
                 }
 
                 yAxis.autosize();

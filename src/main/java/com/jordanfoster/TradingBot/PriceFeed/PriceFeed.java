@@ -24,6 +24,8 @@ public class PriceFeed extends Thread{
         super("priceThread");
         binanceAPI = new BinanceAPI();
         jsonHandler = new JSONHandler();
+
+        update();
     }
 
     public void run(){

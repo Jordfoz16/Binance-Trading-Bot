@@ -9,26 +9,25 @@ import com.jordanfoster.UserInterface.Logging.Log;
 public class TradingBot extends Thread{
 
     //Polling rate in milliseconds
-    private int pollingRate = 2000;
+    private int pollingRate = 1000;
 
     private double totalProfit = 0;
 
-    Wallet wallet;
-    PriceFeed priceFeed;
-    EMA ema;
+    private Wallet wallet;
+    private PriceFeed priceFeed;
+    private EMA ema;
 
     public TradingBot(){
         super("tradingBotThread");
         priceFeed = new PriceFeed();
         wallet = new Wallet();
-        priceFeed.update();
         ema = new EMA(priceFeed.getTradingPairs());
     }
 
     public void run(){
 
         new Log("Starting Trading Bot");
-        BinanceTradingBot.mainController.updatePriceFeed(priceFeed.getTradingPairs());
+        //BinanceTradingBot.mainController.updatePriceFeed(priceFeed.getTradingPairs());
 
         wallet.start();
         long lastTime = System.currentTimeMillis();
@@ -47,11 +46,12 @@ public class TradingBot extends Thread{
     public void update(){
         priceFeed.update();
         ema.updateEMA(priceFeed.getTradingPairs());
+        BinanceTradingBot.mainController.updatePriceFeed(priceFeed.getTradingPairs());
+        BinanceTradingBot.mainController.updateIndicator(ema.getEMA());
 
         buy();
         sell();
 
-        BinanceTradingBot.mainController.updatePriceFeed(priceFeed.getTradingPairs());
         new Log().setProfit(totalProfit);
     }
 
@@ -61,12 +61,12 @@ public class TradingBot extends Thread{
             if(ema.getEMA().get(i).getBuy()){
 
                 //SEND BUY CALL
-                ema.getEMA().get(i).setBought(true, priceFeed.getTradingPairs().get(i).getLastPrice());
+                ema.getEMA().get(i).setBought(true, priceFeed.getTradingPairs().get(i).getCurrentPrice());
 
                 String symbol = priceFeed.getTradingPairs().get(i).getSymbol();
-                double boughtPrice = priceFeed.getTradingPairs().get(i).getLastPrice();
+                double boughtPrice = priceFeed.getTradingPairs().get(i).getCurrentPrice();
 
-                new Log("Buy - \t" + symbol + "\t\tPrice - " + String.format("%.4f",boughtPrice));
+                new Log("Buy - " + symbol + ", Price - " + String.format("%.4f",boughtPrice));
             }
         }
     }
@@ -79,12 +79,12 @@ public class TradingBot extends Thread{
                 //SEND SELL CALL
 
                 double boughtPrice = ema.getEMA().get(i).getBoughtPrice();
-                double soldPrice = priceFeed.getTradingPairs().get(i).getLastPrice();
+                double soldPrice = priceFeed.getTradingPairs().get(i).getCurrentPrice();
                 double profit = soldPrice - boughtPrice;
 
                 String symbol = priceFeed.getTradingPairs().get(i).getSymbol();
 
-                new Log("Sold - \t" + symbol + "\t\tPrice -  " + String.format("%.4f",soldPrice));
+                new Log("Sold - " + symbol + ", Price -  " + String.format("%.4f",soldPrice));
 
                 totalProfit += profit;
 

@@ -12,17 +12,17 @@ public class Log {
     }
 
     public Log(String msg){
-        String outputMsg = getTimeDate() + "  \t-\t" + msg;
+        String outputMsg = getTimeDate() + " - " + msg;
         BinanceTradingBot.mainController.addLog(outputMsg);
     }
 
     public void logError(String msg){
-        String outputMsg = getTimeDate() + "  \t- ERROR -\t" + msg;
+        String outputMsg = getTimeDate() + " - ERROR - " + msg;
         BinanceTradingBot.mainController.addLog(outputMsg);
     }
 
     public void logWarning(String msg){
-        String outputMsg = getTimeDate() + "  \t- WARNING -\t" + msg;
+        String outputMsg = getTimeDate() + " - WARNING - " + msg;
         BinanceTradingBot.mainController.addLog(outputMsg);
     }
 
