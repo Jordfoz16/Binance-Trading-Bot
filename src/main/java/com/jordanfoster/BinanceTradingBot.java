@@ -8,7 +8,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import sun.applet.Main;
 
 public class BinanceTradingBot extends Application {
 
@@ -17,7 +16,7 @@ public class BinanceTradingBot extends Application {
 
     public static MainPageController mainController;
 
-    private TradingBot tradingBot = new TradingBot();
+    private TradingBot tradingBot;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -30,6 +29,7 @@ public class BinanceTradingBot extends Application {
 
         mainController = loader.<MainPageController>getController();
 
+        tradingBot = new TradingBot();
         startTradingBot();
     }
 

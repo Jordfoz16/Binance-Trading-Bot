@@ -21,7 +21,7 @@ public class MainPageController {
     @FXML private TextArea txtAvailable;
     @FXML private TextArea txtLocked;
     @FXML private TextField txtProfit;
-    @FXML private ComboBox cmbSymbol;
+    @FXML private ComboBox<String> cmbSymbol;
 
     @FXML private LineChart<Integer, Double> lineChart;
     @FXML private NumberAxis xAxis;
@@ -89,11 +89,13 @@ public class MainPageController {
 
     }
 
-    public void updateLineChart(ArrayList<Double> priceData){
+    public void updateLineChart(ArrayList<Double> data){
+
+        final ArrayList<Double> priceData = data;
+
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                
                 if (lineChart.getData().size() > 0){
                     lineChart.getData().get(0).getData().clear();
                 }

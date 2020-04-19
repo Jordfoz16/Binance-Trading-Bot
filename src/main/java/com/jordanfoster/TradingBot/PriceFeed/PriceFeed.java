@@ -13,8 +13,8 @@ public class PriceFeed extends Thread{
     //Polling rate in milliseconds
     private int pollingRate = 1000;
 
-    private BinanceAPI binanceAPI = new BinanceAPI();
-    private JSONHandler jsonHandler = new JSONHandler();
+    private BinanceAPI binanceAPI;
+    private JSONHandler jsonHandler;
 
     private ArrayList<Price> tradingPairs = new ArrayList<Price>();
 
@@ -22,6 +22,8 @@ public class PriceFeed extends Thread{
 
     public PriceFeed(){
         super("priceThread");
+        binanceAPI = new BinanceAPI();
+        jsonHandler = new JSONHandler();
     }
 
     public void run(){

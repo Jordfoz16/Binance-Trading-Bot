@@ -4,12 +4,7 @@ import com.jordanfoster.BinanceTradingBot;
 import com.jordanfoster.TradingBot.PriceFeed.PriceFeed;
 import com.jordanfoster.TradingBot.TradingStrategy.EMA.EMA;
 import com.jordanfoster.TradingBot.Wallet.Wallet;
-import com.jordanfoster.UserInterface.Logging.LineChartData;
 import com.jordanfoster.UserInterface.Logging.Log;
-
-import javax.sound.midi.SysexMessage;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 
 public class TradingBot extends Thread{
 
@@ -18,12 +13,14 @@ public class TradingBot extends Thread{
 
     private double totalProfit = 0;
 
-    Wallet wallet = new Wallet();
-    PriceFeed priceFeed = new PriceFeed();
+    Wallet wallet;
+    PriceFeed priceFeed;
     EMA ema;
 
     public TradingBot(){
         super("tradingBotThread");
+        priceFeed = new PriceFeed();
+        wallet = new Wallet();
         priceFeed.update();
         ema = new EMA(priceFeed.getTradingPairs());
     }
