@@ -15,13 +15,14 @@ public class Wallet extends Thread{
 
     private int pollingRate = 10000;
 
-    private BinanceAPI binanceAPI = new BinanceAPI();
+    private BinanceAPI binanceAPI;
     private JSONHandler jsonHandler = new JSONHandler();
 
     ArrayList<Crypto> availableBalance = new ArrayList<Crypto>();
 
-    public Wallet(){
+    public Wallet(String apiKey, String secretKey){
         super("walletThread");
+        binanceAPI = new BinanceAPI(apiKey, secretKey);
     }
 
     public void run(){

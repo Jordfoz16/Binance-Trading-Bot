@@ -1,6 +1,7 @@
 package com.jordanfoster.TradingBot;
 
 import com.jordanfoster.BinanceTradingBot;
+import com.jordanfoster.FileManagement.FileManagement;
 import com.jordanfoster.TradingBot.PriceFeed.PriceFeed;
 import com.jordanfoster.TradingBot.TradingStrategy.EMA.EMA;
 import com.jordanfoster.TradingBot.Wallet.Wallet;
@@ -23,10 +24,10 @@ public class TradingBot extends Thread{
 
     private ArrayList<BoughtCurrency> boughtCurrencyArrayList = new ArrayList<BoughtCurrency>();
 
-    public TradingBot(){
+    public TradingBot(String apiKey, String secretKey){
         super("tradingBotThread");
-        priceFeed = new PriceFeed();
-        wallet = new Wallet();
+        priceFeed = new PriceFeed(apiKey, secretKey);
+        wallet = new Wallet(apiKey, secretKey);
         ema = new EMA(priceFeed.getTradingPairs());
     }
 

@@ -20,9 +20,9 @@ public class PriceFeed extends Thread{
 
     private boolean init = false;
 
-    public PriceFeed(){
+    public PriceFeed(String apiKey, String secretKey){
         super("priceThread");
-        binanceAPI = new BinanceAPI();
+        binanceAPI = new BinanceAPI(apiKey, secretKey);
         jsonHandler = new JSONHandler();
 
         update();

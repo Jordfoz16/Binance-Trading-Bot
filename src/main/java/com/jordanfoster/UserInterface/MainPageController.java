@@ -182,8 +182,6 @@ public class MainPageController {
         BinanceTradingBot.tradingBot.getEMA().setBuyThreshold(threshold);
         BinanceTradingBot.tradingBot.getEMA().setTradingCooldown(cooldown);
 
-        System.out.println(timeHoldBuy);
-
         for(int i = 0; i < BinanceTradingBot.tradingBot.getEMA().getEMA().size(); i++){
             BinanceTradingBot.tradingBot.getEMA().getEMA().get(i).setTimeHoldBuy(timeHoldBuy);
             BinanceTradingBot.tradingBot.getEMA().getEMA().get(i).setTimeHoldSell(timeHoldSell);

@@ -21,10 +21,15 @@ public class BinanceAPI {
 
     private boolean networkDebug = false;
 
-    private String apiKey = "NPT2UMOmcg7hqsfM93DlYfTUDZE4p628wQlICdPFx7NdkyYRMTUbbonOx5Qds3u8";
-    private String secretKey = "PA8Wb2dRg5VeMG0s3diEjykP6DKIIBXi34ozVq56I5fytk8kgUrhlql3emPZIGgW";
+    private String apiKey = "";
+    private String secretKey = "";
 
     private String apiResponse = "";
+
+    public BinanceAPI(String apiKey, String secretKey){
+        this.apiKey = apiKey;
+        this.secretKey = secretKey;
+    }
 
     public String getAllCoinInformation() throws NoSuchAlgorithmException, InvalidKeyException, IOException {
         /*
