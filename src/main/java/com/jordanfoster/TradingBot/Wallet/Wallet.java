@@ -48,6 +48,8 @@ public class Wallet extends Thread{
 
             ArrayList<JSONObject> jsonObjects = jsonHandler.parseJSON(result);
 
+            if(jsonObjects == null) return;
+
             for(int i = 0; i < jsonObjects.size(); i++){
                 JSONObject item = jsonObjects.get(i);
 

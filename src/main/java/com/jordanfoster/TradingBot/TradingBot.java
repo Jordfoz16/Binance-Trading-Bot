@@ -73,6 +73,8 @@ public class TradingBot extends Thread{
 
     public void updateTrades(){
 
+        BinanceTradingBot.mainController.setStatus(isTrading);
+
         if(isTrading){
             buy();
             sell();
@@ -81,8 +83,6 @@ public class TradingBot extends Thread{
     }
 
     public void buy(){
-
-        System.out.println(ema.getEMA().get(0).timeHoldBuyCounter);
 
         for(int i = 0; i < priceFeed.getTradingPairs().size(); i++){
             if(ema.getEMA().get(i).getBuy()){

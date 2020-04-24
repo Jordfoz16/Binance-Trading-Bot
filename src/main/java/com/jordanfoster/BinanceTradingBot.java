@@ -46,6 +46,7 @@ public class BinanceTradingBot extends Application {
 
         String apiKey = apiFile.get("apikey").toString();
         String secretKey = apiFile.get("secretkey").toString();
+        mainController.setAccountPage(apiKey, secretKey);
 
         tradingBot = new TradingBot(apiKey, secretKey);
         tradingBot.start();

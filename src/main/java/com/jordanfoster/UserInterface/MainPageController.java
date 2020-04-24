@@ -27,6 +27,7 @@ public class MainPageController {
     @FXML private LineChart<Integer, Double> lineChart;
     @FXML private NumberAxis xAxis;
     @FXML private NumberAxis yAxis;
+    @FXML private Label lblStatus;
 
     //Wallet Page
     @FXML private TextArea txtAvailable;
@@ -39,6 +40,8 @@ public class MainPageController {
     @FXML private TextField txtCooldown;
 
     //Account
+    @FXML private TextField txtAPIKey;
+    @FXML private TextField txtSecret;
 
     //Log
     @FXML private TextArea txtLog;
@@ -139,6 +142,37 @@ public class MainPageController {
     public void setProfit(double profit){
         String formattedProfit = String.format("%.4f", profit);
         txtProfit.setText(formattedProfit);
+    }
+
+    public void setStatus(boolean running){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                if (running) {
+                    lblStatus.setText("Running");
+                } else {
+                    lblStatus.setText("Not Running");
+                }
+            }
+        });
+    }
+
+    public void setAccountPage(String apiKey, String secret){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                txtAPIKey.setText(apiKey);
+                txtSecret.setText(secret);
+            }
+        });
+    }
+
+    public void saveAccountPage(){
+        String content = "{\n" +
+                "\t\"apikey\": \"" + txtAPIKey.getText() + "\",\n" +
+                "\t\"secretkey\": \"" + txtSecret.getText() + "\"\n" +
+                "}";
+        BinanceTradingBot.fileManagement.write("apikey.txt", content);
     }
 
     public void initComboBox(){
