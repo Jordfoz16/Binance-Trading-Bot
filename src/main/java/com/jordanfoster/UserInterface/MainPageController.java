@@ -2,6 +2,7 @@ package com.jordanfoster.UserInterface;
 
 import com.jordanfoster.BinanceTradingBot;
 import com.jordanfoster.TradingBot.PriceFeed.Price;
+import com.jordanfoster.TradingBot.TradingBot;
 import com.jordanfoster.TradingBot.TradingStrategy.EMA.ResultsEMA;
 import com.jordanfoster.TradingBot.BoughtCurrency;
 import com.jordanfoster.UserInterface.Logging.LineChartData;
@@ -14,20 +15,37 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class MainPageController {
 
-    @FXML private TextArea txtLog;
-    @FXML private TextArea txtAvailable;
-    @FXML private TextArea txtLocked;
+    //Main Page
     @FXML private TextField txtProfit;
     @FXML private ComboBox<String> cmbSymbol;
     @FXML private TableView tbBoughtTable;
-
     @FXML private LineChart<Integer, Double> lineChart;
     @FXML private NumberAxis xAxis;
     @FXML private NumberAxis yAxis;
+
+    //Wallet Page
+    @FXML private TextArea txtAvailable;
+    @FXML private TextArea txtLocked;
+
+    //EMA
+    @FXML private TextField txtThreshold;
+    @FXML private TextField txtTimeHoldBuy;
+    @FXML private TextField txtTimeHoldSell;
+    @FXML private TextField txtCooldown;
+
+    //Account
+
+    //Log
+    @FXML private TextArea txtLog;
+
+
+
+
 
     private boolean init = false;
 
@@ -155,6 +173,22 @@ public class MainPageController {
 
     }
 
+    @FXML protected void updateSettingEMA(ActionEvent event){
+        double threshold = Double.parseDouble(txtThreshold.getText());
+        int timeHoldBuy = Integer.parseInt(txtTimeHoldBuy.getText());
+        int timeHoldSell = Integer.parseInt(txtTimeHoldSell.getText());
+        int cooldown = Integer.parseInt(txtCooldown.getText());
+
+        BinanceTradingBot.tradingBot.getEMA().setBuyThreshold(threshold);
+        BinanceTradingBot.tradingBot.getEMA().setTradingCooldown(cooldown);
+
+        System.out.println(timeHoldBuy);
+
+        for(int i = 0; i < BinanceTradingBot.tradingBot.getEMA().getEMA().size(); i++){
+            BinanceTradingBot.tradingBot.getEMA().getEMA().get(i).setTimeHoldBuy(timeHoldBuy);
+            BinanceTradingBot.tradingBot.getEMA().getEMA().get(i).setTimeHoldSell(timeHoldSell);
+        }
+    }
 
     @FXML protected void handleStartButton(ActionEvent event){
         BinanceTradingBot.tradingBot.startTrading();

@@ -10,9 +10,11 @@ public class EMA {
     private double K = 2 / (N + 1);
 
     //private double buyThreshold = 1.0015;
-    private double buyThreshold = 1.0005;
+    private double buyThreshold = 1.000;
+    private int tradingCooldown = 30;
+    private int tradingCooldownCounter = 0;
 
-    private int numberOfCurrency = 100;
+    private int numberOfCurrency = 1;
 
     private ArrayList<ResultsEMA> resultsEMA = new ArrayList<ResultsEMA>();
     private ArrayList<Price> tradingPairPriceFeed = new ArrayList<Price>();
@@ -25,9 +27,10 @@ public class EMA {
         }
     }
 
-    public void updateEMA(ArrayList<Price> tradingPairPriceFeed){
+    public void updateEMA(ArrayList<Price> tradingPairPriceFeed, boolean startTrading){
         this.tradingPairPriceFeed = tradingPairPriceFeed;
 
+        //Updates the current EMA for each of the currencies
         for(int i = 0; i < tradingPairPriceFeed.size(); i++){
             double currentPrice = tradingPairPriceFeed.get(i).getCurrentPrice();
             double lastEMA = resultsEMA.get(i).getLastEMA();
@@ -36,11 +39,19 @@ public class EMA {
             resultsEMA.get(i).setCurrentEMA(currentEMA);
         }
 
-        updateBuy();
-        updateSell();
+        if(startTrading){
+            if(tradingCooldownCounter <= tradingCooldown){
+                tradingCooldownCounter++;
+            }else{
+                updateBuy();
+                updateSell();
+            }
+        }
     }
 
     public void updateBuy(){
+
+        //Updates the buy status for each of the currencies
         for(int i = 0; i < numberOfCurrency; i++){
 
             double currencyPrice = tradingPairPriceFeed.get(i).getCurrentPrice();
@@ -48,14 +59,18 @@ public class EMA {
 
             if(currencyPrice > (emaPrice * buyThreshold)) {
 
-                if(resultsEMA.get(i).getBought()){ continue; }
+                //if(resultsEMA.get(i).getBought()){ continue; }
 
-                resultsEMA.get(i).setBuy(true);
+                resultsEMA.get(i).setBuy();
+            }else{
+                resultsEMA.get(i).resetTimeHoldBuy();
             }
         }
     }
 
     public void updateSell(){
+
+        //Updates the sell status for each of the currencies
         for(int i = 0; i < numberOfCurrency; i++){
 
             double currencyPrice = tradingPairPriceFeed.get(i).getCurrentPrice();
@@ -63,11 +78,21 @@ public class EMA {
 
             if(currencyPrice < emaPrice) {
 
-                if(!resultsEMA.get(i).getBought()){ continue; }
+                //if(!resultsEMA.get(i).getBought()){ continue; }
 
-                resultsEMA.get(i).setSell(true);
+                resultsEMA.get(i).setSell();
+            }else{
+                resultsEMA.get(i).resetTimeHoldSell();
             }
         }
+    }
+
+    public void setBuyThreshold(double value){
+        buyThreshold = value;
+    }
+
+    public void setTradingCooldown(int value){
+        tradingCooldown = value;
     }
 
     public ArrayList<ResultsEMA> getEMA(){

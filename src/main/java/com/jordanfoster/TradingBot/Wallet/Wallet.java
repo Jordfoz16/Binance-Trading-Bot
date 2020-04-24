@@ -26,8 +26,6 @@ public class Wallet extends Thread{
 
     public void run(){
 
-        new Log("Loading Wallet");
-
         long lastTime = System.currentTimeMillis();
 
         while(true){

@@ -54,10 +54,18 @@
             <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <CheckBox fx:id="cbEnableEMA" layoutX="25.0" layoutY="22.0" mnemonicParsing="false" text="Enable EMA" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
+                        <CheckBox fx:id="cbEnableEMA" disable="true" layoutX="25.0" layoutY="22.0" mnemonicParsing="false" selected="true" text="Enable EMA" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
                         <Label layoutX="14.0" layoutY="65.0" text="Buy Threshold" />
-                        <TextField fx:id="txtThreshold" alignment="CENTER_RIGHT" layoutX="123.0" layoutY="60.0" text="1.0015" />
-                        <Button fx:id="btnApplyEMA" layoutX="537.0" layoutY="9.0" mnemonicParsing="false" text="Apply" />
+                        <TextField fx:id="txtThreshold" alignment="CENTER_RIGHT" layoutX="123.0" layoutY="60.0" text="1.00" />
+                        <Button fx:id="btnApplyEMA" layoutX="537.0" layoutY="9.0" mnemonicParsing="false" onAction="#updateSettingEMA" text="Apply" />
+                        <Label layoutX="14.0" layoutY="138.0" text="Buy Time Hold" />
+                        <Label layoutX="14.0" layoutY="187.0" text="Sell Time Hold" />
+                        <TextField fx:id="txtTimeHoldBuy" layoutX="123.0" layoutY="133.0" promptText="In polling interval" text="5" />
+                        <TextField fx:id="txtTimeHoldSell" layoutX="123.0" layoutY="182.0" promptText="In polling interval" text="0" />
+                        <Separator layoutX="42.0" layoutY="108.0" prefWidth="200.0" />
+                        <Separator layoutX="42.0" layoutY="242.0" prefWidth="200.0" />
+                        <Label layoutX="14.0" layoutY="268.0" text="Cool Down Period" />
+                        <TextField fx:id="txtCooldown" layoutX="123.0" layoutY="263.0" promptText="In polling interval" text="30" />
                      </children></AnchorPane>
             </content>
         </Tab>

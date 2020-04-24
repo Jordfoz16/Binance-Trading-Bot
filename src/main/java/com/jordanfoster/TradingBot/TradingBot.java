@@ -62,7 +62,7 @@ public class TradingBot extends Thread{
 
     public void update(){
         priceFeed.update();
-        ema.updateEMA(priceFeed.getTradingPairs());
+        ema.updateEMA(priceFeed.getTradingPairs(), isTrading);
         BinanceTradingBot.mainController.updatePriceFeed(priceFeed.getTradingPairs());
         BinanceTradingBot.mainController.updateIndicator(ema.getEMA());
         BinanceTradingBot.mainController.updateTableView(boughtCurrencyArrayList);
@@ -80,6 +80,8 @@ public class TradingBot extends Thread{
     }
 
     public void buy(){
+
+        System.out.println(ema.getEMA().get(0).timeHoldBuyCounter);
 
         for(int i = 0; i < priceFeed.getTradingPairs().size(); i++){
             if(ema.getEMA().get(i).getBuy()){
@@ -103,23 +105,28 @@ public class TradingBot extends Thread{
 
                 //SEND SELL CALL
 
-                double boughtPrice = ema.getEMA().get(i).getBoughtPrice();
-                double soldPrice = priceFeed.getTradingPairs().get(i).getCurrentPrice();
-                double profit = soldPrice - boughtPrice;
+                ema.getEMA().get(i).setBought(false);
 
                 String symbol = priceFeed.getTradingPairs().get(i).getSymbol();
-
-                totalProfit += profit;
-
-                ema.getEMA().get(i).setBought(false);
 
                 for(int j = 0; j < boughtCurrencyArrayList.size(); j++){
                     if(boughtCurrencyArrayList.get(j).getSymbol().equals(symbol)){
                         boughtCurrencyArrayList.remove(j);
                     }
                 }
+
+                double boughtPrice = ema.getEMA().get(i).getBoughtPrice();
+                double soldPrice = priceFeed.getTradingPairs().get(i).getCurrentPrice();
+                double profit = soldPrice - boughtPrice;
+
+                totalProfit += profit;
+
                 new Log("Sold - " + symbol + ", Price -  " + String.format("%.4f",soldPrice));
             }
         }
+    }
+
+    public EMA getEMA(){
+        return ema;
     }
 }
