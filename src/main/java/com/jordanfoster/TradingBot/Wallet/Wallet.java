@@ -67,7 +67,6 @@ public class Wallet extends Thread{
             }
 
             BinanceTradingBot.mainController.updateAvailableBalance(printBalance());
-            new Log("Wallet Updated");
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();

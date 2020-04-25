@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 public class EMA {
 
-    private double N = 360;
-    private double K = 2 / (N + 1);
+    private double N = 360.0;
+    private double K = 2.0 / (N + 1.0);
 
     //private double buyThreshold = 1.0015;
     private double buyThreshold = 1.000;
