@@ -47,9 +47,10 @@ public class BinanceTradingBot extends Application {
 
         readBinanceKeys();
 
-
         tradingBot = new TradingBot();
         tradingBot.start();
+
+        readEMAConfig();
     }
 
     public void readBinanceKeys(){
@@ -77,6 +78,50 @@ public class BinanceTradingBot extends Application {
         apiKey = apiFile.get("apikey").toString();
         secretKey = apiFile.get("secretkey").toString();
         mainController.setAccountPage(apiKey, secretKey);
+    }
+
+    public void readEMAConfig(){
+        String path = "ema.txt";
+        JSONHandler jsonHandler = new JSONHandler();
+
+        JSONObject settingsFile;
+
+        if(fileManagement.fileExists(path)){
+            settingsFile = jsonHandler.parseJSON(fileManagement.read(path)).get(0);
+
+        }else{
+
+            //Creates the file if it doesnt exists
+            String content = "{\n" +
+                    "\t\"N-value\": \"360\",\n" +
+                    "\t\"Buy-Threshold\": \"1.0\",\n" +
+                    "\t\"Buy-HoldTime\": \"5\",\n" +
+                    "\t\"Sell-HoldTime\": \"0\",\n" +
+                    "\t\"CooldownTime\": \"30\"\n" +
+                    "}";
+
+            fileManagement.write(path, content);
+
+            settingsFile = jsonHandler.parseJSON(fileManagement.read(path)).get(0);
+        }
+
+        String threshold = settingsFile.get("Buy-Threshold").toString();
+        String timeHoldBuy = settingsFile.get("Buy-HoldTime").toString();
+        String timeHoldSell = settingsFile.get("Sell-HoldTime").toString();
+        String cooldown = settingsFile.get("CooldownTime").toString();
+        String nValue = settingsFile.get("N-value").toString();
+
+
+        BinanceTradingBot.tradingBot.getEMA().setN(Double.parseDouble(settingsFile.get("N-value").toString()));
+        BinanceTradingBot.tradingBot.getEMA().setBuyThreshold(Double.parseDouble(settingsFile.get("Buy-Threshold").toString()));
+
+        for(int i = 0; i < BinanceTradingBot.tradingBot.getEMA().getEMA().size(); i++){
+            BinanceTradingBot.tradingBot.getEMA().getEMA().get(i).setTimeHoldBuy(Integer.parseInt(settingsFile.get("Buy-HoldTime").toString()));
+            BinanceTradingBot.tradingBot.getEMA().getEMA().get(i).setTimeHoldSell(Integer.parseInt(settingsFile.get("Sell-HoldTime").toString()));
+            BinanceTradingBot.tradingBot.getEMA().getEMA().get(i).setTradingCooldown(Integer.parseInt(settingsFile.get("CooldownTime").toString()));
+        }
+
+        BinanceTradingBot.mainController.setEMAPage(threshold, timeHoldBuy, timeHoldSell, cooldown, nValue);
     }
 
     public static void main(String[] args){

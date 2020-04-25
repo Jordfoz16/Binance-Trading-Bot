@@ -29,15 +29,13 @@ public class EMA {
         }
 
         //Updates the current EMA for each of the currencies
-        for(int i = 0; i < numberOfCurrency; i++){
+        for(int i = 0; i < tradingPairPriceFeed.size(); i++){
             double currentPrice = tradingPairPriceFeed.get(i).getCurrentPrice();
             double lastEMA = resultsEMA.get(i).getPrevEMA();
 
             double currentEMA = currentPrice * K + lastEMA * (1 - K);
             resultsEMA.get(i).setCurrentEMA(currentEMA);
         }
-
-        System.out.println("Bitcoin Cooldown: " + resultsEMA.get(0).tradingCooldownCounter);
 
         if(startTrading){
             updateBuy();

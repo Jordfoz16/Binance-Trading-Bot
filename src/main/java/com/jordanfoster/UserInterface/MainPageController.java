@@ -23,6 +23,7 @@ public class MainPageController {
 
     //Main Page
     @FXML private TextField txtProfit;
+    @FXML private TextField txtPollingRate;
     @FXML private ComboBox<String> cmbSymbol;
     @FXML private TableView tbBoughtTable;
     @FXML private LineChart<Integer, Double> lineChart;
@@ -166,6 +167,19 @@ public class MainPageController {
         });
     }
 
+    public void setEMAPage(String threshold, String timeHoldBuy, String timeHoldSell, String cooldown, String nValue){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                txtThreshold.setText(threshold);
+                txtTimeHoldBuy.setText(timeHoldBuy);
+                txtTimeHoldSell.setText(timeHoldSell);
+                txtCooldown.setText(cooldown);
+                txtNValue.setText(nValue);
+            }
+        });
+    }
+
     public void saveAccountPage(){
         String content = "{\n" +
                 "\t\"apikey\": \"" + txtAPIKey.getText() + "\",\n" +
@@ -176,6 +190,34 @@ public class MainPageController {
         BinanceTradingBot.secretKey = txtSecret.getText();
 
         new Log().logWarning("API Keys Changed");
+    }
+
+    public void saveConfigEMA(){
+        double threshold = Double.parseDouble(txtThreshold.getText());
+        int timeHoldBuy = Integer.parseInt(txtTimeHoldBuy.getText());
+        int timeHoldSell = Integer.parseInt(txtTimeHoldSell.getText());
+        int cooldown = Integer.parseInt(txtCooldown.getText());
+        double nValue = Double.parseDouble(txtNValue.getText());
+
+        String content = "{\n" +
+                "\t\"N-value\": \""+ txtNValue.getText() +"\",\n" +
+                "\t\"Buy-Threshold\": \"" + txtThreshold.getText() + "\",\n" +
+                "\t\"Buy-HoldTime\": \"" + txtTimeHoldBuy.getText() + "\",\n" +
+                "\t\"Sell-HoldTime\": \"" + txtTimeHoldSell.getText() + "\",\n" +
+                "\t\"CooldownTime\": \"" + txtCooldown.getText() + "\"\n" +
+                "}";
+
+        BinanceTradingBot.fileManagement.write("ema.txt", content);
+        BinanceTradingBot.tradingBot.getEMA().setN(nValue);
+        BinanceTradingBot.tradingBot.getEMA().setBuyThreshold(threshold);
+
+        for(int i = 0; i < BinanceTradingBot.tradingBot.getEMA().getEMA().size(); i++){
+            BinanceTradingBot.tradingBot.getEMA().getEMA().get(i).setTimeHoldBuy(timeHoldBuy);
+            BinanceTradingBot.tradingBot.getEMA().getEMA().get(i).setTimeHoldSell(timeHoldSell);
+            BinanceTradingBot.tradingBot.getEMA().getEMA().get(i).setTradingCooldown(cooldown);
+        }
+
+        new Log().logWarning("EMA Config Changed");
     }
 
     public void initComboBox(){
@@ -210,21 +252,8 @@ public class MainPageController {
 
     }
 
-    @FXML protected void updateSettingEMA(ActionEvent event){
-        double threshold = Double.parseDouble(txtThreshold.getText());
-        int timeHoldBuy = Integer.parseInt(txtTimeHoldBuy.getText());
-        int timeHoldSell = Integer.parseInt(txtTimeHoldSell.getText());
-        int cooldown = Integer.parseInt(txtCooldown.getText());
-        double nValue = Double.parseDouble(txtNValue.getText());
-
-        BinanceTradingBot.tradingBot.getEMA().setN(nValue);
-        BinanceTradingBot.tradingBot.getEMA().setBuyThreshold(threshold);
-
-        for(int i = 0; i < BinanceTradingBot.tradingBot.getEMA().getEMA().size(); i++){
-            BinanceTradingBot.tradingBot.getEMA().getEMA().get(i).setTimeHoldBuy(timeHoldBuy);
-            BinanceTradingBot.tradingBot.getEMA().getEMA().get(i).setTimeHoldSell(timeHoldSell);
-            BinanceTradingBot.tradingBot.getEMA().getEMA().get(i).setTradingCooldown(cooldown);
-        }
+    @FXML protected void handleMainApply(ActionEvent event){
+        BinanceTradingBot.tradingBot.setPollingRate(Integer.parseInt(txtPollingRate.getText()));
     }
 
     @FXML protected void handleStartButton(ActionEvent event){

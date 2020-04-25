@@ -125,9 +125,17 @@ public class TradingBot extends Thread{
 
                 totalProfit += profit;
 
-                new Log("Sold - " + symbol + ", Price -  " + String.format("%.4f",soldPrice));
+                new Log("\tSold - " + symbol + ", Price -  " + String.format("%.4f",soldPrice));
             }
         }
+    }
+
+    public void setPollingRate(int pollingRate){
+        this.pollingRate = pollingRate;
+    }
+
+    public int getPollingRate(){
+        return pollingRate;
     }
 
     public EMA getEMA(){

@@ -21,7 +21,7 @@
                           </yAxis>
                         </LineChart>
                         <Label layoutX="18.0" layoutY="19.0" text="Polling Rate" AnchorPane.leftAnchor="18.0" AnchorPane.topAnchor="19.0" />
-                        <TextField fx:id="txtPollingRate" alignment="CENTER_RIGHT" layoutX="120.0" layoutY="14.0" promptText="In Milliseconds" text="10000" AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="14.0" />
+                        <TextField fx:id="txtPollingRate" alignment="CENTER_RIGHT" layoutX="120.0" layoutY="14.0" promptText="In Milliseconds" text="1000" AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="14.0" />
                         <TableView fx:id="tbBoughtTable" editable="true" layoutX="363.0" layoutY="12.0" prefHeight="244.0" prefWidth="223.0">
 
                         </TableView>
@@ -32,7 +32,7 @@
                         <Button fx:id="btnStart" layoutX="185.0" layoutY="220.0" mnemonicParsing="false" onAction="#handleStartButton" prefHeight="27.0" prefWidth="67.0" text="Start" AnchorPane.leftAnchor="185.0" AnchorPane.rightAnchor="348.0" />
                         <Button fx:id="btnStop" layoutX="274.0" layoutY="220.0" mnemonicParsing="false" onAction="#handleStopButton" prefHeight="27.0" prefWidth="67.0" text="Stop" AnchorPane.leftAnchor="274.0" AnchorPane.rightAnchor="259.0" />
                         <ComboBox fx:id="cmbSymbol" layoutX="18.0" layoutY="220.0" onAction="#handleComboBox" prefWidth="150.0" promptText="BTCUSDT" visibleRowCount="15" AnchorPane.leftAnchor="18.0" AnchorPane.topAnchor="220.0" />
-                        <Button fx:id="btnApplyMain" layoutX="293.0" layoutY="14.0" mnemonicParsing="false" text="Apply" />
+                        <Button fx:id="btnApplyMain" layoutX="293.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleMainApply" text="Apply" />
                         <Label layoutX="18.0" layoutY="189.0" text="Trading Status:" />
                         <Label fx:id="lblStatus" layoutX="120.0" layoutY="189.0" text="Not Running" />
                      </children></AnchorPane>
@@ -59,7 +59,7 @@
                         <CheckBox fx:id="cbEnableEMA" disable="true" layoutX="25.0" layoutY="22.0" mnemonicParsing="false" selected="true" text="Enable EMA" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
                         <Label layoutX="14.0" layoutY="65.0" text="Buy Threshold" />
                         <TextField fx:id="txtThreshold" alignment="CENTER_RIGHT" layoutX="123.0" layoutY="60.0" text="1.00" />
-                        <Button fx:id="btnApplyEMA" layoutX="537.0" layoutY="9.0" mnemonicParsing="false" onAction="#updateSettingEMA" text="Apply" />
+                        <Button fx:id="btnApplyEMA" layoutX="537.0" layoutY="9.0" mnemonicParsing="false" onAction="#saveConfigEMA" text="Apply" />
                         <Label layoutX="14.0" layoutY="138.0" text="Buy Time Hold" />
                         <Label layoutX="14.0" layoutY="187.0" text="Sell Time Hold" />
                         <TextField fx:id="txtTimeHoldBuy" layoutX="123.0" layoutY="133.0" promptText="In polling interval" text="5" />
