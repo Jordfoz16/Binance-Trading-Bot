@@ -22,6 +22,9 @@ public class BinanceTradingBot extends Application {
     public static TradingBot tradingBot;
     public static FileManagement fileManagement;
 
+    public static String apiKey;
+    public static String secretKey;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/MainPage.fxml"));
@@ -42,25 +45,25 @@ public class BinanceTradingBot extends Application {
 
         fileManagement = new FileManagement();
 
-        JSONObject apiFile = readBinanceKeys();
+        readBinanceKeys();
 
-        String apiKey = apiFile.get("apikey").toString();
-        String secretKey = apiFile.get("secretkey").toString();
-        mainController.setAccountPage(apiKey, secretKey);
 
-        tradingBot = new TradingBot(apiKey, secretKey);
+        tradingBot = new TradingBot();
         tradingBot.start();
     }
 
-    public JSONObject readBinanceKeys(){
+    public void readBinanceKeys(){
         String path = "apikey.txt";
         JSONHandler jsonHandler = new JSONHandler();
 
+        JSONObject apiFile;
+
         if(fileManagement.fileExists(path)){
-            return jsonHandler.parseJSON(fileManagement.read(path)).get(0);
+            apiFile = jsonHandler.parseJSON(fileManagement.read(path)).get(0);
 
         }else{
 
+            //Creates the file if it doesnt exists
             String content = "{\n" +
                     "\t\"apikey\": \"Enter your API key from binance\",\n" +
                     "\t\"secretkey\": \"Enter your Secret Key from binance\"\n" +
@@ -68,8 +71,12 @@ public class BinanceTradingBot extends Application {
 
             fileManagement.write(path, content);
 
-            return jsonHandler.parseJSON(fileManagement.read(path)).get(0);
+            apiFile = jsonHandler.parseJSON(fileManagement.read(path)).get(0);
         }
+
+        apiKey = apiFile.get("apikey").toString();
+        secretKey = apiFile.get("secretkey").toString();
+        mainController.setAccountPage(apiKey, secretKey);
     }
 
     public static void main(String[] args){

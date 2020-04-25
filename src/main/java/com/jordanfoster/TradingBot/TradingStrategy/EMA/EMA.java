@@ -11,41 +11,37 @@ public class EMA {
 
     //private double buyThreshold = 1.0015;
     private double buyThreshold = 1.000;
-    private int tradingCooldown = 30;
-    private int tradingCooldownCounter = 0;
 
     private int numberOfCurrency = 1;
 
     private ArrayList<ResultsEMA> resultsEMA = new ArrayList<ResultsEMA>();
     private ArrayList<Price> tradingPairPriceFeed = new ArrayList<Price>();
 
-    public EMA(ArrayList<Price> prices){
-        for(int i = 0; i < prices.size(); i++){
-            resultsEMA.add(new ResultsEMA());
-            double firstPrice = prices.get(i).getPriceList().get(0);
-            resultsEMA.get(i).setLastEMA(firstPrice);
-        }
-    }
-
     public void updateEMA(ArrayList<Price> tradingPairPriceFeed, boolean startTrading){
         this.tradingPairPriceFeed = tradingPairPriceFeed;
 
+        if(resultsEMA.size() == 0){
+            for(int i = 0; i < tradingPairPriceFeed.size(); i++) {
+                resultsEMA.add(new ResultsEMA());
+                double firstPrice = tradingPairPriceFeed.get(i).getPriceHistory().get(0);
+                resultsEMA.get(i).setCurrentEMA(firstPrice);
+            }
+        }
+
         //Updates the current EMA for each of the currencies
-        for(int i = 0; i < tradingPairPriceFeed.size(); i++){
+        for(int i = 0; i < numberOfCurrency; i++){
             double currentPrice = tradingPairPriceFeed.get(i).getCurrentPrice();
-            double lastEMA = resultsEMA.get(i).getLastEMA();
+            double lastEMA = resultsEMA.get(i).getPrevEMA();
 
             double currentEMA = currentPrice * K + lastEMA * (1 - K);
             resultsEMA.get(i).setCurrentEMA(currentEMA);
         }
 
+        System.out.println("Bitcoin Cooldown: " + resultsEMA.get(0).tradingCooldownCounter);
+
         if(startTrading){
-            if(tradingCooldownCounter <= tradingCooldown){
-                tradingCooldownCounter++;
-            }else{
-                updateBuy();
-                updateSell();
-            }
+            updateBuy();
+            updateSell();
         }
     }
 
@@ -91,8 +87,9 @@ public class EMA {
         buyThreshold = value;
     }
 
-    public void setTradingCooldown(int value){
-        tradingCooldown = value;
+    public void setN(double value){
+        N = value;
+        K = 2.0 / (N + 1.0);
     }
 
     public ArrayList<ResultsEMA> getEMA(){

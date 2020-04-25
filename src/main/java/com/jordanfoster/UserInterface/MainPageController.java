@@ -6,6 +6,7 @@ import com.jordanfoster.TradingBot.TradingBot;
 import com.jordanfoster.TradingBot.TradingStrategy.EMA.ResultsEMA;
 import com.jordanfoster.TradingBot.BoughtCurrency;
 import com.jordanfoster.UserInterface.Logging.LineChartData;
+import com.jordanfoster.UserInterface.Logging.Log;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -38,6 +39,7 @@ public class MainPageController {
     @FXML private TextField txtTimeHoldBuy;
     @FXML private TextField txtTimeHoldSell;
     @FXML private TextField txtCooldown;
+    @FXML private TextField txtNValue;
 
     //Account
     @FXML private TextField txtAPIKey;
@@ -45,10 +47,6 @@ public class MainPageController {
 
     //Log
     @FXML private TextArea txtLog;
-
-
-
-
 
     private boolean init = false;
 
@@ -96,7 +94,7 @@ public class MainPageController {
     public void updateIndicator(ArrayList<ResultsEMA> indicatorValue){
 
         if(lineChartData != null){
-            lineChartData.updateLineChartIndicator(indicatorValue.get(lineChartData.getSelectedIndex()).getCurrentEMA());
+            lineChartData.updateLineChartIndicator(indicatorValue);
         }
     }
 
@@ -108,6 +106,7 @@ public class MainPageController {
 
                 if(newSeries.getData().size() > 30){
                     xAxis.setUpperBound(newSeries.getData().size());
+                    xAxis.setTickUnit(10);
                     //xAxis.autosize();
                 }
 
@@ -173,6 +172,10 @@ public class MainPageController {
                 "\t\"secretkey\": \"" + txtSecret.getText() + "\"\n" +
                 "}";
         BinanceTradingBot.fileManagement.write("apikey.txt", content);
+        BinanceTradingBot.apiKey = txtAPIKey.getText();
+        BinanceTradingBot.secretKey = txtSecret.getText();
+
+        new Log().logWarning("API Keys Changed");
     }
 
     public void initComboBox(){
@@ -202,7 +205,7 @@ public class MainPageController {
         yAxis.autosize();
         xAxis.setLowerBound(0);
         xAxis.setUpperBound(30);
-        xAxis.setTickUnit(1);
+        xAxis.setTickUnit(10);
         yAxis.setForceZeroInRange(false);
 
     }
@@ -212,13 +215,15 @@ public class MainPageController {
         int timeHoldBuy = Integer.parseInt(txtTimeHoldBuy.getText());
         int timeHoldSell = Integer.parseInt(txtTimeHoldSell.getText());
         int cooldown = Integer.parseInt(txtCooldown.getText());
+        double nValue = Double.parseDouble(txtNValue.getText());
 
+        BinanceTradingBot.tradingBot.getEMA().setN(nValue);
         BinanceTradingBot.tradingBot.getEMA().setBuyThreshold(threshold);
-        BinanceTradingBot.tradingBot.getEMA().setTradingCooldown(cooldown);
 
         for(int i = 0; i < BinanceTradingBot.tradingBot.getEMA().getEMA().size(); i++){
             BinanceTradingBot.tradingBot.getEMA().getEMA().get(i).setTimeHoldBuy(timeHoldBuy);
             BinanceTradingBot.tradingBot.getEMA().getEMA().get(i).setTimeHoldSell(timeHoldSell);
+            BinanceTradingBot.tradingBot.getEMA().getEMA().get(i).setTradingCooldown(cooldown);
         }
     }
 

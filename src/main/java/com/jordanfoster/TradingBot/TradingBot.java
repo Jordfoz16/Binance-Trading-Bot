@@ -24,11 +24,11 @@ public class TradingBot extends Thread{
 
     private ArrayList<BoughtCurrency> boughtCurrencyArrayList = new ArrayList<BoughtCurrency>();
 
-    public TradingBot(String apiKey, String secretKey){
+    public TradingBot(){
         super("tradingBotThread");
-        priceFeed = new PriceFeed(apiKey, secretKey);
-        wallet = new Wallet(apiKey, secretKey);
-        ema = new EMA(priceFeed.getTradingPairs());
+        priceFeed = new PriceFeed();
+        wallet = new Wallet();
+        ema = new EMA();
     }
 
     public void startTrading(){
@@ -63,7 +63,10 @@ public class TradingBot extends Thread{
 
     public void update(){
         priceFeed.update();
+
         ema.updateEMA(priceFeed.getTradingPairs(), isTrading);
+
+        //Updating user interface
         BinanceTradingBot.mainController.updatePriceFeed(priceFeed.getTradingPairs());
         BinanceTradingBot.mainController.updateIndicator(ema.getEMA());
         BinanceTradingBot.mainController.updateTableView(boughtCurrencyArrayList);

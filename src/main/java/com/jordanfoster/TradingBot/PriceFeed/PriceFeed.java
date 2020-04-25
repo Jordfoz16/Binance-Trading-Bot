@@ -20,12 +20,10 @@ public class PriceFeed extends Thread{
 
     private boolean init = false;
 
-    public PriceFeed(String apiKey, String secretKey){
+    public PriceFeed(){
         super("priceThread");
-        binanceAPI = new BinanceAPI(apiKey, secretKey);
+        binanceAPI = new BinanceAPI();
         jsonHandler = new JSONHandler();
-
-        update();
     }
 
     public void run(){
@@ -83,30 +81,6 @@ public class PriceFeed extends Thread{
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public ArrayList<Double> getPriceSymbol(String symbol){
-        for(int i = 0; i < tradingPairs.size(); i++){
-            if(tradingPairs.get(i).getSymbol().equals(symbol)){
-                return tradingPairs.get(i).getPriceList();
-            }
-        }
-        return null;
-    }
-
-    public void printPriceFeed(String symbol){
-        ArrayList<Double> prices = getPriceSymbol(symbol);
-
-        System.out.print(symbol + ": ");
-
-        for(int i = 0; i < prices.size(); i++){
-            String price = String.format("%.8f", prices.get(i));
-
-            System.out.print("\t");
-            System.out.print(price);
-        }
-
-        System.out.println();
     }
 
     public ArrayList<Price> getTradingPairs(){

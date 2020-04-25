@@ -20,12 +20,14 @@ public class Wallet extends Thread{
 
     ArrayList<Crypto> availableBalance = new ArrayList<Crypto>();
 
-    public Wallet(String apiKey, String secretKey){
+    public Wallet(){
         super("walletThread");
-        binanceAPI = new BinanceAPI(apiKey, secretKey);
+        binanceAPI = new BinanceAPI();
     }
 
     public void run(){
+
+        update();
 
         long lastTime = System.currentTimeMillis();
 
@@ -48,7 +50,13 @@ public class Wallet extends Thread{
 
             ArrayList<JSONObject> jsonObjects = jsonHandler.parseJSON(result);
 
-            if(jsonObjects == null) return;
+            if(jsonObjects.get(0).get("code") != null){
+                if(jsonObjects.get(0).get("code").toString().equals("-2008")){
+                    new Log().logError("Incorrect API Keys");
+
+                    return;
+                }
+            }
 
             for(int i = 0; i < jsonObjects.size(); i++){
                 JSONObject item = jsonObjects.get(i);
@@ -69,11 +77,8 @@ public class Wallet extends Thread{
             BinanceTradingBot.mainController.updateAvailableBalance(printBalance());
 
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
         } catch (InvalidKeyException e) {
-            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
