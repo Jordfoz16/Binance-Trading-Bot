@@ -3,16 +3,17 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jordanfoster.Userinterface.MainController">
+<AnchorPane prefHeight="650" prefWidth="800" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jordanfoster.Userinterface.MainController">
    <children>
-      <TabPane prefHeight="650.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
-        <tabs>
-            <Tab text="Main" />
-            <Tab text="EMA" />
-            <Tab text="RSI" />
-            <Tab text="Account" />
-            <Tab text="Log" />
-        </tabs>
-      </TabPane>
+      <AnchorPane prefHeight="650.0" prefWidth="800.0">
+         <children>
+            <TabPane prefHeight="650.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Untitled Tab 1" />
+                <Tab text="Untitled Tab 2" />
+              </tabs>
+            </TabPane>
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>
