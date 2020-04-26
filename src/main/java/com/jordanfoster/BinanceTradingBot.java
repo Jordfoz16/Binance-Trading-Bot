@@ -29,7 +29,7 @@ public class BinanceTradingBot extends Application {
     public void start(Stage primaryStage) throws Exception{
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/MainPage.fxml"));
         Parent root = loader.load();
-        primaryStage.setTitle("Binance Trading Bot");
+        primaryStage.setTitle("Binance Trading Bot v1.0");
         primaryStage.setScene(new Scene(root, 600, 500));
         primaryStage.setResizable(false);
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {

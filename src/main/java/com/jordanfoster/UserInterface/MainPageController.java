@@ -128,11 +128,11 @@ public class MainPageController {
                     lineChart.getData().add(newSeries);
                 }
 
-//                for(int i = 0; i < lineChart.getData().size(); i++){
-//                    if(lineChart.getData().get(i).getName().equals(newSeries.getName())){
-//                        lineChart.getData().get(i).setData(newSeries.getData());
-//                    }
-//                }
+                for(int i = 0; i < lineChart.getData().size(); i++){
+                    if(lineChart.getData().get(i).getName().equals(newSeries.getName())){
+                        lineChart.getData().get(i).setData(newSeries.getData());
+                    }
+                }
 
                 yAxis.autosize();
                 yAxis.setForceZeroInRange(false);
