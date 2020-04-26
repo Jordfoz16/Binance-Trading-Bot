@@ -24,7 +24,7 @@ public class BinanceTradingBot extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/MainInterface.fxml"));
         Parent root = loader.load();
         primaryStage.setTitle("Binance Trading Bot v2.0");
-        primaryStage.setScene(new Scene(root, 800, 650));
+        primaryStage.setScene(new Scene(root, 800, 700));
         primaryStage.setResizable(false);
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
