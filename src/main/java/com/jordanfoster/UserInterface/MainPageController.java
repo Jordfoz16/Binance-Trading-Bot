@@ -8,6 +8,7 @@ import com.jordanfoster.TradingBot.BoughtCurrency;
 import com.jordanfoster.UserInterface.Logging.LineChartData;
 import com.jordanfoster.UserInterface.Logging.Log;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
@@ -18,6 +19,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class MainPageController {
 
@@ -82,21 +84,33 @@ public class MainPageController {
         //tbBoughtTable.getItems().add(new BoughtCurrency("BTCUSDT", 100, 0.1));
     }
 
-    public void updatePriceFeed(ArrayList<Price> priceFeed){
+    synchronized public void updatePriceFeed(ArrayList<Price> priceFeed){
         this.priceFeed = priceFeed;
 
-        initComboBox();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
 
-        if(lineChartData != null){
-            lineChartData.updateLineChartData(priceFeed);
-        }
+                initComboBox();
+
+                if(lineChartData != null){
+                    lineChartData.updateLineChartData(priceFeed);
+                }
+
+            }
+        });
     }
 
-    public void updateIndicator(ArrayList<ResultsEMA> indicatorValue){
+    synchronized public void updateIndicator(ArrayList<ResultsEMA> indicatorValue){
 
-        if(lineChartData != null){
-            lineChartData.updateLineChartIndicator(indicatorValue);
-        }
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                if(lineChartData != null){
+                    lineChartData.updateLineChartIndicator(indicatorValue);
+                }
+            }
+        });
     }
 
     public void addLineChartSeries(XYChart.Series<Integer, Double> newSeries){
@@ -108,18 +122,17 @@ public class MainPageController {
                 if(newSeries.getData().size() > 30){
                     xAxis.setUpperBound(newSeries.getData().size());
                     xAxis.setTickUnit(10);
-                    //xAxis.autosize();
                 }
 
                 if(lineChart.getData().size() < 2){
                     lineChart.getData().add(newSeries);
                 }
 
-                for(int i = 0; i < lineChart.getData().size(); i++){
-                    if(lineChart.getData().get(i).getName().equals(newSeries.getName())){
-                        lineChart.getData().get(i).setData(newSeries.getData());
-                    }
-                }
+//                for(int i = 0; i < lineChart.getData().size(); i++){
+//                    if(lineChart.getData().get(i).getName().equals(newSeries.getName())){
+//                        lineChart.getData().get(i).setData(newSeries.getData());
+//                    }
+//                }
 
                 yAxis.autosize();
                 yAxis.setForceZeroInRange(false);
@@ -128,20 +141,31 @@ public class MainPageController {
     }
 
     public void updateTableView(ArrayList<BoughtCurrency> boughtCurrenciesList){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                tbBoughtTable.getItems().clear();
 
-        tbBoughtTable.getItems().clear();
+                for(int i = 0; i < boughtCurrenciesList.size(); i++){
+                    String symbol = boughtCurrenciesList.get(i).getSymbol();
+                    double price = boughtCurrenciesList.get(i).getPrice();
+                    double amount = boughtCurrenciesList.get(i).getAmount();
+                    tbBoughtTable.getItems().add(new BoughtCurrency(symbol, price, amount));
+                }
+            }
+        });
 
-        for(int i = 0; i < boughtCurrenciesList.size(); i++){
-            String symbol = boughtCurrenciesList.get(i).getSymbol();
-            double price = boughtCurrenciesList.get(i).getPrice();
-            double amount = boughtCurrenciesList.get(i).getAmount();
-            tbBoughtTable.getItems().add(new BoughtCurrency(symbol, price, amount));
-        }
     }
 
     public void setProfit(double profit){
-        String formattedProfit = String.format("%.4f", profit);
-        txtProfit.setText(formattedProfit);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                String formattedProfit = String.format("%.4f", profit);
+                txtProfit.setText(formattedProfit);
+            }
+        });
+
     }
 
     public void setStatus(boolean running){
