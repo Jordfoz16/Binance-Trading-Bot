@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="650" prefWidth="800" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jordanfoster.Userinterface.MainController">
+   <children>
+      <TabPane prefHeight="650.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+              <Tab text="Main">
+                <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <LineChart layoutX="14.0" layoutY="454.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="125.0" prefWidth="769.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0">
+                          <xAxis>
+                            <CategoryAxis side="BOTTOM" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis side="LEFT" />
+                          </yAxis>
+                        </LineChart>
+                        <Separator layoutX="50.0" layoutY="480.0" prefHeight="5.0" prefWidth="702.0" AnchorPane.bottomAnchor="136.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+                        <LineChart layoutX="14.0" layoutY="293.0" prefHeight="180.0" prefWidth="764.0" AnchorPane.bottomAnchor="148.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0">
+                          <xAxis>
+                            <CategoryAxis side="BOTTOM" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis side="LEFT" />
+                          </yAxis>
+                        </LineChart>
+                     </children></AnchorPane>
+                </content>
+              </Tab>
+              <Tab text="EMA">
+                <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="161.0" layoutY="33.0" text="EMA Values">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="69.0" layoutY="74.0" text="N Value:" AnchorPane.leftAnchor="69.0" />
+                        <TextField layoutX="131.0" layoutY="70.0" />
+                        <Separator layoutX="394.0" layoutY="14.0" orientation="VERTICAL" prefHeight="200.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="400.0" AnchorPane.rightAnchor="400.0" AnchorPane.topAnchor="14.0" />
+                        <Separator layoutX="98.0" layoutY="136.0" prefWidth="200.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="420.0" />
+                        <Label layoutX="143.0" layoutY="163.0" text="Time Hold Values">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="34.0" layoutY="211.0" text="Buy Hold Time:" />
+                        <Label layoutX="35.0" layoutY="250.0" text="Sell Hold Time:" />
+                        <TextField layoutX="131.0" layoutY="207.0" />
+                        <TextField layoutX="131.0" layoutY="246.0" />
+                        <Separator layoutX="98.0" layoutY="309.0" prefWidth="200.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="420.0" />
+                        <Label layoutX="149.0" layoutY="334.0" text="Cool down Time">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="25.0" layoutY="384.0" text="Cool down Time:" />
+                        <TextField layoutX="131.0" layoutY="380.0" />
+                     </children></AnchorPane>
+                </content>
+              </Tab>
+            <Tab text="RSI">
+                <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                </content>
+            </Tab>
+            <Tab text="Order Book">
+                <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView layoutX="14.0" layoutY="49.0" prefHeight="556.0" prefWidth="773.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0">
+                          <columns>
+                            <TableColumn minWidth="100.0" prefWidth="100.0" resizable="false" text="Symbol" />
+                            <TableColumn prefWidth="125.0" resizable="false" text="Bought Time" />
+                              <TableColumn prefWidth="125.0" resizable="false" text="Sold Time" />
+                              <TableColumn prefWidth="100.0" resizable="false" text="Bought Price" />
+                              <TableColumn prefWidth="100.0" resizable="false" text="Sold Price" />
+                              <TableColumn prefWidth="100.0" resizable="false" text="Quantity" />
+                              <TableColumn prefWidth="120.0" resizable="false" text="Profit/Loss" />
+                          </columns>
+                        </TableView>
+                        <Label layoutX="14.0" layoutY="21.0" text="Number of trades:" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="21.0" />
+                        <TextField editable="false" layoutX="120.0" layoutY="17.0" AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="17.0" />
+                     </children></AnchorPane>
+                </content>
+            </Tab>
+            <Tab text="Account">
+                <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="26.0" text="API Key:" AnchorPane.leftAnchor="14.0" />
+                        <TextField layoutX="100.0" layoutY="22.0" prefHeight="25.0" prefWidth="685.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="14.0" />
+                        <Label layoutX="14.0" layoutY="72.0" text="Secret Key:" AnchorPane.leftAnchor="14.0" />
+                        <TextField layoutX="100.0" layoutY="68.0" prefHeight="25.0" prefWidth="682.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="14.0" />
+                        <Button layoutX="377.0" layoutY="107.0" mnemonicParsing="false" text="Apply" />
+                        <Separator layoutX="301.0" layoutY="141.0" prefWidth="200.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+                        <Separator layoutX="397.0" layoutY="160.0" orientation="VERTICAL" prefHeight="170.0" />
+                        <Separator layoutX="297.0" layoutY="377.0" prefWidth="200.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="350.0" />
+                        <Label layoutX="160.0" layoutY="156.0" text="Network Test">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="98.0" layoutY="225.0" text="Wallet Connection:" textAlignment="RIGHT" AnchorPane.leftAnchor="98.0" AnchorPane.topAnchor="225.0" />
+                        <Label layoutX="90.0" layoutY="190.0" text="Binance Connection:" textAlignment="RIGHT" AnchorPane.leftAnchor="90.0" AnchorPane.topAnchor="190.0" />
+                        <Label layoutX="105.0" layoutY="260.0" text="Price Connection:" AnchorPane.leftAnchor="105.0" AnchorPane.topAnchor="260.0" />
+                        <Label layoutX="209.0" layoutY="190.0" text="Not Connected" />
+                        <Label layoutX="209.0" layoutY="225.0" text="Not Connected" />
+                        <Label layoutX="209.0" layoutY="260.0" text="Not Connected" />
+                        <Button layoutX="178.0" layoutY="303.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="47.0" text="Test" />
+                     </children></AnchorPane>
+                </content>
+            </Tab>
+            <Tab text="Log">
+                <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>
