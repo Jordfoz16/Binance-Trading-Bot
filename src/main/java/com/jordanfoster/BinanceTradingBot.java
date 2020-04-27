@@ -1,6 +1,7 @@
 package com.jordanfoster;
 
 
+import com.jordanfoster.FileManagement.FileConfig;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -15,7 +16,10 @@ public class BinanceTradingBot extends Application {
     public static String apiKey = "";
     public static String secretKey = "";
 
+    public static FileConfig fileConfig;
+
     public static void main(String[] args){
+        fileConfig = new FileConfig();
         launch(args);
     }
 
