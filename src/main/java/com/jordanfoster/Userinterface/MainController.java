@@ -44,7 +44,8 @@ public class MainController {
     @FXML private Button btnSaveEMA;
 
     //RSI Tab
-
+    @FXML private TextField txtUpperRSI;
+    @FXML private TextField txtLowerRSI;
 
     //Order Book Tab
     @FXML private TextField txtTrades;
@@ -76,6 +77,8 @@ public class MainController {
         txtCalibrationTime.setText(BinanceTradingBot.fileConfig.getElement("ema","calibration-time"));
 
         //RSI Tab
+        txtUpperRSI.setText(BinanceTradingBot.fileConfig.getElement("rsi", "upper-bound"));
+        txtLowerRSI.setText(BinanceTradingBot.fileConfig.getElement("rsi", "lower-bound"));
 
         //Account Tab
         txtAPI.setText(BinanceTradingBot.fileConfig.getElement("account","api-key"));
@@ -101,6 +104,11 @@ public class MainController {
     /*
     RSI Tab
      */
+
+    @FXML protected void rsiSave(){
+        BinanceTradingBot.fileConfig.editElement("rsi", "upper-bound", Integer.parseInt(txtUpperRSI.getText()));
+        BinanceTradingBot.fileConfig.editElement("rsi", "lower-bound", Integer.parseInt(txtLowerRSI.getText()));
+    }
 
     /*
     Order Book Tab
