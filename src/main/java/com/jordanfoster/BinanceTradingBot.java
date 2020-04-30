@@ -2,6 +2,8 @@ package com.jordanfoster;
 
 
 import com.jordanfoster.FileManagement.FileConfig;
+import com.jordanfoster.FileManagement.FileTradingPairs;
+import com.jordanfoster.TradingBot.PriceFeed.PriceFeed;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -17,9 +19,15 @@ public class BinanceTradingBot extends Application {
     public static String secretKey = "";
 
     public static FileConfig fileConfig;
+    public static FileTradingPairs fileTradingPairs;
+
+    public static PriceFeed priceFeed;
 
     public static void main(String[] args){
         fileConfig = new FileConfig();
+        fileTradingPairs = new FileTradingPairs();
+        priceFeed = new PriceFeed();
+        
         launch(args);
     }
 
