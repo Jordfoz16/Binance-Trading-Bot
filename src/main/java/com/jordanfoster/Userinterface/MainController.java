@@ -1,6 +1,7 @@
 package com.jordanfoster.Userinterface;
 
 import com.jordanfoster.BinanceTradingBot;
+import com.jordanfoster.TradingBot.TradingBot;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.*;
@@ -62,6 +63,9 @@ public class MainController {
     @FXML private Label lblPriceConnection;
     @FXML private Button btnNetworkTest;
 
+    //Account Tab - Config
+    @FXML private TextField txtPriceFeedSize;
+
     //Log Tab
     @FXML private TextArea txtLog;
 
@@ -71,19 +75,19 @@ public class MainController {
 
     private void initConfigValues(){
         //EMA Tab
-        txtNValue.setText(BinanceTradingBot.fileConfig.getElement("ema","n-value"));
-        txtBuyWaitTime.setText(BinanceTradingBot.fileConfig.getElement("ema","buy-wait"));
-        txtSellWaitTime.setText(BinanceTradingBot.fileConfig.getElement("ema","sell-wait"));
-        txtCalibrationTime.setText(BinanceTradingBot.fileConfig.getElement("ema","calibration-time"));
+        txtNValue.setText(TradingBot.fileConfig.getElement("ema","n-value"));
+        txtBuyWaitTime.setText(TradingBot.fileConfig.getElement("ema","buy-wait"));
+        txtSellWaitTime.setText(TradingBot.fileConfig.getElement("ema","sell-wait"));
+        txtCalibrationTime.setText(TradingBot.fileConfig.getElement("ema","calibration-time"));
 
         //RSI Tab
-        txtUpperRSI.setText(BinanceTradingBot.fileConfig.getElement("rsi", "upper-bound"));
-        txtLowerRSI.setText(BinanceTradingBot.fileConfig.getElement("rsi", "lower-bound"));
+        txtUpperRSI.setText(TradingBot.fileConfig.getElement("rsi", "upper-bound"));
+        txtLowerRSI.setText(TradingBot.fileConfig.getElement("rsi", "lower-bound"));
 
         //Account Tab
-        txtAPI.setText(BinanceTradingBot.fileConfig.getElement("account","api-key"));
-        txtSecret.setText(BinanceTradingBot.fileConfig.getElement("account","secret-key"));
-
+        txtAPI.setText(TradingBot.fileConfig.getElement("account","api-key"));
+        txtSecret.setText(TradingBot.fileConfig.getElement("account","secret-key"));
+        txtPriceFeedSize.setText(TradingBot.fileConfig.getElement("price-feed", "price-history-size"));
     }
 
     /*
@@ -95,10 +99,10 @@ public class MainController {
      */
 
     @FXML protected void emaSave(){
-        BinanceTradingBot.fileConfig.editElement("ema","n-value", Integer.parseInt(txtNValue.getText()));
-        BinanceTradingBot.fileConfig.editElement("ema","buy-wait", Integer.parseInt(txtBuyWaitTime.getText()));
-        BinanceTradingBot.fileConfig.editElement("ema","sell-wait", Integer.parseInt(txtSellWaitTime.getText()));
-        BinanceTradingBot.fileConfig.editElement("ema","calibration-time", Integer.parseInt(txtCalibrationTime.getText()));
+        TradingBot.fileConfig.editElement("ema","n-value", Integer.parseInt(txtNValue.getText()));
+        TradingBot.fileConfig.editElement("ema","buy-wait", Integer.parseInt(txtBuyWaitTime.getText()));
+        TradingBot.fileConfig.editElement("ema","sell-wait", Integer.parseInt(txtSellWaitTime.getText()));
+        TradingBot.fileConfig.editElement("ema","calibration-time", Integer.parseInt(txtCalibrationTime.getText()));
     }
 
     /*
@@ -106,8 +110,8 @@ public class MainController {
      */
 
     @FXML protected void rsiSave(){
-        BinanceTradingBot.fileConfig.editElement("rsi", "upper-bound", Integer.parseInt(txtUpperRSI.getText()));
-        BinanceTradingBot.fileConfig.editElement("rsi", "lower-bound", Integer.parseInt(txtLowerRSI.getText()));
+        TradingBot.fileConfig.editElement("rsi", "upper-bound", Integer.parseInt(txtUpperRSI.getText()));
+        TradingBot.fileConfig.editElement("rsi", "lower-bound", Integer.parseInt(txtLowerRSI.getText()));
     }
 
     /*
@@ -119,8 +123,9 @@ public class MainController {
      */
 
     @FXML protected void accountSave(){
-        BinanceTradingBot.fileConfig.editElement("account","api-key", txtAPI.getText());
-        BinanceTradingBot.fileConfig.editElement("account","secret-key", txtSecret.getText());
+        TradingBot.fileConfig.editElement("account","api-key", txtAPI.getText());
+        TradingBot.fileConfig.editElement("account","secret-key", txtSecret.getText());
+        TradingBot.fileConfig.editElement("price-feed", "price-history-size", Integer.parseInt(txtPriceFeedSize.getText()));
     }
 
     /*

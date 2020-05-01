@@ -223,6 +223,8 @@
                         <Label layoutX="531.0" layoutY="504.0" prefHeight="17.0" prefWidth="50.0" text="0.00" />
                         <Label layoutX="592.0" layoutY="504.0" text="Total Profit:" />
                         <Label layoutX="658.0" layoutY="504.0" prefWidth="50.0" text="0.00" />
+                        <Label layoutX="22.0" layoutY="378.0" text="Price Feed Size:" />
+                        <TextField fx:id="txtPriceFeedSize" layoutX="118.0" layoutY="373.0" />
                      </children></AnchorPane>
                 </content>
             </Tab>

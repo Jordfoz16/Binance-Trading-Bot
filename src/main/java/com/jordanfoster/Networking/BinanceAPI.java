@@ -1,6 +1,7 @@
 package com.jordanfoster.Networking;
 
 import com.jordanfoster.BinanceTradingBot;
+import com.jordanfoster.TradingBot.TradingBot;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.http.HttpHeaders;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -73,7 +74,7 @@ public class BinanceAPI {
         RequestBuilder requestBuilder = RequestBuilder.get();
         requestBuilder.setUri("https://api.binance.com/" + URL);
         requestBuilder.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
-        requestBuilder.addHeader("X-MBX-APIKEY", BinanceTradingBot.apiKey);
+        requestBuilder.addHeader("X-MBX-APIKEY", TradingBot.apiKey);
 
         if(parameters != null) {
             for(int i = 0; i < parameters.size(); i++){
@@ -130,7 +131,7 @@ public class BinanceAPI {
 
         Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
 
-        SecretKeySpec secret_key = new SecretKeySpec(BinanceTradingBot.secretKey.getBytes(), "HmacSHA256");
+        SecretKeySpec secret_key = new SecretKeySpec(TradingBot.secretKey.getBytes(), "HmacSHA256");
         sha256_HMAC.init(secret_key);
 
         char[] hash = Hex.encodeHex(sha256_HMAC.doFinal(parameterString.getBytes()));
@@ -138,7 +139,7 @@ public class BinanceAPI {
 
         if(networkDebug){
             System.out.println("Message: " + parameterString);
-            System.out.println("Secret: " + BinanceTradingBot.secretKey);
+            System.out.println("Secret: " + TradingBot.secretKey);
             System.out.println("Signature: " + hashString);
         }
 

@@ -1,8 +1,8 @@
 package com.jordanfoster.TradingBot.PriceFeed;
 
-import com.jordanfoster.BinanceTradingBot;
 import com.jordanfoster.JSONHandler.JSONHandler;
 import com.jordanfoster.Networking.BinanceAPI;
+import com.jordanfoster.TradingBot.TradingBot;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -20,10 +20,10 @@ public class PriceFeed {
 
     public PriceFeed(){
         binanceAPI = new BinanceAPI();
-
     }
 
     public void update(){
+        refreshValues();
         JSONHandler jsonHandler = new JSONHandler();
 
         try {
@@ -31,7 +31,7 @@ public class PriceFeed {
 
             ArrayList<JSONObject> priceFeed = jsonHandler.parseJSON(apiResponse);
 
-            JSONArray filter = BinanceTradingBot.fileTradingPairs.getAvailableTradingPairs();
+            JSONArray filter = TradingBot.fileTradingPairs.getAvailableTradingPairs();
 
             //Loops through the filtered symbols from trading-pairs.txt
             for(int filterIndex = 0; filterIndex < filter.size(); filterIndex++){
@@ -61,7 +61,6 @@ public class PriceFeed {
                                 }
                             }
                         }
-
                         break;
                     }
                 }
@@ -74,7 +73,15 @@ public class PriceFeed {
         }
     }
 
+    public void refreshValues(){
+        priceHistorySize = Integer.parseInt(TradingBot.fileConfig.getElement("price-feed", "price-history-size"));
+    }
+
     public ArrayList<TradingPair> getTradingPairs(){
         return tradingPairs;
+    }
+
+    public TradingPair getTradingPair(int index){
+        return tradingPairs.get(index);
     }
 }

@@ -82,6 +82,7 @@ public class FileConfig {
         JSONObject emaElements = new JSONObject();
         JSONObject rsiElements = new JSONObject();
         JSONObject accountElements = new JSONObject();
+        JSONObject priceFeedElements = new JSONObject();
 
         //EMA Values
         emaElements.put("n-value", 360);
@@ -99,6 +100,10 @@ public class FileConfig {
         accountElements.put("api-key", "");
         accountElements.put("secret-key", "");
         configObject.put("account", accountElements);
+
+        //Price Feed Value
+        priceFeedElements.put("price-history-size", 10);
+        configObject.put("price-feed", priceFeedElements);
 
         fileManagement.write(path, configObject.toJSONString());
     }

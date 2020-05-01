@@ -1,9 +1,7 @@
 package com.jordanfoster;
 
 
-import com.jordanfoster.FileManagement.FileConfig;
-import com.jordanfoster.FileManagement.FileTradingPairs;
-import com.jordanfoster.TradingBot.PriceFeed.PriceFeed;
+import com.jordanfoster.TradingBot.TradingBot;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -14,22 +12,6 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class BinanceTradingBot extends Application {
-
-    public static String apiKey = "";
-    public static String secretKey = "";
-
-    public static FileConfig fileConfig;
-    public static FileTradingPairs fileTradingPairs;
-
-    public static PriceFeed priceFeed;
-
-    public static void main(String[] args){
-        fileConfig = new FileConfig();
-        fileTradingPairs = new FileTradingPairs();
-        priceFeed = new PriceFeed();
-        
-        launch(args);
-    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -46,5 +28,14 @@ public class BinanceTradingBot extends Application {
             }
         });
         primaryStage.show();
+    }
+
+    public static void main(String[] args){
+
+        TradingBot bot = new TradingBot();
+        bot.start();
+
+        //Launch the GUI
+        launch(args);
     }
 }
