@@ -1,10 +1,17 @@
 package com.jordanfoster.Userinterface;
 
 import com.jordanfoster.BinanceTradingBot;
+import com.jordanfoster.TradingBot.Indicators.EMA.EMAValue;
+import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
 import com.jordanfoster.TradingBot.TradingBot;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+
+import java.util.ArrayList;
 
 public class MainController {
 
@@ -25,7 +32,11 @@ public class MainController {
 
     //Overview Tab - Charts
     @FXML private LineChart<Integer, Double> chartPrice;
+    @FXML private NumberAxis xAxisPrice;
+    @FXML private NumberAxis yAxisPrice;
     @FXML private LineChart<Integer, Double> chartRSI;
+    @FXML private NumberAxis xAxisRSI;
+    @FXML private NumberAxis yAxisRSI;
 
     //Overview Tab - Open Positions
     @FXML private TableView tablePositions;
@@ -71,6 +82,7 @@ public class MainController {
 
     @FXML protected void initialize(){
         initConfigValues();
+        initConfigLineChart();
     }
 
     private void initConfigValues(){
@@ -90,9 +102,81 @@ public class MainController {
         txtPriceFeedSize.setText(TradingBot.fileConfig.getElement("price-feed", "price-history-size"));
     }
 
+    private void initConfigLineChart(){
+        chartPrice.setAnimated(false);
+
+        xAxisPrice.setAutoRanging(false);
+        xAxisPrice.setTickUnit(10);
+        xAxisPrice.setLowerBound(0);
+        xAxisPrice.setUpperBound(30);
+
+        yAxisPrice.setForceZeroInRange(false);
+        yAxisPrice.setTickUnit(0.01);
+    }
+
     /*
     Overview Tab
      */
+
+    private boolean initializedPriceChart = false;
+
+    public void updatePriceChart(ArrayList<TradingPair> priceFeed, ArrayList<EMAValue> emaFeed){
+
+        ArrayList<TradingPair> priceHistory = priceFeed;
+        ArrayList<EMAValue> emaHistory = emaFeed;
+
+        int selectedPair = 0;
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+
+                if(initializedPriceChart){
+
+                    chartPrice.getData().clear();
+
+                    XYChart.Series<Integer, Double> priceData = new XYChart.Series<>();
+                    XYChart.Series<Integer, Double> emaData = new XYChart.Series<>();
+
+                    priceData.setName("BTCUSDT");
+                    emaData.setName("EMA");
+
+                    for(int i = 0; i < priceHistory.get(selectedPair).getPriceList().size(); i++){
+                        priceData.getData().add(new XYChart.Data<>(i ,priceHistory.get(selectedPair).get(i)));
+                        emaData.getData().add(new XYChart.Data<>(i ,emaHistory.get(selectedPair).get(i)));
+                    }
+
+                    if(priceHistory.get(selectedPair).getPriceList().size() > 30){
+                        xAxisPrice.setUpperBound(priceHistory.get(selectedPair).getPriceList().size() - 1);
+                    }
+
+                    chartPrice.getData().add(priceData);
+                    chartPrice.getData().add(emaData);
+
+                }else{
+
+                    //Initialize the Price Chart
+
+                    XYChart.Series<Integer, Double> priceData = new XYChart.Series<>();
+                    XYChart.Series<Integer, Double> emaData = new XYChart.Series<>();
+
+                    priceData.setName("BTCUSDT");
+                    emaData.setName("EMA");
+
+                    priceData.getData().add(new XYChart.Data<>(0, priceHistory.get(0).getCurrentPrice()));
+                    emaData.getData().add(new XYChart.Data<>(0, emaHistory.get(0).getCurrent()));
+
+                    chartPrice.getData().add(priceData);
+                    chartPrice.getData().add(emaData);
+
+                    initializedPriceChart = true;
+                }
+
+                xAxisPrice.autosize();
+                yAxisPrice.autosize();
+            }
+        });
+    }
 
     /*
     EMA Tab

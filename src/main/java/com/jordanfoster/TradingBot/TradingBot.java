@@ -1,5 +1,6 @@
 package com.jordanfoster.TradingBot;
 
+import com.jordanfoster.BinanceTradingBot;
 import com.jordanfoster.FileManagement.FileConfig;
 import com.jordanfoster.FileManagement.FileTradingPairs;
 import com.jordanfoster.TradingBot.Indicators.EMA.EMA;
@@ -35,6 +36,9 @@ public class TradingBot extends Thread{
 
                 priceFeed.update();
                 ema.update();
+
+                //Update line chart data
+                BinanceTradingBot.mainController.updatePriceChart(priceFeed.getTradingPairs(), ema.getEmaValues());
             }
         }
     }

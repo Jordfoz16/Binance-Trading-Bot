@@ -49,7 +49,7 @@ public class PriceFeed {
 
                         //If its hasn't been initialized, it adds the new trading pair
                         if(initialized == false){
-                            tradingPairs.add(new TradingPair(selectedSymbol, selectedPrice, priceHistorySize));
+                            tradingPairs.add(new TradingPair(selectedSymbol, selectedPrice));
                         }else{
                             //Else it adds a new price to the trading pair
                             for(int tradingIndex = 0; tradingIndex < tradingPairs.size(); tradingIndex++){

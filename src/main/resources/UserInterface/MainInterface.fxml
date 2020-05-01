@@ -15,19 +15,19 @@
                      <children>
                         <LineChart fx:id="chartRSI" layoutX="14.0" layoutY="454.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="135.0" prefWidth="772.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0">
                           <xAxis>
-                            <CategoryAxis side="BOTTOM" />
+                            <NumberAxis side="BOTTOM" fx:id="xAxisRSI" />
                           </xAxis>
                           <yAxis>
-                            <NumberAxis side="LEFT" />
+                            <NumberAxis fx:id="yAxisRSI" side="LEFT" />
                           </yAxis>
                         </LineChart>
                         <Separator layoutX="14.0" layoutY="511.0" prefHeight="5.0" prefWidth="702.0" AnchorPane.bottomAnchor="151.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
-                        <LineChart fx:id="chartPrice" layoutX="14.0" layoutY="342.0" prefHeight="213.0" prefWidth="772.0" AnchorPane.bottomAnchor="155.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0">
+                        <LineChart fx:id="chartPrice" animated="false" createSymbols="false" layoutX="14.0" layoutY="342.0" legendSide="TOP" prefHeight="213.0" prefWidth="772.0" AnchorPane.bottomAnchor="155.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0">
                           <xAxis>
-                            <CategoryAxis side="BOTTOM" />
+                            <NumberAxis side="BOTTOM" fx:id="xAxisPrice" />
                           </xAxis>
                           <yAxis>
-                            <NumberAxis side="LEFT" />
+                            <NumberAxis fx:id="yAxisPrice" side="LEFT" />
                           </yAxis>
                         </LineChart>
                         <Label alignment="CENTER_RIGHT" layoutX="77.0" layoutY="23.0" prefWidth="180.0" text="Trading Bot Running:" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="23.0" />

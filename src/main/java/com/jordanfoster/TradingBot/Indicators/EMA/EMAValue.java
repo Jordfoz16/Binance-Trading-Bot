@@ -6,8 +6,6 @@ import java.util.ArrayList;
 
 public class EMAValue {
 
-    private int listSize = 10;
-
     private ArrayList<Double> emaValue = new ArrayList<Double>();
 
     public EMAValue(double value){
@@ -26,6 +24,10 @@ public class EMAValue {
         if(emaValue.size() > listSize){
             emaValue.remove(0);
         }
+    }
+
+    public Double get(int index){
+        return emaValue.get(index);
     }
 
     public Double getCurrent(){

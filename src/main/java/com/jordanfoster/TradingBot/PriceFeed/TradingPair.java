@@ -1,16 +1,16 @@
 package com.jordanfoster.TradingBot.PriceFeed;
 
+import com.jordanfoster.TradingBot.TradingBot;
+
 import java.util.ArrayList;
 
 public class TradingPair {
 
     private String symbol;
     private ArrayList<Double> priceList = new ArrayList<Double>();
-    private int listSize = 10;
 
-    public TradingPair(String symbol, double price, int listSize){
+    public TradingPair(String symbol, double price){
         this.symbol = symbol;
-        this.listSize = listSize;
         priceList.add(price);
     }
 
@@ -20,6 +20,7 @@ public class TradingPair {
     }
 
     private void checkListSize(){
+        int listSize = Integer.parseInt(TradingBot.fileConfig.getElement("price-feed", "price-history-size"));
         //Keep the list size to the current size
         if(priceList.size() > listSize){
             //Removes the oldest price from the list
@@ -29,6 +30,10 @@ public class TradingPair {
 
     public String getSymbol(){
         return symbol;
+    }
+
+    public double get(int index){
+        return priceList.get(index);
     }
 
     public double getCurrentPrice(){

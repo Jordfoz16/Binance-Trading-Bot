@@ -2,6 +2,7 @@ package com.jordanfoster;
 
 
 import com.jordanfoster.TradingBot.TradingBot;
+import com.jordanfoster.Userinterface.MainController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -12,6 +13,8 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class BinanceTradingBot extends Application {
+
+    public static MainController mainController;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -27,6 +30,9 @@ public class BinanceTradingBot extends Application {
                 System.exit(0);
             }
         });
+
+        mainController = loader.getController();
+
         primaryStage.show();
     }
 
