@@ -39,6 +39,8 @@ public class EMA {
                 double ema = calculateEMA(currentPrice, prevEMA);
 
                 emaValues.get(index).addValue(ema);
+
+                updateState(index);
             }else{
                 //Setting up the array list on the first loop
                 emaValues.add(new EMAValue(currentPrice));
@@ -46,6 +48,15 @@ public class EMA {
         }
 
         initialized = true;
+    }
+
+    public void updateState(int index){
+
+        if(TradingBot.priceFeed.getTradingPair(index).getCurrentPrice() > emaValues.get(index).getCurrent()){
+            emaValues.get(index).setState(EMAValue.State.BUY);
+        }else{
+            emaValues.get(index).setState(EMAValue.State.SELL);
+        }
     }
 
     private double calculateEMA(double currentPrice, double previousEMA){

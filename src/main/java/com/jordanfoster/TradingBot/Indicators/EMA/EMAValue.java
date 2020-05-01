@@ -6,7 +6,16 @@ import java.util.ArrayList;
 
 public class EMAValue {
 
+    enum State{
+        BUY,
+        SELL,
+        NONE,
+        COOLDOWN
+    }
+
     private ArrayList<Double> emaValue = new ArrayList<Double>();
+
+    private State state = State.NONE;
 
     public EMAValue(double value){
         addValue(value);
@@ -26,6 +35,10 @@ public class EMAValue {
         }
     }
 
+    public void setState(State state){
+        this.state = state;
+    }
+
     public Double get(int index){
         return emaValue.get(index);
     }
@@ -39,5 +52,9 @@ public class EMAValue {
             return emaValue.get(emaValue.size() - 2);
         }
         return emaValue.get(emaValue.size() - 1);
+    }
+
+    public State getState(){
+        return state;
     }
 }
