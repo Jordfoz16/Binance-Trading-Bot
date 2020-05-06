@@ -31,6 +31,7 @@ public class MainController {
     @FXML private ComboBox<String> cbTradingPairs;
 
     //Overview Tab - Charts
+    private boolean initializedPriceChart = false;
     @FXML private LineChart<Integer, Double> chartPrice;
     @FXML private NumberAxis xAxisPrice;
     @FXML private NumberAxis yAxisPrice;
@@ -114,68 +115,82 @@ public class MainController {
         yAxisPrice.setTickUnit(0.01);
     }
 
-    /*
-    Overview Tab
-     */
+    private ArrayList<TradingPair> priceHistory;
+    private ArrayList<EMAValue> emaHistory;
+    private int selectedPair = 0;
 
-    private boolean initializedPriceChart = false;
-
-    public void updatePriceChart(ArrayList<TradingPair> priceFeed, ArrayList<EMAValue> emaFeed){
-
-        ArrayList<TradingPair> priceHistory = priceFeed;
-        ArrayList<EMAValue> emaHistory = emaFeed;
-
-        int selectedPair = 0;
+    public void updateOverview(ArrayList<TradingPair> priceFeed, ArrayList<EMAValue> emaFeed, int selectedPair){
+        this.priceHistory = priceFeed;
+        this.emaHistory = emaFeed;
+        this.selectedPair = selectedPair;
 
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
 
-                if(initializedPriceChart){
-
-                    chartPrice.getData().clear();
-
-                    XYChart.Series<Integer, Double> priceData = new XYChart.Series<>();
-                    XYChart.Series<Integer, Double> emaData = new XYChart.Series<>();
-
-                    priceData.setName("BTCUSDT");
-                    emaData.setName("EMA");
-
-                    for(int i = 0; i < priceHistory.get(selectedPair).getPriceList().size(); i++){
-                        priceData.getData().add(new XYChart.Data<>(i ,priceHistory.get(selectedPair).get(i)));
-                        emaData.getData().add(new XYChart.Data<>(i ,emaHistory.get(selectedPair).get(i)));
-                    }
-
-                    if(priceHistory.get(selectedPair).getPriceList().size() > 30){
-                        xAxisPrice.setUpperBound(priceHistory.get(selectedPair).getPriceList().size() - 1);
-                    }
-
-                    chartPrice.getData().add(priceData);
-                    chartPrice.getData().add(emaData);
-
-                }else{
-
-                    //Initialize the Price Chart
-
-                    XYChart.Series<Integer, Double> priceData = new XYChart.Series<>();
-                    XYChart.Series<Integer, Double> emaData = new XYChart.Series<>();
-
-                    priceData.setName("BTCUSDT");
-                    emaData.setName("EMA");
-
-                    priceData.getData().add(new XYChart.Data<>(0, priceHistory.get(0).getCurrentPrice()));
-                    emaData.getData().add(new XYChart.Data<>(0, emaHistory.get(0).getCurrent()));
-
-                    chartPrice.getData().add(priceData);
-                    chartPrice.getData().add(emaData);
-
-                    initializedPriceChart = true;
-                }
-
-                xAxisPrice.autosize();
-                yAxisPrice.autosize();
+                updatePriceChart();
+                updateEmaIndicator();
             }
         });
+
+    }
+
+    /*
+    Overview Tab
+     */
+
+    public void updateEmaIndicator(){
+
+        EMAValue currentEMA = emaHistory.get(selectedPair);
+
+        lblIndicatorEMA.setText(currentEMA.getStateString());
+    }
+
+    public void updatePriceChart(){
+
+        if(initializedPriceChart){
+
+            chartPrice.getData().clear();
+
+            XYChart.Series<Integer, Double> priceData = new XYChart.Series<>();
+            XYChart.Series<Integer, Double> emaData = new XYChart.Series<>();
+
+            priceData.setName("BTCUSDT");
+            emaData.setName("EMA");
+
+            for(int i = 0; i < priceHistory.get(selectedPair).getPriceList().size(); i++){
+                priceData.getData().add(new XYChart.Data<>(i ,priceHistory.get(selectedPair).get(i)));
+                emaData.getData().add(new XYChart.Data<>(i ,emaHistory.get(selectedPair).get(i)));
+            }
+
+            if(priceHistory.get(selectedPair).getPriceList().size() > 30){
+                xAxisPrice.setUpperBound(priceHistory.get(selectedPair).getPriceList().size() - 1);
+            }
+
+            chartPrice.getData().add(priceData);
+            chartPrice.getData().add(emaData);
+
+        }else{
+
+            //Initialize the Price Chart
+
+            XYChart.Series<Integer, Double> priceData = new XYChart.Series<>();
+            XYChart.Series<Integer, Double> emaData = new XYChart.Series<>();
+
+            priceData.setName("BTCUSDT");
+            emaData.setName("EMA");
+
+            priceData.getData().add(new XYChart.Data<>(0, priceHistory.get(0).getCurrentPrice()));
+            emaData.getData().add(new XYChart.Data<>(0, emaHistory.get(0).getCurrent()));
+
+            chartPrice.getData().add(priceData);
+            chartPrice.getData().add(emaData);
+
+            initializedPriceChart = true;
+        }
+
+        xAxisPrice.autosize();
+        yAxisPrice.autosize();
     }
 
     /*

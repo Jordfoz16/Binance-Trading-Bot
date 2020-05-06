@@ -10,8 +10,13 @@ public class EMAValue {
         BUY,
         SELL,
         NONE,
-        COOLDOWN
+        HOLD,
+        CALIBRATION
     }
+
+    public int buyWaitCounter = 0;
+    public int sellWaitCounter = 0;
+    public int calirationCounter = 0;
 
     private ArrayList<Double> emaValue = new ArrayList<Double>();
 
@@ -56,5 +61,9 @@ public class EMAValue {
 
     public State getState(){
         return state;
+    }
+
+    public String getStateString(){
+        return state.toString();
     }
 }

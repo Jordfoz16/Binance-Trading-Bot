@@ -38,7 +38,7 @@ public class TradingBot extends Thread{
                 ema.update();
 
                 //Update line chart data
-                BinanceTradingBot.mainController.updatePriceChart(priceFeed.getTradingPairs(), ema.getEmaValues());
+                BinanceTradingBot.mainController.updateOverview(priceFeed.getTradingPairs(), ema.getEmaValues(), 0);
             }
         }
     }
