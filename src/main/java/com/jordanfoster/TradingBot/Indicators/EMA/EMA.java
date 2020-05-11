@@ -55,7 +55,6 @@ public class EMA {
     private void updateState(int index){
 
         EMAValue currentCoin = emaValues.get(index);
-        System.out.println(currentCoin.calirationCounter);
 
         //Checks to make sure calibration time is completed
         if(calibrationTime <= currentCoin.calirationCounter){

@@ -2,6 +2,7 @@ package com.jordanfoster.Userinterface;
 
 import com.jordanfoster.BinanceTradingBot;
 import com.jordanfoster.TradingBot.Indicators.EMA.EMAValue;
+import com.jordanfoster.TradingBot.Indicators.RSI.RSIValue;
 import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
 import com.jordanfoster.TradingBot.TradingBot;
 import javafx.application.Platform;
@@ -32,6 +33,7 @@ public class MainController {
 
     //Overview Tab - Charts
     private boolean initializedPriceChart = false;
+    private boolean initializedRSIChart = false;
     @FXML private LineChart<Integer, Double> chartPrice;
     @FXML private NumberAxis xAxisPrice;
     @FXML private NumberAxis yAxisPrice;
@@ -105,6 +107,7 @@ public class MainController {
 
     private void initConfigLineChart(){
         chartPrice.setAnimated(false);
+        chartRSI.setAnimated(false);
 
         xAxisPrice.setAutoRanging(false);
         xAxisPrice.setTickUnit(10);
@@ -113,15 +116,27 @@ public class MainController {
 
         yAxisPrice.setForceZeroInRange(false);
         yAxisPrice.setTickUnit(0.01);
+
+        xAxisRSI.setAutoRanging(false);
+        xAxisRSI.setTickUnit(10);
+        xAxisRSI.setLowerBound(0);
+        xAxisRSI.setUpperBound(30);
+
+        yAxisRSI.setAutoRanging(false);
+        yAxisRSI.setTickUnit(20);
+        yAxisRSI.setUpperBound(100);
+        yAxisRSI.setLowerBound(0);
     }
 
     private ArrayList<TradingPair> priceHistory;
     private ArrayList<EMAValue> emaHistory;
+    private ArrayList<RSIValue> rsiHistory;
     private int selectedPair = 0;
 
-    public void updateOverview(ArrayList<TradingPair> priceFeed, ArrayList<EMAValue> emaFeed, int selectedPair){
+    public void updateOverview(ArrayList<TradingPair> priceFeed, ArrayList<EMAValue> emaFeed, ArrayList<RSIValue> rsiFeed, int selectedPair){
         this.priceHistory = priceFeed;
         this.emaHistory = emaFeed;
+        this.rsiHistory = rsiFeed;
         this.selectedPair = selectedPair;
 
         Platform.runLater(new Runnable() {
@@ -129,6 +144,7 @@ public class MainController {
             public void run() {
 
                 updatePriceChart();
+                updateRSIChart();
                 updateEmaIndicator();
             }
         });
@@ -191,6 +207,41 @@ public class MainController {
 
         xAxisPrice.autosize();
         yAxisPrice.autosize();
+    }
+
+    public void updateRSIChart(){
+
+        if(initializedRSIChart){
+
+            chartRSI.getData().clear();
+
+            XYChart.Series<Integer, Double> rsiData = new XYChart.Series<>();
+
+            rsiData.setName("RSI");
+
+            for(int i = 0; i < rsiHistory.get(selectedPair).getRsiValues().size(); i++){
+                rsiData.getData().add(new XYChart.Data<>(i ,rsiHistory.get(selectedPair).get(i)));
+            }
+
+            if(rsiHistory.get(selectedPair).getRsiValues().size() > 30){
+                xAxisRSI.setUpperBound(rsiHistory.get(selectedPair).getRsiValues().size() - 1);
+            }
+
+            chartRSI.getData().add(rsiData);
+
+        }else{
+
+            //Initialize the RSI Chart
+            XYChart.Series<Integer, Double> rsiData = new XYChart.Series<>();
+
+            rsiData.setName("EMA");
+
+            rsiData.getData().add(new XYChart.Data<>(0, rsiHistory.get(0).getCurrent()));
+
+            chartRSI.getData().add(rsiData);
+
+            initializedRSIChart = true;
+        }
     }
 
     /*

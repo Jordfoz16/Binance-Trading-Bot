@@ -13,7 +13,7 @@
                 <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <LineChart fx:id="chartRSI" layoutX="14.0" layoutY="454.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="135.0" prefWidth="772.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0">
+                        <LineChart fx:id="chartRSI" animated="false" createSymbols="false" layoutX="14.0" layoutY="454.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="135.0" prefWidth="772.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0">
                           <xAxis>
                             <NumberAxis side="BOTTOM" fx:id="xAxisRSI" />
                           </xAxis>
