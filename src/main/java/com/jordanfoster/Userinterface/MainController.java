@@ -164,46 +164,25 @@ public class MainController {
 
     public void updatePriceChart(){
 
-        if(initializedPriceChart){
+        chartPrice.getData().clear();
 
-            chartPrice.getData().clear();
+        XYChart.Series<Integer, Double> priceData = new XYChart.Series<>();
+        XYChart.Series<Integer, Double> emaData = new XYChart.Series<>();
 
-            XYChart.Series<Integer, Double> priceData = new XYChart.Series<>();
-            XYChart.Series<Integer, Double> emaData = new XYChart.Series<>();
+        priceData.setName("BTCUSDT");
+        emaData.setName("EMA");
 
-            priceData.setName("BTCUSDT");
-            emaData.setName("EMA");
-
-            for(int i = 0; i < priceHistory.get(selectedPair).getPriceList().size(); i++){
-                priceData.getData().add(new XYChart.Data<>(i ,priceHistory.get(selectedPair).get(i)));
-                emaData.getData().add(new XYChart.Data<>(i ,emaHistory.get(selectedPair).get(i)));
-            }
-
-            if(priceHistory.get(selectedPair).getPriceList().size() > 30){
-                xAxisPrice.setUpperBound(priceHistory.get(selectedPair).getPriceList().size() - 1);
-            }
-
-            chartPrice.getData().add(priceData);
-            chartPrice.getData().add(emaData);
-
-        }else{
-
-            //Initialize the Price Chart
-
-            XYChart.Series<Integer, Double> priceData = new XYChart.Series<>();
-            XYChart.Series<Integer, Double> emaData = new XYChart.Series<>();
-
-            priceData.setName("BTCUSDT");
-            emaData.setName("EMA");
-
-            priceData.getData().add(new XYChart.Data<>(0, priceHistory.get(0).getCurrentPrice()));
-            emaData.getData().add(new XYChart.Data<>(0, emaHistory.get(0).getCurrent()));
-
-            chartPrice.getData().add(priceData);
-            chartPrice.getData().add(emaData);
-
-            initializedPriceChart = true;
+        for(int i = 0; i < priceHistory.get(selectedPair).getPriceList().size(); i++){
+            priceData.getData().add(new XYChart.Data<>(i ,priceHistory.get(selectedPair).get(i)));
+            emaData.getData().add(new XYChart.Data<>(i ,emaHistory.get(selectedPair).get(i)));
         }
+
+        if(priceHistory.get(selectedPair).getPriceList().size() > 30){
+            xAxisPrice.setUpperBound(priceHistory.get(selectedPair).getPriceList().size() - 1);
+        }
+
+        chartPrice.getData().add(priceData);
+        chartPrice.getData().add(emaData);
 
         xAxisPrice.autosize();
         yAxisPrice.autosize();
@@ -211,37 +190,21 @@ public class MainController {
 
     public void updateRSIChart(){
 
-        if(initializedRSIChart){
+        chartRSI.getData().clear();
 
-            chartRSI.getData().clear();
+        XYChart.Series<Integer, Double> rsiData = new XYChart.Series<>();
 
-            XYChart.Series<Integer, Double> rsiData = new XYChart.Series<>();
+        rsiData.setName("RSI");
 
-            rsiData.setName("RSI");
-
-            for(int i = 0; i < rsiHistory.get(selectedPair).getRsiValues().size(); i++){
-                rsiData.getData().add(new XYChart.Data<>(i ,rsiHistory.get(selectedPair).get(i)));
-            }
-
-            if(rsiHistory.get(selectedPair).getRsiValues().size() > 30){
-                xAxisRSI.setUpperBound(rsiHistory.get(selectedPair).getRsiValues().size() - 1);
-            }
-
-            chartRSI.getData().add(rsiData);
-
-        }else{
-
-            //Initialize the RSI Chart
-            XYChart.Series<Integer, Double> rsiData = new XYChart.Series<>();
-
-            rsiData.setName("EMA");
-
-            rsiData.getData().add(new XYChart.Data<>(0, rsiHistory.get(0).getCurrent()));
-
-            chartRSI.getData().add(rsiData);
-
-            initializedRSIChart = true;
+        for(int i = 0; i < rsiHistory.get(selectedPair).getRsiValues().size(); i++){
+            rsiData.getData().add(new XYChart.Data<>(i ,rsiHistory.get(selectedPair).get(i)));
         }
+
+        if(rsiHistory.get(selectedPair).getRsiValues().size() > 30){
+            xAxisRSI.setUpperBound(rsiHistory.get(selectedPair).getRsiValues().size() - 1);
+        }
+
+        chartRSI.getData().add(rsiData);
     }
 
     /*

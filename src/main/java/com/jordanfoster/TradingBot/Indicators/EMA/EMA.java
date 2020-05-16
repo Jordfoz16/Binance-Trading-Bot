@@ -63,7 +63,6 @@ public class EMA {
                 //Doesn't buy unless its above the waiting time
                 if(buyWaitTime <= currentCoin.buyWaitCounter){
                     currentCoin.setState(EMAValue.State.BUY);
-                    currentCoin.buyWaitCounter = 0;
                 }else{
                     currentCoin.setState(EMAValue.State.HOLD);
                     currentCoin.buyWaitCounter++;
@@ -73,7 +72,6 @@ public class EMA {
             }else{
                 if(sellWaitTime <= currentCoin.sellWaitCounter){
                     currentCoin.setState(EMAValue.State.SELL);
-                    currentCoin.sellWaitCounter = 0;
                 }else{
                     currentCoin.setState(EMAValue.State.HOLD);
                     currentCoin.sellWaitCounter++;
