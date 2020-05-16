@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class EMAValue {
 
-    enum State{
+    public enum State{
         BUY,
         SELL,
         NONE,
@@ -16,7 +16,6 @@ public class EMAValue {
 
     public int buyWaitCounter = 0;
     public int sellWaitCounter = 0;
-    public int calirationCounter = 0;
 
     private ArrayList<Double> emaValue = new ArrayList<Double>();
 

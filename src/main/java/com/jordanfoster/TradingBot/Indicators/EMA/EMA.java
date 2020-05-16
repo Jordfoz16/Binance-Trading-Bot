@@ -11,6 +11,7 @@ public class EMA {
     private int buyWaitTime = 0;
     private int sellWaitTime = 0;
     private int calibrationTime = 10;
+    private int calirationCounter = 0;
 
     private boolean initialized = false;
 
@@ -31,25 +32,10 @@ public class EMA {
         refreshValues();
 
         //Update the EMA value for each currency
-        for (int index = 0; index < TradingBot.priceFeed.getTradingPairs().size(); index++){
-
-            double currentPrice = TradingBot.priceFeed.getTradingPair(index).getCurrentPrice();
-
-            if (initialized){
-
-                double prevEMA = emaValues.get(index).getPrev();
-                double ema = calculateEMA(currentPrice, prevEMA);
-
-                emaValues.get(index).addValue(ema);
-
-                updateState(index);
-            }else{
-                //Setting up the array list on the first loop
-                emaValues.add(new EMAValue(currentPrice));
-            }
+        for (int index = 0; index < TradingBot.priceFeed.getTradingPairs().size(); index++) {
+            calculateEMA(index);
+            updateState(index);
         }
-
-        initialized = true;
     }
 
     private void updateState(int index){
@@ -57,7 +43,7 @@ public class EMA {
         EMAValue currentCoin = emaValues.get(index);
 
         //Checks to make sure calibration time is completed
-        if(calibrationTime <= currentCoin.calirationCounter){
+        if(calibrationTime <= calirationCounter){
 
             if(TradingBot.priceFeed.getTradingPair(index).getCurrentPrice() > currentCoin.getCurrent()){
                 //Doesn't buy unless its above the waiting time
@@ -82,19 +68,39 @@ public class EMA {
             }
 
         }else{
-            emaValues.get(index).setState(EMAValue.State.CALIBRATION);
-            currentCoin.calirationCounter++;
+            currentCoin.setState(EMAValue.State.CALIBRATION);
+            calirationCounter++;
         }
     }
 
-    private double calculateEMA(double currentPrice, double previousEMA){
-        //k is the weighted multiplier
-        double k = 2.0 / ((double) n + 1.0);
+    private void calculateEMA(int index){
+        double currentPrice = TradingBot.priceFeed.getTradingPair(index).getCurrentPrice();
 
-        double ema = currentPrice * k + previousEMA * (1.0 - k);
+        if (initialized){
+            //k is the weighted multiplier
+            double k = 2.0 / ((double) n + 1.0);
 
-        return ema;
+            double prevEMA = emaValues.get(index).getPrev();
+
+            double ema = currentPrice * k + prevEMA * (1.0 - k);
+
+            emaValues.get(index).addValue(ema);
+
+        }else{
+            //Setting up the array list on the first loop
+            emaValues.add(new EMAValue(currentPrice));
+        }
+        initialized = true;
     }
+
+//    private double calculateEMA(double currentPrice, double previousEMA){
+//        //k is the weighted multiplier
+//        double k = 2.0 / ((double) n + 1.0);
+//
+//        double ema = currentPrice * k + previousEMA * (1.0 - k);
+//
+//        return ema;
+//    }
 
     public ArrayList<EMAValue> getEmaValues(){
         return emaValues;

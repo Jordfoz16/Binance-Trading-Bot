@@ -7,10 +7,12 @@ import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
 import com.jordanfoster.TradingBot.TradingBot;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
@@ -59,6 +61,8 @@ public class MainController {
     @FXML private Button btnSaveEMA;
 
     //RSI Tab
+    @FXML private TextField txtRSIPeriod;
+    @FXML private TextField txtRSICalibration;
     @FXML private TextField txtUpperRSI;
     @FXML private TextField txtLowerRSI;
 
@@ -96,6 +100,8 @@ public class MainController {
         txtCalibrationTime.setText(TradingBot.fileConfig.getElement("ema","calibration-time"));
 
         //RSI Tab
+        txtRSIPeriod.setText(TradingBot.fileConfig.getElement("rsi", "rsi-period"));
+        txtRSICalibration.setText(TradingBot.fileConfig.getElement("rsi", "rsi-calibration"));
         txtUpperRSI.setText(TradingBot.fileConfig.getElement("rsi", "upper-bound"));
         txtLowerRSI.setText(TradingBot.fileConfig.getElement("rsi", "lower-bound"));
 
@@ -145,7 +151,7 @@ public class MainController {
 
                 updatePriceChart();
                 updateRSIChart();
-                updateEmaIndicator();
+                updateState();
             }
         });
 
@@ -155,11 +161,13 @@ public class MainController {
     Overview Tab
      */
 
-    public void updateEmaIndicator(){
+    public void updateState(){
 
         EMAValue currentEMA = emaHistory.get(selectedPair);
+        RSIValue currentRSI = rsiHistory.get(selectedPair);
 
         lblIndicatorEMA.setText(currentEMA.getStateString());
+        lblIndicatorRSI.setText(currentRSI.getStateString());
     }
 
     public void updatePriceChart(){
@@ -205,6 +213,12 @@ public class MainController {
         }
 
         chartRSI.getData().add(rsiData);
+
+        //Setting colour of the line
+        Color color = Color.GREEN; // or any other color
+        String rgb = String.format("%d, %d, %d", (int) (color.getRed() * 255), (int) (color.getGreen() * 255), (int) (color.getBlue() * 255));
+        Node line = rsiData.getNode().lookup(".chart-series-line");
+        line.setStyle("-fx-stroke: rgba(" + rgb + ", 1.0);");
     }
 
     /*
@@ -223,6 +237,8 @@ public class MainController {
      */
 
     @FXML protected void rsiSave(){
+        TradingBot.fileConfig.editElement("rsi", "rsi-period", Integer.parseInt(txtRSIPeriod.getText()));
+        TradingBot.fileConfig.editElement("rsi", "rsi-calibration", Integer.parseInt(txtRSICalibration.getText()));
         TradingBot.fileConfig.editElement("rsi", "upper-bound", Integer.parseInt(txtUpperRSI.getText()));
         TradingBot.fileConfig.editElement("rsi", "lower-bound", Integer.parseInt(txtLowerRSI.getText()));
     }

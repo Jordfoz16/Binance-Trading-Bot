@@ -1,15 +1,26 @@
 package com.jordanfoster.TradingBot.Indicators.RSI;
 
+import com.jordanfoster.TradingBot.Indicators.EMA.EMAValue;
 import com.jordanfoster.TradingBot.TradingBot;
 
 import java.util.ArrayList;
 
 public class RSIValue {
 
+    public enum State{
+        BUY,
+        SELL,
+        NONE,
+        HOLD,
+        CALIBRATION
+    }
+
     private double prevAverageGains = 0;
     private double prevAverageLosses = 0;
 
     private ArrayList<Double> rsiValues = new ArrayList<Double>();
+
+    private State state = State.NONE;
 
     public void addRSIValue(double value){
         rsiValues.add(value);
@@ -27,6 +38,10 @@ public class RSIValue {
     public void setPrevAverage(double averageGains, double averageLosses){
         this.prevAverageGains = averageGains;
         this.prevAverageLosses = averageLosses;
+    }
+
+    public void setState(RSIValue.State state) {
+        this.state = state;
     }
 
     public ArrayList<Double> getRsiValues(){
@@ -48,6 +63,14 @@ public class RSIValue {
 
     public double getPrevAverageLosses(){
         return prevAverageLosses;
+    }
+
+    public RSIValue.State getState(){
+        return state;
+    }
+
+    public String getStateString(){
+        return state.toString();
     }
 
 }

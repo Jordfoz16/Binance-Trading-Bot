@@ -92,6 +92,8 @@ public class FileConfig {
         configObject.put("ema", emaElements);
 
         //RSI Values
+        rsiElements.put("rsi-period", 360);
+        rsiElements.put("rsi-calibration", 60);
         rsiElements.put("lower-bound", 40);
         rsiElements.put("upper-bound", 60);
         configObject.put("rsi", rsiElements);
@@ -102,7 +104,7 @@ public class FileConfig {
         configObject.put("account", accountElements);
 
         //Price Feed Value
-        priceFeedElements.put("price-history-size", 10);
+        priceFeedElements.put("price-history-size", 600);
         configObject.put("price-feed", priceFeedElements);
 
         fileManagement.write(path, configObject.toJSONString());
