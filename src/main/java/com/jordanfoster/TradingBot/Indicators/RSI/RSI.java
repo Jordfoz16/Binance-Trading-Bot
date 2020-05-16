@@ -34,6 +34,8 @@ public class RSI {
             calculateRSI(index);
             updateState(index);
         }
+
+        initialized = true;
     }
 
     private void updateState(int index){
@@ -125,8 +127,6 @@ public class RSI {
             rsiValues.add(new RSIValue());
             rsiValues.get(rsiValues.size() - 1).addRSIValue(50);
         }
-
-        initialized = true;
     }
 
     private double calculateStepOneRSI(double averageGains, double averageLosses){

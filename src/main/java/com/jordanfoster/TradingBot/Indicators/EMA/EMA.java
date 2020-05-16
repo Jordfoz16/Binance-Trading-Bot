@@ -36,6 +36,8 @@ public class EMA {
             calculateEMA(index);
             updateState(index);
         }
+
+        initialized = true;
     }
 
     private void updateState(int index){
@@ -86,11 +88,10 @@ public class EMA {
 
             emaValues.get(index).addValue(ema);
 
-        }else{
+        }else {
             //Setting up the array list on the first loop
             emaValues.add(new EMAValue(currentPrice));
         }
-        initialized = true;
     }
 
 //    private double calculateEMA(double currentPrice, double previousEMA){
