@@ -7,7 +7,7 @@
 
 <AnchorPane prefHeight="700" prefWidth="800" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.jordanfoster.Userinterface.MainController">
    <children>
-      <TabPane prefHeight="700" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane prefHeight="700" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE" tabMinWidth="65.0">
         <tabs>
               <Tab text="Overview">
                 <content>
