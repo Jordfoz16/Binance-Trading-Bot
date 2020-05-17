@@ -51,6 +51,10 @@ public class EMAValue {
         return emaValue.get(emaValue.size() - 1);
     }
 
+    public ArrayList<Double> getEmaValue(){
+        return emaValue;
+    }
+
     public Double getPrev(){
         if(emaValue.size() > 2){
             return emaValue.get(emaValue.size() - 2);
