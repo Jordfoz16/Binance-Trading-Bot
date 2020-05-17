@@ -16,7 +16,7 @@ public class PriceFeed {
     private int priceHistorySize = 10;
     private boolean initialized = false;
 
-    public static ArrayList<TradingPair> tradingPairs = new ArrayList<TradingPair>();
+    public ArrayList<TradingPair> tradingPairs = new ArrayList<TradingPair>();
 
     public PriceFeed(){
         binanceAPI = new BinanceAPI();

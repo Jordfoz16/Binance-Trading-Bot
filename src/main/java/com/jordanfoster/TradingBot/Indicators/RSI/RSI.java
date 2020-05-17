@@ -1,5 +1,6 @@
 package com.jordanfoster.TradingBot.Indicators.RSI;
 
+import com.jordanfoster.TradingBot.PriceFeed.PriceFeed;
 import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
 import com.jordanfoster.TradingBot.TradingBot;
 
@@ -37,7 +38,7 @@ public class RSI {
         refreshValues();
 
         for(int index = 0; index < TradingBot.priceFeed.getTradingPairs().size(); index++){
-            calculateRSI(index);
+            calculateRSI(index, null);
             updateState(index);
         }
 
@@ -63,14 +64,13 @@ public class RSI {
         }
     }
 
-    private void calculateRSI(int index){
+    private void calculateRSI(int index, TradingPair tradingPair){
+
         TradingPair currentPair = TradingBot.priceFeed.getTradingPair(index);
 
-        ArrayList<Double> gains = new ArrayList<Double>();
-        ArrayList<Double> losses = new ArrayList<Double>();
-
-        gains.clear();
-        losses.clear();
+        if(tradingPair != null){
+            currentPair = tradingPair;
+        }
 
         if(initialized){
 
@@ -81,18 +81,6 @@ public class RSI {
                 //Uses the second step RSI calculation
 
                 double startingValue = currentPair.get(currentPair.getPriceList().size() - rsiPeriod - 1);
-
-//                for(int i = 0; i < rsiPeriod; i++){
-//                    double indexPrice = currentPair.get(currentPair.getPriceList().size() - i - 1);
-//
-//                    if(indexPrice > startingValue){
-//                        double gain = ((indexPrice / startingValue) - 1.0) * 100.0;
-//                        gains.add(gain);
-//                    }else if(indexPrice < startingValue){
-//                        double loss = ((startingValue / indexPrice) - 1.0) * 100.0;
-//                        losses.add(loss);
-//                    }
-//                }
 
                 double averageGain = calculateAverage(findGain(startingValue, currentPair));
                 double averageLosses = calculateAverage(findLosses(startingValue, currentPair));
@@ -107,18 +95,6 @@ public class RSI {
                 //Uses the first step RSI calculation
 
                 double startingValue = currentPair.get(0);
-
-//                for(int i = 0; i < currentPair.getPriceList().size() - 1; i++){
-//                    double indexPrice = currentPair.get(currentPair.getPriceList().size() - i - 1);
-//
-//                    if(indexPrice > startingValue){
-//                        double gain = ((indexPrice / startingValue) - 1.0) * 100.0;
-//                        gains.add(gain);
-//                    }else if(indexPrice < startingValue){
-//                        double loss = ((startingValue / indexPrice) - 1.0) * 100.0;
-//                        losses.add(loss);
-//                    }
-//                }
 
                 double averageGain = calculateAverage(findGain(startingValue, currentPair));
                 double averageLosses = calculateAverage(findLosses(startingValue, currentPair));
@@ -137,14 +113,22 @@ public class RSI {
 
     private void periodChanged(){
 
+        //Cycles through the the price feed and calculates new RSI values depending on the new period
+
+        PriceFeed tempPriceFeed = new PriceFeed();
+
         for(int index = 0; index < TradingBot.priceFeed.getTradingPairs().size(); index++){
             RSIValue currentRSI = rsiValues.get(index);
 
             currentRSI.getRsiValues().clear();
             currentRSI.addRSIValue(50);
 
-            for(int priceIndex = 0; priceIndex < TradingBot.priceFeed.getTradingPair(index).getPriceList().size(); priceIndex++){
-                calculateRSI(index);
+
+            tempPriceFeed.tradingPairs.add(new TradingPair(TradingBot.priceFeed.getTradingPair(index).getSymbol(), TradingBot.priceFeed.getTradingPair(index).get(0)));
+
+            for(int i = 0; i < TradingBot.priceFeed.getTradingPair(index).getPriceList().size(); i++){
+                tempPriceFeed.getTradingPair(index).addPrice(TradingBot.priceFeed.getTradingPair(index).get(i));
+                calculateRSI(index, tempPriceFeed.getTradingPair(index));
             }
         }
     }
