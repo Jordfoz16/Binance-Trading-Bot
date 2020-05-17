@@ -21,10 +21,16 @@ public class RSI {
     }
 
     public void refreshValues(){
+        int currentPeriod = rsiPeriod;
+
         rsiPeriod = Integer.parseInt(TradingBot.fileConfig.getElement("rsi", "rsi-period"));
         calibrationTime = Integer.parseInt(TradingBot.fileConfig.getElement("rsi", "rsi-calibration"));
         rsiUpperBound = Integer.parseInt(TradingBot.fileConfig.getElement("rsi", "upper-bound"));
         rsiLowerBound = Integer.parseInt(TradingBot.fileConfig.getElement("rsi", "lower-bound"));
+
+        if(rsiPeriod != currentPeriod){
+            periodChanged();
+        }
     }
 
     public void update(){
@@ -76,20 +82,20 @@ public class RSI {
 
                 double startingValue = currentPair.get(currentPair.getPriceList().size() - rsiPeriod - 1);
 
-                for(int i = 0; i < rsiPeriod; i++){
-                    double indexPrice = currentPair.get(currentPair.getPriceList().size() - i - 1);
+//                for(int i = 0; i < rsiPeriod; i++){
+//                    double indexPrice = currentPair.get(currentPair.getPriceList().size() - i - 1);
+//
+//                    if(indexPrice > startingValue){
+//                        double gain = ((indexPrice / startingValue) - 1.0) * 100.0;
+//                        gains.add(gain);
+//                    }else if(indexPrice < startingValue){
+//                        double loss = ((startingValue / indexPrice) - 1.0) * 100.0;
+//                        losses.add(loss);
+//                    }
+//                }
 
-                    if(indexPrice > startingValue){
-                        double gain = ((indexPrice / startingValue) - 1.0) * 100.0;
-                        gains.add(gain);
-                    }else if(indexPrice < startingValue){
-                        double loss = ((startingValue / indexPrice) - 1.0) * 100.0;
-                        losses.add(loss);
-                    }
-                }
-
-                double averageGain = calculateAverage(gains);
-                double averageLosses = calculateAverage(losses);
+                double averageGain = calculateAverage(findGain(startingValue, currentPair));
+                double averageLosses = calculateAverage(findLosses(startingValue, currentPair));
 
                 double rsiValue = calculateStepTwoRSI(currentRSI.getPrevAverageGains(), currentRSI.getPrevAverageLosses(), averageGain, averageLosses);
 
@@ -102,20 +108,20 @@ public class RSI {
 
                 double startingValue = currentPair.get(0);
 
-                for(int i = 0; i < currentPair.getPriceList().size() - 1; i++){
-                    double indexPrice = currentPair.get(currentPair.getPriceList().size() - i - 1);
+//                for(int i = 0; i < currentPair.getPriceList().size() - 1; i++){
+//                    double indexPrice = currentPair.get(currentPair.getPriceList().size() - i - 1);
+//
+//                    if(indexPrice > startingValue){
+//                        double gain = ((indexPrice / startingValue) - 1.0) * 100.0;
+//                        gains.add(gain);
+//                    }else if(indexPrice < startingValue){
+//                        double loss = ((startingValue / indexPrice) - 1.0) * 100.0;
+//                        losses.add(loss);
+//                    }
+//                }
 
-                    if(indexPrice > startingValue){
-                        double gain = ((indexPrice / startingValue) - 1.0) * 100.0;
-                        gains.add(gain);
-                    }else if(indexPrice < startingValue){
-                        double loss = ((startingValue / indexPrice) - 1.0) * 100.0;
-                        losses.add(loss);
-                    }
-                }
-
-                double averageGain = calculateAverage(gains);
-                double averageLosses = calculateAverage(losses);
+                double averageGain = calculateAverage(findGain(startingValue, currentPair));
+                double averageLosses = calculateAverage(findLosses(startingValue, currentPair));
 
                 double rsiValue = calculateStepOneRSI(averageGain, averageLosses);
 
@@ -126,6 +132,20 @@ public class RSI {
         }else{
             rsiValues.add(new RSIValue());
             rsiValues.get(rsiValues.size() - 1).addRSIValue(50);
+        }
+    }
+
+    private void periodChanged(){
+
+        for(int index = 0; index < TradingBot.priceFeed.getTradingPairs().size(); index++){
+            RSIValue currentRSI = rsiValues.get(index);
+
+            currentRSI.getRsiValues().clear();
+            currentRSI.addRSIValue(50);
+
+            for(int priceIndex = 0; priceIndex < TradingBot.priceFeed.getTradingPair(index).getPriceList().size(); priceIndex++){
+                calculateRSI(index);
+            }
         }
     }
 
@@ -163,6 +183,52 @@ public class RSI {
         average = average / (double) list.size();
 
         return average;
+    }
+
+    private ArrayList<Double> findGain(double startingValue, TradingPair currentPair){
+        ArrayList<Double> gains = new ArrayList<Double>();
+
+        int period = 0;
+
+        if(currentPair.getPriceList().size() < rsiPeriod){
+            period = currentPair.getPriceList().size();
+        }else{
+            period = rsiPeriod;
+        }
+
+        for(int i = 0; i < period; i++){
+            double indexPrice = currentPair.get(currentPair.getPriceList().size() - i - 1);
+
+            if(indexPrice > startingValue){
+                double gain = ((indexPrice / startingValue) - 1.0) * 100.0;
+                gains.add(gain);
+            }
+        }
+
+        return gains;
+    }
+
+    private ArrayList<Double> findLosses(double startingValue, TradingPair currentPair){
+        ArrayList<Double> losses = new ArrayList<Double>();
+
+        int period = 0;
+
+        if(currentPair.getPriceList().size() < rsiPeriod){
+            period = currentPair.getPriceList().size();
+        }else{
+            period = rsiPeriod;
+        }
+
+        for(int i = 0; i < period; i++){
+            double indexPrice = currentPair.get(currentPair.getPriceList().size() - i - 1);
+
+            if(indexPrice < startingValue){
+                double loss = ((startingValue / indexPrice) - 1.0) * 100.0;
+                losses.add(loss);
+            }
+        }
+
+        return losses;
     }
 
     public ArrayList<RSIValue> getRsiValues(){
