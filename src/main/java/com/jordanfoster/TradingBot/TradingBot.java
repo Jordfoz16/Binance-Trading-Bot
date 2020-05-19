@@ -31,6 +31,9 @@ public class TradingBot extends Thread{
     public static EMA ema;
     public static RSI rsi;
 
+    private static boolean isTrading = false;
+
+    private boolean initialised = false;
     private int intervalRate = 10000;
 
     public TradingBot(){
@@ -47,22 +50,39 @@ public class TradingBot extends Thread{
         long lastTime = System.currentTimeMillis();
 
         while(true){
-            long nowTime = System.currentTimeMillis();
 
-            if(nowTime - lastTime > intervalRate){
-                lastTime = nowTime;
+            if(isTrading){
+                long nowTime = System.currentTimeMillis();
 
-                priceFeed.update();
-                ema.update();
-                rsi.update();
-                update();
+                if(nowTime - lastTime > intervalRate || initialised == false){
+                    if(initialised == false) initialised = true;
+                    lastTime = nowTime;
 
-                //Update line chart data
-                BinanceTradingBot.mainController.updateOverview(priceFeed.getTradingPairs(), ema.getEmaValues(), rsi.getRsiValues(),0);
-                intervalRate = Integer.parseInt(fileConfig.getElement("price-feed", "interval-rate"));
+                    priceFeed.update();
+                    ema.update();
+                    rsi.update();
+                    update();
+
+                    //Update line chart data
+                    BinanceTradingBot.mainController.updateOverview(priceFeed.getTradingPairs(), ema.getEmaValues(), rsi.getRsiValues(),0);
+
+                    intervalRate = Integer.parseInt(fileConfig.getElement("price-feed", "interval-rate"));
+                }else{
+                    try {
+                        Thread.sleep(intervalRate / 5);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }else{
+
+                priceFeed.clear();
+                ema.clear();
+                rsi.clear();
+
+                //Pauses between each isTrading check
                 try {
-                    Thread.sleep(intervalRate / 5);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -91,5 +111,9 @@ public class TradingBot extends Thread{
                 }
             }
         }
+    }
+
+    public static synchronized void setTrading(boolean value){
+        isTrading = value;
     }
 }

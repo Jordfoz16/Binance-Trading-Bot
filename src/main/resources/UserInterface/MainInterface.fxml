@@ -32,7 +32,7 @@
                         </LineChart>
                         <Label alignment="CENTER_RIGHT" layoutX="77.0" layoutY="23.0" prefWidth="180.0" text="Trading Bot Running:" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="23.0" />
                         <Label fx:id="lblRunning" layoutX="211.0" layoutY="23.0" prefWidth="100.0" text="Not Running" AnchorPane.leftAnchor="200.0" AnchorPane.topAnchor="23.0" />
-                        <Button fx:id="btnStart" layoutX="118.0" layoutY="94.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="60.0" text="Start" AnchorPane.leftAnchor="118.0" AnchorPane.topAnchor="94.0" />
+                        <Button fx:id="btnStart" layoutX="118.0" layoutY="94.0" mnemonicParsing="false" onAction="#startTrading" prefHeight="27.0" prefWidth="60.0" text="Start" AnchorPane.leftAnchor="118.0" AnchorPane.topAnchor="94.0" />
                         <TableView fx:id="tablePositions" layoutX="409.0" layoutY="38.0" prefHeight="251.0" prefWidth="377.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="38.0">
                           <columns>
                             <TableColumn resizable="false" text="Symbol" />
@@ -66,7 +66,7 @@
                         <Label alignment="CENTER_RIGHT" layoutX="198.0" layoutY="216.0" prefHeight="17.0" prefWidth="85.0" text="RSI Indicator:" AnchorPane.leftAnchor="198.0" />
                         <Label fx:id="lblIndicatorEMA" alignment="CENTER" layoutX="290.0" layoutY="176.0" prefWidth="80.0" text="None" AnchorPane.leftAnchor="290.0" />
                         <Label fx:id="lblIndicatorRSI" alignment="CENTER" layoutX="290.0" layoutY="216.0" prefWidth="80.0" text="None" AnchorPane.leftAnchor="290.0" />
-                        <Button fx:id="btnStop" layoutX="217.0" layoutY="94.0" mnemonicParsing="false" prefWidth="60.0" text="Stop" AnchorPane.leftAnchor="225.0" />
+                        <Button fx:id="btnStop" layoutX="217.0" layoutY="94.0" mnemonicParsing="false" onAction="#stopTrading" prefWidth="60.0" text="Stop" AnchorPane.leftAnchor="225.0" />
                      </children></AnchorPane>
                 </content>
               </Tab>

@@ -77,6 +77,11 @@ public class PriceFeed {
         priceHistorySize = Integer.parseInt(TradingBot.fileConfig.getElement("price-feed", "price-history-size"));
     }
 
+    public void clear(){
+        tradingPairs.clear();
+        initialized = false;
+    }
+
     public ArrayList<TradingPair> getTradingPairs(){
         return tradingPairs;
     }

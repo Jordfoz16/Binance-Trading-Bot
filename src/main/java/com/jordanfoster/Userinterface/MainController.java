@@ -178,6 +178,8 @@ public class MainController {
         this.rsiHistory = rsiFeed;
         this.selectedPair = selectedPair;
 
+        if(priceHistory.size() == 0) return;
+
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -193,6 +195,14 @@ public class MainController {
     /*
     Overview Tab
      */
+
+    public void startTrading(){
+        TradingBot.setTrading(true);
+    }
+
+    public void stopTrading(){
+        TradingBot.setTrading(false);
+    }
 
     public void updateState(){
 

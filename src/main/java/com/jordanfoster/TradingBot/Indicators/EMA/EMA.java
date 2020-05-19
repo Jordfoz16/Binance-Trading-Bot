@@ -131,14 +131,12 @@ public class EMA {
 
     }
 
-//    private double calculateEMA(double currentPrice, double previousEMA){
-//        //k is the weighted multiplier
-//        double k = 2.0 / ((double) n + 1.0);
-//
-//        double ema = currentPrice * k + previousEMA * (1.0 - k);
-//
-//        return ema;
-//    }
+
+    public void clear(){
+        emaValues.clear();
+        calirationCounter = 0;
+        initialized = false;
+    }
 
     public ArrayList<EMAValue> getEmaValues(){
         return emaValues;

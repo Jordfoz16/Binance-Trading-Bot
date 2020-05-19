@@ -215,6 +215,12 @@ public class RSI {
         return losses;
     }
 
+    public void clear(){
+        rsiValues.clear();
+        calibrationCounter = 0;
+        initialized = false;
+    }
+
     public ArrayList<RSIValue> getRsiValues(){
         return rsiValues;
     }
