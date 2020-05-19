@@ -68,6 +68,19 @@ public class BinanceAPI {
         return callAPI(parameters, api);
     }
 
+    public String getCandlestick(String symbol, String interval) throws IOException {
+
+        String api = "/api/v3/klines";
+
+        ArrayList<Parameter> parameters = new ArrayList<Parameter>();
+
+        parameters.add(new Parameter("symbol", symbol));
+        parameters.add(new Parameter("interval", interval));
+//        parameters.add(new Parameter("limit", Integer.toString(500)));
+
+        return callAPI(parameters, api);
+    }
+
     private String callAPI(ArrayList<Parameter> parameters, String URL) throws IOException {
         CloseableHttpClient client = HttpClients.custom().build();
 

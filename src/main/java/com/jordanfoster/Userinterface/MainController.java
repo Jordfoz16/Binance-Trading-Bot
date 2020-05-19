@@ -4,6 +4,7 @@ import com.jordanfoster.BinanceTradingBot;
 import com.jordanfoster.TradingBot.Indicators.EMA.EMAValue;
 import com.jordanfoster.TradingBot.Indicators.RSI.RSIValue;
 import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
+import com.jordanfoster.TradingBot.Testing.Tester;
 import com.jordanfoster.TradingBot.TradingBot;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -89,7 +90,7 @@ public class MainController {
     @FXML private Button btnNetworkTest;
     @FXML private TextField txtIntervalRate;
 
-    //Account Tab - Config
+    //Settings Tab - Config
     @FXML private TextField txtPriceFeedSize;
 
     //Log Tab
@@ -213,7 +214,7 @@ public class MainController {
         lblIndicatorRSI.setText(currentRSI.getStateString());
     }
 
-    public void updatePriceChart(){
+    protected void updatePriceChart(){
 
         chartPrice.getData().clear();
         chartEMATab.getData().clear();
@@ -225,9 +226,10 @@ public class MainController {
         XYChart.Series<Integer, Double> emaData2 = new XYChart.Series<>();
 
         priceData.setName("BTCUSDT");
-        priceData2.setName("BTCUSDT");
+        priceData2.setName(priceData.getName());
+
         emaData.setName("EMA");
-        emaData2.setName("EMA");
+        emaData2.setName(emaData.getName());
 
         for(int i = 0; i < priceHistory.get(selectedPair).getPriceList().size(); i++){
             priceData.getData().add(new XYChart.Data<>(i ,priceHistory.get(selectedPair).get(i)));
@@ -252,7 +254,7 @@ public class MainController {
         yAxisPrice.autosize();
     }
 
-    public void updateRSIChart(){
+    protected void updateRSIChart(){
 
         chartRSI.getData().clear();
         chartRSITab.getData().clear();
@@ -311,11 +313,19 @@ public class MainController {
     }
 
     /*
+    Testing Tab
+     */
+
+    public void runTests(){
+        Tester tester = new Tester();
+    }
+
+    /*
     Order Book Tab
      */
 
     /*
-    Account Tab
+    Settings Tab
      */
 
     @FXML protected void accountSave(){

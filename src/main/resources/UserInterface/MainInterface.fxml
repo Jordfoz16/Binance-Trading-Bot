@@ -177,6 +177,77 @@
                      </children></AnchorPane>
                 </content>
             </Tab>
+            <Tab text="Testing">
+                <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Button fx:id="btnTesting" layoutX="670.0" layoutY="38.0" mnemonicParsing="false" onAction="#runTests" text="Run Test" AnchorPane.leftAnchor="670.0" AnchorPane.rightAnchor="36.0" />
+                        <Label alignment="CENTER_RIGHT" layoutX="14.0" layoutY="50.0" prefHeight="17.0" prefWidth="96.0" text="Starting Date:" AnchorPane.leftAnchor="14.0" />
+                        <Label fx:id="lblStartingDate" layoutX="119.0" layoutY="50.0" prefHeight="17.0" prefWidth="140.0" text="No Date" />
+                        <Label fx:id="lblEndingDate" layoutX="119.0" layoutY="88.0" prefHeight="17.0" prefWidth="140.0" text="No Date" />
+                        <Label alignment="CENTER_RIGHT" layoutX="14.0" layoutY="88.0" prefHeight="17.0" prefWidth="96.0" text="Ending Date:" AnchorPane.leftAnchor="14.0" />
+                        <Label alignment="CENTER_RIGHT" layoutX="282.0" layoutY="50.0" prefHeight="17.0" prefWidth="81.0" text="Data Points:" AnchorPane.leftAnchor="282.0" />
+                        <Label fx:id="lblDataPoints" layoutX="370.0" layoutY="50.0" prefHeight="17.0" prefWidth="93.0" text="0" AnchorPane.leftAnchor="370.0" />
+                        <Separator layoutX="263.0" layoutY="121.0" prefWidth="200.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+                        <Label alignment="CENTER_RIGHT" layoutX="263.0" layoutY="88.0" prefHeight="17.0" prefWidth="100.0" text="EMA Indications:" AnchorPane.leftAnchor="263.0" />
+                        <Label fx:id="lblEMAIndications" layoutX="370.0" layoutY="88.0" prefHeight="17.0" prefWidth="93.0" text="0" AnchorPane.leftAnchor="370.0" />
+                        <Label alignment="CENTER_RIGHT" layoutX="463.0" layoutY="88.0" prefHeight="17.0" prefWidth="100.0" text="RSI Indications:" />
+                        <Label fx:id="lblRSIIndications" layoutX="570.0" layoutY="88.0" prefHeight="17.0" prefWidth="93.0" text="0" />
+                        <Label layoutX="146.0" layoutY="147.0" text="EMA Values" AnchorPane.leftAnchor="160.0">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="581.0" layoutY="147.0" text="RSI Values" AnchorPane.rightAnchor="160.0">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Separator layoutX="397.0" layoutY="134.0" orientation="VERTICAL" prefHeight="200.0" />
+                        <Label alignment="CENTER_RIGHT" layoutX="31.0" layoutY="182.0" prefHeight="17.0" prefWidth="79.0" text="N Value:" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="690.0" />
+                        <Label alignment="CENTER_RIGHT" layoutX="31.0" layoutY="217.0" prefHeight="17.0" prefWidth="79.0" text="Buy Wait Time:" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="690.0" />
+                        <Label alignment="CENTER_RIGHT" layoutX="14.0" layoutY="253.0" prefHeight="17.0" prefWidth="79.0" text="Sell Wait Time:" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="690.0" />
+                        <TextField fx:id="txtEMAnValue" layoutX="121.0" layoutY="177.0" />
+                        <TextField fx:id="txtEMABuyWait" layoutX="121.0" layoutY="212.0" />
+                        <TextField fx:id="txtEMASellWait" layoutX="121.0" layoutY="248.0" />
+                        <Label alignment="CENTER_RIGHT" layoutX="429.0" layoutY="182.0" prefHeight="17.0" prefWidth="79.0" text="Period:" AnchorPane.leftAnchor="429.0" AnchorPane.rightAnchor="279.0" />
+                        <Label alignment="CENTER_RIGHT" layoutX="429.0" layoutY="217.0" prefHeight="17.0" prefWidth="79.0" text="Upper Bound:" AnchorPane.leftAnchor="429.0" AnchorPane.rightAnchor="279.0" />
+                        <Label alignment="CENTER_RIGHT" layoutX="429.0" layoutY="253.0" prefHeight="17.0" prefWidth="79.0" text="Lower Bound:" AnchorPane.leftAnchor="429.0" AnchorPane.rightAnchor="279.0" />
+                        <TextField fx:id="txtRSIPeriod" layoutX="536.0" layoutY="177.0" />
+                        <TextField fx:id="txtRSIUpper" layoutX="536.0" layoutY="212.0" />
+                        <TextField fx:id="txtRSILower" layoutX="536.0" layoutY="248.0" />
+                        <Separator layoutX="19.0" layoutY="344.0" prefWidth="200.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+                        <Label layoutX="355.0" layoutY="20.0" text="Test Information">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Button layoutX="670.0" layoutY="81.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="67.0" text="Save Settings" AnchorPane.leftAnchor="670.0" AnchorPane.rightAnchor="36.0" />
+                        <Label alignment="CENTER_RIGHT" layoutX="480.0" layoutY="50.0" prefHeight="17.0" prefWidth="81.0" text="Interval Rate:" />
+                        <Label fx:id="lblDataPoints1" layoutX="568.0" layoutY="50.0" prefHeight="17.0" prefWidth="93.0" text="0" />
+                        <Label alignment="CENTER_RIGHT" layoutX="14.0" layoutY="398.0" prefHeight="17.0" prefWidth="113.0" text="Number of Trades:" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="673.0" />
+                        <Label alignment="CENTER" layoutX="382.0" layoutY="366.0" text="Results" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="lblTestNumberOfTrades" layoutX="145.0" layoutY="398.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="75.0" text="0" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="580.0" />
+                        <Label alignment="CENTER_RIGHT" layoutX="14.0" layoutY="431.0" prefHeight="17.0" prefWidth="113.0" text="Profitable Trades:" AnchorPane.leftAnchor="14.0" />
+                        <Label fx:id="lblTestProfitableTrades" layoutX="145.0" layoutY="431.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="75.0" text="0" AnchorPane.leftAnchor="145.0" />
+                        <Label alignment="CENTER_RIGHT" layoutX="14.0" layoutY="464.0" prefHeight="17.0" prefWidth="113.0" text="Unprofitable Trades:" AnchorPane.leftAnchor="14.0" />
+                        <Label fx:id="lblTestUnprofitableTrades" layoutX="145.0" layoutY="464.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="75.0" text="0" AnchorPane.leftAnchor="145.0" />
+                        <Label alignment="CENTER_RIGHT" layoutX="282.0" layoutY="398.0" prefHeight="17.0" prefWidth="113.0" text="Total Profit/Loss:" />
+                        <Label fx:id="lblTestTotalProfit" layoutX="413.0" layoutY="398.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="75.0" text="0" />
+                        <Label alignment="CENTER_RIGHT" layoutX="282.0" layoutY="431.0" prefHeight="17.0" prefWidth="113.0" text="Largest Profit:" />
+                        <Label fx:id="lblTestLargestProfit" layoutX="413.0" layoutY="431.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="75.0" text="0" />
+                        <Label alignment="CENTER_RIGHT" layoutX="282.0" layoutY="464.0" prefHeight="17.0" prefWidth="113.0" text="Largest Loss:" />
+                        <Label fx:id="lblTestLargestLoss" layoutX="413.0" layoutY="464.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="75.0" text="0" />
+                        <Separator layoutX="300.0" layoutY="513.0" prefWidth="200.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+                        <Label layoutX="278.0" layoutY="570.0" text="Coin Selector:" />
+                        <ComboBox layoutX="363.0" layoutY="565.0" prefWidth="150.0" />
+                     </children></AnchorPane>
+                </content>
+            </Tab>
             <Tab text="Order Book">
                 <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
@@ -197,7 +268,7 @@
                      </children></AnchorPane>
                 </content>
             </Tab>
-            <Tab text="Account">
+            <Tab text="Settings">
                 <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>

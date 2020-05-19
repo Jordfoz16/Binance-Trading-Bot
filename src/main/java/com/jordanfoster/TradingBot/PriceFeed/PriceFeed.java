@@ -13,7 +13,6 @@ public class PriceFeed {
 
     private BinanceAPI binanceAPI;
 
-    private int priceHistorySize = 10;
     private boolean initialized = false;
 
     public ArrayList<TradingPair> tradingPairs = new ArrayList<TradingPair>();
@@ -23,7 +22,6 @@ public class PriceFeed {
     }
 
     public void update(){
-        refreshValues();
         JSONHandler jsonHandler = new JSONHandler();
 
         try {
@@ -71,10 +69,6 @@ public class PriceFeed {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public void refreshValues(){
-        priceHistorySize = Integer.parseInt(TradingBot.fileConfig.getElement("price-feed", "price-history-size"));
     }
 
     public void clear(){

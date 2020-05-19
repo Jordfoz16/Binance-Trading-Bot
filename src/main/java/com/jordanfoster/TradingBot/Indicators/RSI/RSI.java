@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class RSI {
 
-    public static int rsiPeriod = 600;
+    public int rsiPeriod = 600;
     private int calibrationTime = 30;
     private int calibrationCounter = 0;
     private int rsiUpperBound = 60;
