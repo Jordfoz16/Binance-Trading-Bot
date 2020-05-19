@@ -49,6 +49,12 @@ public class TradingBot extends Thread{
                 //Update line chart data
                 BinanceTradingBot.mainController.updateOverview(priceFeed.getTradingPairs(), ema.getEmaValues(), rsi.getRsiValues(),0);
                 intervalRate = Integer.parseInt(fileConfig.getElement("price-feed", "interval-rate"));
+            }else{
+                try {
+                    Thread.sleep(intervalRate / 5);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
