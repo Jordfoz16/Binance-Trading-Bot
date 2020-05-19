@@ -6,20 +6,12 @@ import java.util.ArrayList;
 
 public class EMAValue {
 
-    public enum State{
-        BUY,
-        SELL,
-        NONE,
-        HOLD,
-        CALIBRATION
-    }
-
     public int buyWaitCounter = 0;
     public int sellWaitCounter = 0;
 
     private ArrayList<Double> emaValue = new ArrayList<Double>();
 
-    private State state = State.NONE;
+    private TradingBot.State state = TradingBot.State.NONE;
 
     public EMAValue(double value){
         addValue(value);
@@ -39,7 +31,7 @@ public class EMAValue {
         }
     }
 
-    public void setState(State state){
+    public void setState(TradingBot.State state){
         this.state = state;
     }
 
@@ -62,7 +54,7 @@ public class EMAValue {
         return emaValue.get(emaValue.size() - 1);
     }
 
-    public State getState(){
+    public TradingBot.State getState(){
         return state;
     }
 

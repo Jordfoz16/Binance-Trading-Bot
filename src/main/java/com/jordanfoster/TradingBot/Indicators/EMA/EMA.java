@@ -59,18 +59,18 @@ public class EMA {
             if(TradingBot.priceFeed.getTradingPair(index).getCurrentPrice() > currentCoin.getCurrent()){
                 //Doesn't buy unless its above the waiting time
                 if(buyWaitTime <= currentCoin.buyWaitCounter){
-                    currentCoin.setState(EMAValue.State.BUY);
+                    currentCoin.setState(TradingBot.State.BUY);
                 }else{
-                    currentCoin.setState(EMAValue.State.HOLD);
+                    currentCoin.setState(TradingBot.State.HOLD);
                     currentCoin.buyWaitCounter++;
                 }
                 //Resets the counter for selling
                 currentCoin.sellWaitCounter = 0;
             }else{
                 if(sellWaitTime <= currentCoin.sellWaitCounter){
-                    currentCoin.setState(EMAValue.State.SELL);
+                    currentCoin.setState(TradingBot.State.SELL);
                 }else{
-                    currentCoin.setState(EMAValue.State.HOLD);
+                    currentCoin.setState(TradingBot.State.HOLD);
                     currentCoin.sellWaitCounter++;
                 }
 
@@ -79,7 +79,7 @@ public class EMA {
             }
 
         }else{
-            currentCoin.setState(EMAValue.State.CALIBRATION);
+            currentCoin.setState(TradingBot.State.CALIBRATION);
             calirationCounter++;
         }
     }

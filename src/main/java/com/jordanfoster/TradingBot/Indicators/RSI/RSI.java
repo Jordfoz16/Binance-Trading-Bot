@@ -51,15 +51,15 @@ public class RSI {
         if(calibrationTime <= calibrationCounter){
 
             if(currentCoin.getCurrent() > rsiUpperBound){
-                currentCoin.setState(RSIValue.State.BUY);
+                currentCoin.setState(TradingBot.State.BUY);
             }else if(currentCoin.getCurrent() < rsiLowerBound){
-                currentCoin.setState(RSIValue.State.SELL);
+                currentCoin.setState(TradingBot.State.SELL);
             }else{
-                currentCoin.setState(RSIValue.State.HOLD);
+                currentCoin.setState(TradingBot.State.HOLD);
             }
 
         }else{
-            currentCoin.setState(RSIValue.State.CALIBRATION);
+            currentCoin.setState(TradingBot.State.CALIBRATION);
             calibrationCounter++;
         }
     }

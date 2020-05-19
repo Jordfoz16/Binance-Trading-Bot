@@ -7,20 +7,12 @@ import java.util.ArrayList;
 
 public class RSIValue {
 
-    public enum State{
-        BUY,
-        SELL,
-        NONE,
-        HOLD,
-        CALIBRATION
-    }
-
     private double prevAverageGains = 0;
     private double prevAverageLosses = 0;
 
     private ArrayList<Double> rsiValues = new ArrayList<Double>();
 
-    private State state = State.NONE;
+    private TradingBot.State state = TradingBot.State.NONE;
 
     public void addRSIValue(double value){
         rsiValues.add(value);
@@ -40,7 +32,7 @@ public class RSIValue {
         this.prevAverageLosses = averageLosses;
     }
 
-    public void setState(RSIValue.State state) {
+    public void setState(TradingBot.State state) {
         this.state = state;
     }
 
@@ -65,7 +57,7 @@ public class RSIValue {
         return prevAverageLosses;
     }
 
-    public RSIValue.State getState(){
+    public TradingBot.State getState(){
         return state;
     }
 
