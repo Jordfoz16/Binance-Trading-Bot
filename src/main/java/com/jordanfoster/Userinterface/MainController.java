@@ -74,6 +74,28 @@ public class MainController {
     @FXML private NumberAxis xAxisRSITab;
     @FXML private NumberAxis yAxisRSITab;
 
+    //Testing Tab
+    @FXML private Label lblStartingDate;
+    @FXML private Label lblEndingDate;
+    @FXML private Label lblDataPoints;
+    @FXML private Label lblEMAIndications;
+    @FXML private Label lblIntervalRate;
+    @FXML private Label lblRSIIndications;
+    @FXML private Label lblTestNumberOfTrades;
+    @FXML private Label lblTestProfitableTrades;
+    @FXML private Label lblTestUnprofitableTrades;
+    @FXML private Label lblTestTotalProfit;
+    @FXML private Label lblTestLargestProfit;
+    @FXML private Label lblTestLargestLoss;
+    @FXML private TextField txtEMAnValue;
+    @FXML private TextField txtEMABuyWait;
+    @FXML private TextField txtEMASellWait;
+    @FXML private TextField txtTestingRSIPeriod;
+    @FXML private TextField txtTestingRSIUpper;
+    @FXML private TextField txtTestingRSILower;
+
+
+
     //Order Book Tab
     @FXML private TextField txtTrades;
     @FXML private TableView tableOrderBook;
