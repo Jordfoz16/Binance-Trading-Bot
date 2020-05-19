@@ -21,6 +21,8 @@ public class TradingBot extends Thread{
     public static EMA ema;
     public static RSI rsi;
 
+    private int intervalRate = 10000;
+
     public TradingBot(){
         fileConfig = new FileConfig();
         fileTradingPairs = new FileTradingPairs();
@@ -36,7 +38,7 @@ public class TradingBot extends Thread{
         while(true){
             long nowTime = System.currentTimeMillis();
 
-            if(nowTime - lastTime > 1000){
+            if(nowTime - lastTime > intervalRate){
                 lastTime = nowTime;
 
                 priceFeed.update();
@@ -46,6 +48,7 @@ public class TradingBot extends Thread{
 
                 //Update line chart data
                 BinanceTradingBot.mainController.updateOverview(priceFeed.getTradingPairs(), ema.getEmaValues(), rsi.getRsiValues(),0);
+                intervalRate = Integer.parseInt(fileConfig.getElement("price-feed", "interval-rate"));
             }
         }
     }

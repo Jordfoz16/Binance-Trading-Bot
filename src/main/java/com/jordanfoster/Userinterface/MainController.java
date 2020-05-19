@@ -87,6 +87,7 @@ public class MainController {
     @FXML private Label lblWalletConnection;
     @FXML private Label lblPriceConnection;
     @FXML private Button btnNetworkTest;
+    @FXML private TextField txtIntervalRate;
 
     //Account Tab - Config
     @FXML private TextField txtPriceFeedSize;
@@ -116,6 +117,7 @@ public class MainController {
         txtAPI.setText(TradingBot.fileConfig.getElement("account","api-key"));
         txtSecret.setText(TradingBot.fileConfig.getElement("account","secret-key"));
         txtPriceFeedSize.setText(TradingBot.fileConfig.getElement("price-feed", "price-history-size"));
+        txtIntervalRate.setText(TradingBot.fileConfig.getElement("price-feed", "interval-rate"));
     }
 
     private void initConfigLineChart(){
@@ -310,6 +312,7 @@ public class MainController {
         TradingBot.fileConfig.editElement("account","api-key", txtAPI.getText());
         TradingBot.fileConfig.editElement("account","secret-key", txtSecret.getText());
         TradingBot.fileConfig.editElement("price-feed", "price-history-size", Integer.parseInt(txtPriceFeedSize.getText()));
+        TradingBot.fileConfig.editElement("price-feed", "interval-rate", Integer.parseInt(txtIntervalRate.getText()));
     }
 
     /*
