@@ -1,6 +1,7 @@
 package com.jordanfoster.TradingBot.Indicators;
 
 import com.jordanfoster.TradingBot.Indicators.EMA.DataEMA;
+import com.jordanfoster.TradingBot.PriceFeed.PriceFeed;
 import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
 import com.jordanfoster.TradingBot.TradingBot;
 
@@ -12,13 +13,16 @@ public abstract class Indicator {
     protected boolean initialized = false;
 
     protected ArrayList<Data> dataArrayList = new ArrayList<Data>();
+    protected PriceFeed priceFeed;
 
     public abstract void refreshValues();
 
-    public void update(){
+    public void update(PriceFeed priceFeed){
         refreshValues();
 
-        for(int index = 0; index < TradingBot.livePriceFeed.getTradingPairs().size(); index++){
+        this.priceFeed = priceFeed;
+
+        for(int index = 0; index < priceFeed.getTradingPairs().size(); index++){
             calculate(index, null);
             updateState(index);
         }

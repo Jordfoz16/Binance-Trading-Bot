@@ -11,12 +11,8 @@ public class RSI extends Indicator {
 
     public int rsiPeriod = 600;
     private int calibrationTime = 30;
-//    private int calibrationCounter = 0;
     private int rsiUpperBound = 60;
     private int rsiLowerBound = 40;
-
-//    private ArrayList<DataRSI> dataRsis = new ArrayList<DataRSI>();
-//    private boolean initialized = false;
 
     public RSI(){
         refreshValues();
@@ -30,21 +26,10 @@ public class RSI extends Indicator {
         rsiUpperBound = Integer.parseInt(TradingBot.fileConfig.getElement("rsi", "upper-bound"));
         rsiLowerBound = Integer.parseInt(TradingBot.fileConfig.getElement("rsi", "lower-bound"));
 
-        if(rsiPeriod != currentPeriod){
+        if(rsiPeriod != currentPeriod && initialized){
             periodChanged();
         }
     }
-
-//    public void update(){
-//        refreshValues();
-//
-//        for(int index = 0; index < TradingBot.livePriceFeed.getTradingPairs().size(); index++){
-//            calculateRSI(index, null);
-//            updateState(index);
-//        }
-//
-//        initialized = true;
-//    }
 
     protected void updateState(int index){
         DataRSI currentCoin = (DataRSI) dataArrayList.get(index);
@@ -67,7 +52,7 @@ public class RSI extends Indicator {
 
     protected void calculate(int index, TradingPair tradingPair){
 
-        TradingPair currentPair = TradingBot.livePriceFeed.getTradingPair(index);
+        TradingPair currentPair = priceFeed.getTradingPair(index);
 
         if(tradingPair != null){
             currentPair = tradingPair;
@@ -118,17 +103,17 @@ public class RSI extends Indicator {
 
         LivePriceFeed tempLivePriceFeed = new LivePriceFeed();
 
-        for(int index = 0; index < TradingBot.livePriceFeed.getTradingPairs().size(); index++){
+        for(int index = 0; index < priceFeed.getTradingPairs().size(); index++){
             DataRSI currentRSI = (DataRSI) dataArrayList.get(index);
 
             currentRSI.getValues().clear();
             currentRSI.addValue(50);
 
 
-            tempLivePriceFeed.getTradingPairs().add(new TradingPair(TradingBot.livePriceFeed.getTradingPair(index).getSymbol(), TradingBot.livePriceFeed.getTradingPair(index).get(0)));
+            tempLivePriceFeed.getTradingPairs().add(new TradingPair(priceFeed.getTradingPair(index).getSymbol(), priceFeed.getTradingPair(index).get(0)));
 
-            for(int i = 0; i < TradingBot.livePriceFeed.getTradingPair(index).getPriceList().size(); i++){
-                tempLivePriceFeed.getTradingPair(index).addPrice(TradingBot.livePriceFeed.getTradingPair(index).get(i));
+            for(int i = 0; i < priceFeed.getTradingPair(index).getPriceList().size(); i++){
+                tempLivePriceFeed.getTradingPair(index).addPrice(priceFeed.getTradingPair(index).get(i));
                 calculate(index, tempLivePriceFeed.getTradingPair(index));
             }
         }
@@ -215,14 +200,4 @@ public class RSI extends Indicator {
 
         return losses;
     }
-
-//    public void clear(){
-//        dataRsis.clear();
-//        calibrationCounter = 0;
-//        initialized = false;
-//    }
-
-//    public ArrayList<DataRSI> getDataRsis(){
-//        return dataRsis;
-//    }
 }

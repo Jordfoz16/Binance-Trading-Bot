@@ -57,8 +57,8 @@ public class TradingBot extends Thread{
                     lastTime = nowTime;
 
                     livePriceFeed.update();
-                    ema.update();
-                    rsi.update();
+                    ema.update(livePriceFeed);
+                    rsi.update(livePriceFeed);
                     update();
 
                     //Update line chart data

@@ -26,7 +26,7 @@ public class EMA extends Indicator {
         sellWaitTime = Integer.parseInt(TradingBot.fileConfig.getElement("ema", "sell-wait"));
         calibrationTime = Integer.parseInt(TradingBot.fileConfig.getElement("ema", "calibration-time"));
 
-        if(n != currentN){
+        if(n != currentN && initialized){
             periodChanged();
         }
     }
@@ -38,7 +38,7 @@ public class EMA extends Indicator {
         //Checks to make sure calibration time is completed
         if(calibrationTime <= calibrationCounter){
 
-            if(TradingBot.livePriceFeed.getTradingPair(index).getCurrentPrice() > currentCoin.getCurrent()){
+            if(priceFeed.getTradingPair(index).getCurrentPrice() > currentCoin.getCurrent()){
                 //Doesn't buy unless its above the waiting time
                 if(buyWaitTime <= currentCoin.buyWaitCounter){
                     currentCoin.setState(TradingBot.State.BUY);
@@ -68,7 +68,7 @@ public class EMA extends Indicator {
 
     protected void calculate(int index, TradingPair tradingPair){
 
-        TradingPair currentPair = TradingBot.livePriceFeed.getTradingPair(index);
+        TradingPair currentPair = priceFeed.getTradingPair(index);
 
         if(tradingPair != null){
             currentPair = tradingPair;
@@ -98,17 +98,17 @@ public class EMA extends Indicator {
 
         LivePriceFeed tempLivePriceFeed = new LivePriceFeed();
 
-        for(int index = 0; index < TradingBot.livePriceFeed.getTradingPairs().size(); index++){
+        for(int index = 0; index < priceFeed.getTradingPairs().size(); index++){
             Data currentEMA = dataArrayList.get(index);
 
             currentEMA.getValues().clear();
-            currentEMA.addValue(TradingBot.livePriceFeed.getTradingPair(index).get(0));
+            currentEMA.addValue(priceFeed.getTradingPair(index).get(0));
 
 
-            tempLivePriceFeed.getTradingPairs().add(new TradingPair(TradingBot.livePriceFeed.getTradingPair(index).getSymbol(), TradingBot.livePriceFeed.getTradingPair(index).get(0)));
+            tempLivePriceFeed.getTradingPairs().add(new TradingPair(priceFeed.getTradingPair(index).getSymbol(), priceFeed.getTradingPair(index).get(0)));
 
-            for(int i = 0; i < TradingBot.livePriceFeed.getTradingPair(index).getPriceList().size(); i++){
-                tempLivePriceFeed.getTradingPair(index).addPrice(TradingBot.livePriceFeed.getTradingPair(index).get(i));
+            for(int i = 0; i < priceFeed.getTradingPair(index).getPriceList().size(); i++){
+                tempLivePriceFeed.getTradingPair(index).addPrice(priceFeed.getTradingPair(index).get(i));
                 calculate(index, tempLivePriceFeed.getTradingPair(index));
             }
         }
