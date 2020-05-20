@@ -14,7 +14,7 @@ public class RSI {
     private int rsiUpperBound = 60;
     private int rsiLowerBound = 40;
 
-    private ArrayList<RSIValue> rsiValues = new ArrayList<RSIValue>();
+    private ArrayList<DataRSI> dataRsis = new ArrayList<DataRSI>();
     private boolean initialized = false;
 
     public RSI(){
@@ -46,7 +46,7 @@ public class RSI {
     }
 
     private void updateState(int index){
-        RSIValue currentCoin = rsiValues.get(index);
+        DataRSI currentCoin = dataRsis.get(index);
 
         if(calibrationTime <= calibrationCounter){
 
@@ -74,7 +74,7 @@ public class RSI {
 
         if(initialized){
 
-            RSIValue currentRSI = rsiValues.get(index);
+            DataRSI currentRSI = dataRsis.get(index);
 
             if(currentPair.getPriceList().size() > rsiPeriod){
                 //If there is enough data to use the full rsi period
@@ -106,8 +106,8 @@ public class RSI {
             }
 
         }else{
-            rsiValues.add(new RSIValue());
-            rsiValues.get(rsiValues.size() - 1).addRSIValue(50);
+            dataRsis.add(new DataRSI());
+            dataRsis.get(dataRsis.size() - 1).addRSIValue(50);
         }
     }
 
@@ -118,7 +118,7 @@ public class RSI {
         LivePriceFeed tempLivePriceFeed = new LivePriceFeed();
 
         for(int index = 0; index < TradingBot.livePriceFeed.getTradingPairs().size(); index++){
-            RSIValue currentRSI = rsiValues.get(index);
+            DataRSI currentRSI = dataRsis.get(index);
 
             currentRSI.getRsiValues().clear();
             currentRSI.addRSIValue(50);
@@ -216,12 +216,12 @@ public class RSI {
     }
 
     public void clear(){
-        rsiValues.clear();
+        dataRsis.clear();
         calibrationCounter = 0;
         initialized = false;
     }
 
-    public ArrayList<RSIValue> getRsiValues(){
-        return rsiValues;
+    public ArrayList<DataRSI> getDataRsis(){
+        return dataRsis;
     }
 }

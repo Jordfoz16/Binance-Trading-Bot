@@ -1,8 +1,7 @@
 package com.jordanfoster.Userinterface;
 
-import com.jordanfoster.BinanceTradingBot;
-import com.jordanfoster.TradingBot.Indicators.EMA.EMAValue;
-import com.jordanfoster.TradingBot.Indicators.RSI.RSIValue;
+import com.jordanfoster.TradingBot.Indicators.EMA.DataEMA;
+import com.jordanfoster.TradingBot.Indicators.RSI.DataRSI;
 import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
 import com.jordanfoster.TradingBot.Testing.Tester;
 import com.jordanfoster.TradingBot.TradingBot;
@@ -191,11 +190,11 @@ public class MainController {
     }
 
     private ArrayList<TradingPair> priceHistory;
-    private ArrayList<EMAValue> emaHistory;
-    private ArrayList<RSIValue> rsiHistory;
+    private ArrayList<DataEMA> emaHistory;
+    private ArrayList<DataRSI> rsiHistory;
     private int selectedPair = 0;
 
-    public void updateOverview(ArrayList<TradingPair> priceFeed, ArrayList<EMAValue> emaFeed, ArrayList<RSIValue> rsiFeed, int selectedPair){
+    public void updateOverview(ArrayList<TradingPair> priceFeed, ArrayList<DataEMA> emaFeed, ArrayList<DataRSI> rsiFeed, int selectedPair){
         this.priceHistory = priceFeed;
         this.emaHistory = emaFeed;
         this.rsiHistory = rsiFeed;
@@ -229,8 +228,8 @@ public class MainController {
 
     public void updateState(){
 
-        EMAValue currentEMA = emaHistory.get(selectedPair);
-        RSIValue currentRSI = rsiHistory.get(selectedPair);
+        DataEMA currentEMA = emaHistory.get(selectedPair);
+        DataRSI currentRSI = rsiHistory.get(selectedPair);
 
         lblIndicatorEMA.setText(currentEMA.getStateString());
         lblIndicatorRSI.setText(currentRSI.getStateString());

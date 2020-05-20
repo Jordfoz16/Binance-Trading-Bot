@@ -1,11 +1,10 @@
 package com.jordanfoster.TradingBot.Indicators.RSI;
 
-import com.jordanfoster.TradingBot.Indicators.EMA.EMAValue;
 import com.jordanfoster.TradingBot.TradingBot;
 
 import java.util.ArrayList;
 
-public class RSIValue {
+public class DataRSI {
 
     private double prevAverageGains = 0;
     private double prevAverageLosses = 0;

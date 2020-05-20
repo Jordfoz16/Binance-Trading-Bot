@@ -4,7 +4,7 @@ import com.jordanfoster.TradingBot.TradingBot;
 
 import java.util.ArrayList;
 
-public class EMAValue {
+public class DataEMA {
 
     public int buyWaitCounter = 0;
     public int sellWaitCounter = 0;
@@ -13,7 +13,7 @@ public class EMAValue {
 
     private TradingBot.State state = TradingBot.State.NONE;
 
-    public EMAValue(double value){
+    public DataEMA(double value){
         addValue(value);
     }
 

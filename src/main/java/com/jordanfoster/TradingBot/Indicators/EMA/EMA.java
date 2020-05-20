@@ -17,7 +17,7 @@ public class EMA {
 
     private boolean initialized = false;
 
-    private ArrayList<EMAValue> emaValues = new ArrayList<EMAValue>();
+    private ArrayList<DataEMA> dataEmas = new ArrayList<DataEMA>();
 
     public EMA(){
         refreshValues();
@@ -50,7 +50,7 @@ public class EMA {
 
     private void updateState(int index){
 
-        EMAValue currentCoin = emaValues.get(index);
+        DataEMA currentCoin = dataEmas.get(index);
 
         //Checks to make sure calibration time is completed
         if(calibrationTime <= calirationCounter){
@@ -97,15 +97,15 @@ public class EMA {
             //k is the weighted multiplier
             double k = 2.0 / ((double) n + 1.0);
 
-            double prevEMA = emaValues.get(index).getPrev();
+            double prevEMA = dataEmas.get(index).getPrev();
 
             double ema = currentPrice * k + prevEMA * (1.0 - k);
 
-            emaValues.get(index).addValue(ema);
+            dataEmas.get(index).addValue(ema);
 
         }else {
             //Setting up the array list on the first loop
-            emaValues.add(new EMAValue(currentPrice));
+            dataEmas.add(new DataEMA(currentPrice));
         }
     }
 
@@ -114,7 +114,7 @@ public class EMA {
         LivePriceFeed tempLivePriceFeed = new LivePriceFeed();
 
         for(int index = 0; index < TradingBot.livePriceFeed.getTradingPairs().size(); index++){
-            EMAValue currentEMA = emaValues.get(index);
+            DataEMA currentEMA = dataEmas.get(index);
 
             currentEMA.getEmaValue().clear();
             currentEMA.addValue(TradingBot.livePriceFeed.getTradingPair(index).get(0));
@@ -132,12 +132,12 @@ public class EMA {
 
 
     public void clear(){
-        emaValues.clear();
+        dataEmas.clear();
         calirationCounter = 0;
         initialized = false;
     }
 
-    public ArrayList<EMAValue> getEmaValues(){
-        return emaValues;
+    public ArrayList<DataEMA> getDataEmas(){
+        return dataEmas;
     }
 }

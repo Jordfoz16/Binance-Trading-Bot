@@ -1,6 +1,5 @@
 package com.jordanfoster.FileManagement;
 
-import com.jordanfoster.TradingBot.Indicators.RSI.RSIValue;
 import com.jordanfoster.TradingBot.TradingBot;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
