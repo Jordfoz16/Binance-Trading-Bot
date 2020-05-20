@@ -5,10 +5,8 @@ import com.jordanfoster.FileManagement.FileConfig;
 import com.jordanfoster.FileManagement.FileOrders;
 import com.jordanfoster.FileManagement.FileTradingPairs;
 import com.jordanfoster.TradingBot.Indicators.EMA.EMA;
-import com.jordanfoster.TradingBot.Indicators.EMA.EMAValue;
 import com.jordanfoster.TradingBot.Indicators.RSI.RSI;
-import com.jordanfoster.TradingBot.Indicators.RSI.RSIValue;
-import com.jordanfoster.TradingBot.PriceFeed.PriceFeed;
+import com.jordanfoster.TradingBot.PriceFeed.LivePriceFeed;
 
 public class TradingBot extends Thread{
 
@@ -27,7 +25,7 @@ public class TradingBot extends Thread{
     public static FileTradingPairs fileTradingPairs;
     public static FileOrders fileOrders;
 
-    public static PriceFeed priceFeed;
+    public static LivePriceFeed livePriceFeed;
     public static EMA ema;
     public static RSI rsi;
 
@@ -40,7 +38,7 @@ public class TradingBot extends Thread{
         fileConfig = new FileConfig();
         fileTradingPairs = new FileTradingPairs();
         fileOrders = new FileOrders();
-        priceFeed = new PriceFeed();
+        livePriceFeed = new LivePriceFeed();
         ema = new EMA();
         rsi = new RSI();
     }
@@ -58,13 +56,13 @@ public class TradingBot extends Thread{
                     if(initialised == false) initialised = true;
                     lastTime = nowTime;
 
-                    priceFeed.update();
+                    livePriceFeed.update();
                     ema.update();
                     rsi.update();
                     update();
 
                     //Update line chart data
-                    BinanceTradingBot.mainController.updateOverview(priceFeed.getTradingPairs(), ema.getEmaValues(), rsi.getRsiValues(),0);
+                    BinanceTradingBot.mainController.updateOverview(livePriceFeed.getTradingPairs(), ema.getEmaValues(), rsi.getRsiValues(),0);
 
                     intervalRate = Integer.parseInt(fileConfig.getElement("price-feed", "interval-rate"));
                 }else{
@@ -76,7 +74,7 @@ public class TradingBot extends Thread{
                 }
             }else{
 
-                priceFeed.clear();
+                livePriceFeed.clear();
                 ema.clear();
                 rsi.clear();
 
@@ -97,7 +95,7 @@ public class TradingBot extends Thread{
         if(bitcoinBought == false){
             if(ema.getEmaValues().get(0).getState() == State.BUY){
                 if(rsi.getRsiValues().get(0).getState() == State.BUY){
-                    System.out.println("Bought: " + priceFeed.getTradingPair(0).getCurrentPrice());
+                    System.out.println("Bought: " + livePriceFeed.getTradingPair(0).getCurrentPrice());
                     bitcoinBought = true;
                 }
             }
@@ -106,7 +104,7 @@ public class TradingBot extends Thread{
         if(bitcoinBought){
             if(ema.getEmaValues().get(0).getState() == State.SELL){
                 if(rsi.getRsiValues().get(0).getState() == State.SELL){
-                    System.out.println("Sold: " + priceFeed.getTradingPair(0).getCurrentPrice());
+                    System.out.println("Sold: " + livePriceFeed.getTradingPair(0).getCurrentPrice());
                     bitcoinBought = false;
                 }
             }

@@ -1,6 +1,6 @@
 package com.jordanfoster.TradingBot.Indicators.RSI;
 
-import com.jordanfoster.TradingBot.PriceFeed.PriceFeed;
+import com.jordanfoster.TradingBot.PriceFeed.LivePriceFeed;
 import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
 import com.jordanfoster.TradingBot.TradingBot;
 
@@ -37,7 +37,7 @@ public class RSI {
     public void update(){
         refreshValues();
 
-        for(int index = 0; index < TradingBot.priceFeed.getTradingPairs().size(); index++){
+        for(int index = 0; index < TradingBot.livePriceFeed.getTradingPairs().size(); index++){
             calculateRSI(index, null);
             updateState(index);
         }
@@ -66,7 +66,7 @@ public class RSI {
 
     private void calculateRSI(int index, TradingPair tradingPair){
 
-        TradingPair currentPair = TradingBot.priceFeed.getTradingPair(index);
+        TradingPair currentPair = TradingBot.livePriceFeed.getTradingPair(index);
 
         if(tradingPair != null){
             currentPair = tradingPair;
@@ -115,20 +115,20 @@ public class RSI {
 
         //Cycles through the the price feed and calculates new RSI values depending on the new period
 
-        PriceFeed tempPriceFeed = new PriceFeed();
+        LivePriceFeed tempLivePriceFeed = new LivePriceFeed();
 
-        for(int index = 0; index < TradingBot.priceFeed.getTradingPairs().size(); index++){
+        for(int index = 0; index < TradingBot.livePriceFeed.getTradingPairs().size(); index++){
             RSIValue currentRSI = rsiValues.get(index);
 
             currentRSI.getRsiValues().clear();
             currentRSI.addRSIValue(50);
 
 
-            tempPriceFeed.tradingPairs.add(new TradingPair(TradingBot.priceFeed.getTradingPair(index).getSymbol(), TradingBot.priceFeed.getTradingPair(index).get(0)));
+            tempLivePriceFeed.getTradingPairs().add(new TradingPair(TradingBot.livePriceFeed.getTradingPair(index).getSymbol(), TradingBot.livePriceFeed.getTradingPair(index).get(0)));
 
-            for(int i = 0; i < TradingBot.priceFeed.getTradingPair(index).getPriceList().size(); i++){
-                tempPriceFeed.getTradingPair(index).addPrice(TradingBot.priceFeed.getTradingPair(index).get(i));
-                calculateRSI(index, tempPriceFeed.getTradingPair(index));
+            for(int i = 0; i < TradingBot.livePriceFeed.getTradingPair(index).getPriceList().size(); i++){
+                tempLivePriceFeed.getTradingPair(index).addPrice(TradingBot.livePriceFeed.getTradingPair(index).get(i));
+                calculateRSI(index, tempLivePriceFeed.getTradingPair(index));
             }
         }
     }

@@ -1,7 +1,6 @@
 package com.jordanfoster.TradingBot.Indicators.EMA;
 
-import com.jordanfoster.TradingBot.Indicators.RSI.RSIValue;
-import com.jordanfoster.TradingBot.PriceFeed.PriceFeed;
+import com.jordanfoster.TradingBot.PriceFeed.LivePriceFeed;
 import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
 import com.jordanfoster.TradingBot.TradingBot;
 
@@ -41,7 +40,7 @@ public class EMA {
         refreshValues();
 
         //Update the EMA value for each currency
-        for (int index = 0; index < TradingBot.priceFeed.getTradingPairs().size(); index++) {
+        for (int index = 0; index < TradingBot.livePriceFeed.getTradingPairs().size(); index++) {
             calculateEMA(index, null);
             updateState(index);
         }
@@ -56,7 +55,7 @@ public class EMA {
         //Checks to make sure calibration time is completed
         if(calibrationTime <= calirationCounter){
 
-            if(TradingBot.priceFeed.getTradingPair(index).getCurrentPrice() > currentCoin.getCurrent()){
+            if(TradingBot.livePriceFeed.getTradingPair(index).getCurrentPrice() > currentCoin.getCurrent()){
                 //Doesn't buy unless its above the waiting time
                 if(buyWaitTime <= currentCoin.buyWaitCounter){
                     currentCoin.setState(TradingBot.State.BUY);
@@ -86,7 +85,7 @@ public class EMA {
 
     private void calculateEMA(int index, TradingPair tradingPair){
 
-        TradingPair currentPair = TradingBot.priceFeed.getTradingPair(index);
+        TradingPair currentPair = TradingBot.livePriceFeed.getTradingPair(index);
 
         if(tradingPair != null){
             currentPair = tradingPair;
@@ -112,20 +111,20 @@ public class EMA {
 
     public void nChanged(){
 
-        PriceFeed tempPriceFeed = new PriceFeed();
+        LivePriceFeed tempLivePriceFeed = new LivePriceFeed();
 
-        for(int index = 0; index < TradingBot.priceFeed.getTradingPairs().size(); index++){
+        for(int index = 0; index < TradingBot.livePriceFeed.getTradingPairs().size(); index++){
             EMAValue currentEMA = emaValues.get(index);
 
             currentEMA.getEmaValue().clear();
-            currentEMA.addValue(TradingBot.priceFeed.getTradingPair(index).get(0));
+            currentEMA.addValue(TradingBot.livePriceFeed.getTradingPair(index).get(0));
 
 
-            tempPriceFeed.tradingPairs.add(new TradingPair(TradingBot.priceFeed.getTradingPair(index).getSymbol(), TradingBot.priceFeed.getTradingPair(index).get(0)));
+            tempLivePriceFeed.getTradingPairs().add(new TradingPair(TradingBot.livePriceFeed.getTradingPair(index).getSymbol(), TradingBot.livePriceFeed.getTradingPair(index).get(0)));
 
-            for(int i = 0; i < TradingBot.priceFeed.getTradingPair(index).getPriceList().size(); i++){
-                tempPriceFeed.getTradingPair(index).addPrice(TradingBot.priceFeed.getTradingPair(index).get(i));
-                calculateEMA(index, tempPriceFeed.getTradingPair(index));
+            for(int i = 0; i < TradingBot.livePriceFeed.getTradingPair(index).getPriceList().size(); i++){
+                tempLivePriceFeed.getTradingPair(index).addPrice(TradingBot.livePriceFeed.getTradingPair(index).get(i));
+                calculateEMA(index, tempLivePriceFeed.getTradingPair(index));
             }
         }
 
