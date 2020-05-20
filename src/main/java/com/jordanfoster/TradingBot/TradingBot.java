@@ -62,7 +62,7 @@ public class TradingBot extends Thread{
                     update();
 
                     //Update line chart data
-                    BinanceTradingBot.mainController.updateOverview(livePriceFeed.getTradingPairs(), ema.getDataEmas(), rsi.getDataRsis(),0);
+                    BinanceTradingBot.mainController.updateOverview(livePriceFeed.getTradingPairs(), ema.getData(), rsi.getData(),0);
 
                     intervalRate = Integer.parseInt(fileConfig.getElement("price-feed", "interval-rate"));
                 }else{
@@ -93,8 +93,8 @@ public class TradingBot extends Thread{
     public void update(){
 
         if(bitcoinBought == false){
-            if(ema.getDataEmas().get(0).getState() == State.BUY){
-                if(rsi.getDataRsis().get(0).getState() == State.BUY){
+            if(ema.getData().get(0).getState() == State.BUY){
+                if(rsi.getData().get(0).getState() == State.BUY){
                     System.out.println("Bought: " + livePriceFeed.getTradingPair(0).getCurrentPrice());
                     bitcoinBought = true;
                 }
@@ -102,8 +102,8 @@ public class TradingBot extends Thread{
         }
 
         if(bitcoinBought){
-            if(ema.getDataEmas().get(0).getState() == State.SELL){
-                if(rsi.getDataRsis().get(0).getState() == State.SELL){
+            if(ema.getData().get(0).getState() == State.SELL){
+                if(rsi.getData().get(0).getState() == State.SELL){
                     System.out.println("Sold: " + livePriceFeed.getTradingPair(0).getCurrentPrice());
                     bitcoinBought = false;
                 }
