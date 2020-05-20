@@ -1,10 +1,8 @@
 package com.jordanfoster;
 
-import com.jordanfoster.FileManagement.FileManagement;
-import com.jordanfoster.JSONHandler.JSONHandler;
+
 import com.jordanfoster.TradingBot.TradingBot;
-import com.jordanfoster.TradingBot.Wallet.Wallet;
-import com.jordanfoster.UserInterface.MainPageController;
+import com.jordanfoster.Userinterface.MainController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -13,21 +11,17 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import org.json.simple.JSONObject;
 
 public class BinanceTradingBot extends Application {
 
-    public static MainPageController mainController;
-
-    public static TradingBot tradingBot;
-    public static FileManagement fileManagement;
+    public static MainController mainController;
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/MainPage.fxml"));
+    public void start(Stage primaryStage) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/MainInterface.fxml"));
         Parent root = loader.load();
-        primaryStage.setTitle("Binance Trading Bot");
-        primaryStage.setScene(new Scene(root, 600, 500));
+        primaryStage.setTitle("Binance Trading Bot v2.0");
+        primaryStage.setScene(new Scene(root, 800, 700));
         primaryStage.setResizable(false);
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -36,43 +30,18 @@ public class BinanceTradingBot extends Application {
                 System.exit(0);
             }
         });
+
+        mainController = loader.getController();
+
         primaryStage.show();
-
-        mainController = loader.<MainPageController>getController();
-
-        fileManagement = new FileManagement();
-
-        JSONObject apiFile = readBinanceKeys();
-
-        String apiKey = apiFile.get("apikey").toString();
-        String secretKey = apiFile.get("secretkey").toString();
-        mainController.setAccountPage(apiKey, secretKey);
-
-        tradingBot = new TradingBot(apiKey, secretKey);
-        tradingBot.start();
-    }
-
-    public JSONObject readBinanceKeys(){
-        String path = "apikey.txt";
-        JSONHandler jsonHandler = new JSONHandler();
-
-        if(fileManagement.fileExists(path)){
-            return jsonHandler.parseJSON(fileManagement.read(path)).get(0);
-
-        }else{
-
-            String content = "{\n" +
-                    "\t\"apikey\": \"Enter your API key from binance\",\n" +
-                    "\t\"secretkey\": \"Enter your Secret Key from binance\"\n" +
-                    "}";
-
-            fileManagement.write(path, content);
-
-            return jsonHandler.parseJSON(fileManagement.read(path)).get(0);
-        }
     }
 
     public static void main(String[] args){
+
+        TradingBot bot = new TradingBot();
+        bot.start();
+
+        //Launch the GUI
         launch(args);
     }
 }

@@ -272,3 +272,7 @@ gradle-app.setting
 
 # End of https://www.gitignore.io/api/java,macos,maven,windows,intellij,intellij+all,visualstudiocode
 apikey.txt
+ema.txt
+.classpath
+.project
+*.txt

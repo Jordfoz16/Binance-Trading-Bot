@@ -1,133 +1,117 @@
 package com.jordanfoster.TradingBot;
 
 import com.jordanfoster.BinanceTradingBot;
-import com.jordanfoster.FileManagement.FileManagement;
-import com.jordanfoster.TradingBot.PriceFeed.PriceFeed;
-import com.jordanfoster.TradingBot.TradingStrategy.EMA.EMA;
-import com.jordanfoster.TradingBot.Wallet.Wallet;
-import com.jordanfoster.UserInterface.Logging.Log;
-
-import java.util.ArrayList;
+import com.jordanfoster.FileManagement.FileConfig;
+import com.jordanfoster.FileManagement.FileOrders;
+import com.jordanfoster.FileManagement.FileTradingPairs;
+import com.jordanfoster.TradingBot.Indicators.EMA.EMA;
+import com.jordanfoster.TradingBot.Indicators.RSI.RSI;
+import com.jordanfoster.TradingBot.PriceFeed.LivePriceFeed;
 
 public class TradingBot extends Thread{
 
-    private boolean isTrading = false;
-
-    //Polling rate in milliseconds
-    private int pollingRate = 1000;
-
-    private double totalProfit = 0;
-
-    private Wallet wallet;
-    private PriceFeed priceFeed;
-    private EMA ema;
-
-    private ArrayList<BoughtCurrency> boughtCurrencyArrayList = new ArrayList<BoughtCurrency>();
-
-    public TradingBot(String apiKey, String secretKey){
-        super("tradingBotThread");
-        priceFeed = new PriceFeed(apiKey, secretKey);
-        wallet = new Wallet(apiKey, secretKey);
-        ema = new EMA(priceFeed.getTradingPairs());
+    public enum State{
+        BUY,
+        SELL,
+        NONE,
+        HOLD,
+        CALIBRATION
     }
 
-    public void startTrading(){
-        if(!isTrading){
-            new Log("Starting Trading");
-            isTrading = true;
-        }
-    }
+    public static String apiKey = "";
+    public static String secretKey = "";
 
-    public void stopTrading(){
-        if(isTrading){
-            new Log("Stopping Trading");
-            isTrading = false;
-        }
+    public static FileConfig fileConfig;
+    public static FileTradingPairs fileTradingPairs;
+    public static FileOrders fileOrders;
+
+    public static LivePriceFeed livePriceFeed;
+    public static EMA ema;
+    public static RSI rsi;
+
+    private static boolean isTrading = false;
+
+    private boolean initialised = false;
+    private int intervalRate = 10000;
+
+    public TradingBot(){
+        fileConfig = new FileConfig();
+        fileTradingPairs = new FileTradingPairs();
+        fileOrders = new FileOrders();
+        livePriceFeed = new LivePriceFeed();
+        ema = new EMA();
+        rsi = new RSI();
     }
 
     public void run(){
 
-        wallet.start();
         long lastTime = System.currentTimeMillis();
 
         while(true){
-            long nowTime = System.currentTimeMillis();
 
-            if(nowTime - lastTime > pollingRate){
-                lastTime = nowTime;
-                update();
-            }
-        }
+            if(isTrading){
+                long nowTime = System.currentTimeMillis();
 
-    }
+                if(nowTime - lastTime > intervalRate || initialised == false){
+                    if(initialised == false) initialised = true;
+                    lastTime = nowTime;
 
-    public void update(){
-        priceFeed.update();
-        ema.updateEMA(priceFeed.getTradingPairs(), isTrading);
-        BinanceTradingBot.mainController.updatePriceFeed(priceFeed.getTradingPairs());
-        BinanceTradingBot.mainController.updateIndicator(ema.getEMA());
-        BinanceTradingBot.mainController.updateTableView(boughtCurrencyArrayList);
+                    livePriceFeed.update();
+                    ema.update();
+                    rsi.update();
+                    update();
 
-        updateTrades();
-    }
+                    //Update line chart data
+                    BinanceTradingBot.mainController.updateOverview(livePriceFeed.getTradingPairs(), ema.getData(), rsi.getData(),0);
 
-    public void updateTrades(){
-
-        BinanceTradingBot.mainController.setStatus(isTrading);
-
-        if(isTrading){
-            buy();
-            sell();
-            new Log().setProfit(totalProfit);
-        }
-    }
-
-    public void buy(){
-
-        for(int i = 0; i < priceFeed.getTradingPairs().size(); i++){
-            if(ema.getEMA().get(i).getBuy()){
-
-                //SEND BUY CALL
-                ema.getEMA().get(i).setBought(true, priceFeed.getTradingPairs().get(i).getCurrentPrice());
-
-                String symbol = priceFeed.getTradingPairs().get(i).getSymbol();
-                double boughtPrice = priceFeed.getTradingPairs().get(i).getCurrentPrice();
-
-                boughtCurrencyArrayList.add(new BoughtCurrency(symbol, boughtPrice, 1));
-                new Log("Buy - " + symbol + ", Price - " + String.format("%.4f",boughtPrice));
-            }
-        }
-    }
-
-    public void sell(){
-
-        for(int i = 0; i < priceFeed.getTradingPairs().size(); i++){
-            if(ema.getEMA().get(i).getSell()){
-
-                //SEND SELL CALL
-
-                ema.getEMA().get(i).setBought(false);
-
-                String symbol = priceFeed.getTradingPairs().get(i).getSymbol();
-
-                for(int j = 0; j < boughtCurrencyArrayList.size(); j++){
-                    if(boughtCurrencyArrayList.get(j).getSymbol().equals(symbol)){
-                        boughtCurrencyArrayList.remove(j);
+                    intervalRate = Integer.parseInt(fileConfig.getElement("price-feed", "interval-rate"));
+                }else{
+                    try {
+                        Thread.sleep(intervalRate / 5);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
+            }else{
 
-                double boughtPrice = ema.getEMA().get(i).getBoughtPrice();
-                double soldPrice = priceFeed.getTradingPairs().get(i).getCurrentPrice();
-                double profit = soldPrice - boughtPrice;
+                livePriceFeed.clear();
+                ema.clear();
+                rsi.clear();
 
-                totalProfit += profit;
-
-                new Log("Sold - " + symbol + ", Price -  " + String.format("%.4f",soldPrice));
+                //Pauses between each isTrading check
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
-    public EMA getEMA(){
-        return ema;
+    boolean bitcoinBought = false;
+
+    public void update(){
+
+        if(bitcoinBought == false){
+            if(ema.getData().get(0).getState() == State.BUY){
+                if(rsi.getData().get(0).getState() == State.BUY){
+                    System.out.println("Bought: " + livePriceFeed.getTradingPair(0).getCurrentPrice());
+                    bitcoinBought = true;
+                }
+            }
+        }
+
+        if(bitcoinBought){
+            if(ema.getData().get(0).getState() == State.SELL){
+                if(rsi.getData().get(0).getState() == State.SELL){
+                    System.out.println("Sold: " + livePriceFeed.getTradingPair(0).getCurrentPrice());
+                    bitcoinBought = false;
+                }
+            }
+        }
+    }
+
+    public static synchronized void setTrading(boolean value){
+        isTrading = value;
     }
 }

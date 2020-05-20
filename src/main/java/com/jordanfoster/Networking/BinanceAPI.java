@@ -1,5 +1,7 @@
 package com.jordanfoster.Networking;
 
+import com.jordanfoster.BinanceTradingBot;
+import com.jordanfoster.TradingBot.TradingBot;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.http.HttpHeaders;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -21,14 +23,10 @@ public class BinanceAPI {
 
     private boolean networkDebug = false;
 
-    private String apiKey = "";
-    private String secretKey = "";
-
     private String apiResponse = "";
 
-    public BinanceAPI(String apiKey, String secretKey){
-        this.apiKey = apiKey;
-        this.secretKey = secretKey;
+    public BinanceAPI(){
+
     }
 
     public String getAllCoinInformation() throws NoSuchAlgorithmException, InvalidKeyException, IOException {
@@ -70,13 +68,26 @@ public class BinanceAPI {
         return callAPI(parameters, api);
     }
 
+    public String getCandlestick(String symbol, String interval) throws IOException {
+
+        String api = "/api/v3/klines";
+
+        ArrayList<Parameter> parameters = new ArrayList<Parameter>();
+
+        parameters.add(new Parameter("symbol", symbol));
+        parameters.add(new Parameter("interval", interval));
+//        parameters.add(new Parameter("limit", Integer.toString(500)));
+
+        return callAPI(parameters, api);
+    }
+
     private String callAPI(ArrayList<Parameter> parameters, String URL) throws IOException {
         CloseableHttpClient client = HttpClients.custom().build();
 
         RequestBuilder requestBuilder = RequestBuilder.get();
         requestBuilder.setUri("https://api.binance.com/" + URL);
         requestBuilder.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
-        requestBuilder.addHeader("X-MBX-APIKEY", apiKey);
+        requestBuilder.addHeader("X-MBX-APIKEY", TradingBot.apiKey);
 
         if(parameters != null) {
             for(int i = 0; i < parameters.size(); i++){
@@ -133,7 +144,7 @@ public class BinanceAPI {
 
         Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
 
-        SecretKeySpec secret_key = new SecretKeySpec(secretKey.getBytes(), "HmacSHA256");
+        SecretKeySpec secret_key = new SecretKeySpec(TradingBot.secretKey.getBytes(), "HmacSHA256");
         sha256_HMAC.init(secret_key);
 
         char[] hash = Hex.encodeHex(sha256_HMAC.doFinal(parameterString.getBytes()));
@@ -141,7 +152,7 @@ public class BinanceAPI {
 
         if(networkDebug){
             System.out.println("Message: " + parameterString);
-            System.out.println("Secret: " + secretKey);
+            System.out.println("Secret: " + TradingBot.secretKey);
             System.out.println("Signature: " + hashString);
         }
 
