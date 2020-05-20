@@ -5,8 +5,11 @@ import com.jordanfoster.FileManagement.FileConfig;
 import com.jordanfoster.FileManagement.FileOrders;
 import com.jordanfoster.FileManagement.FileTradingPairs;
 import com.jordanfoster.TradingBot.Indicators.EMA.EMA;
+import com.jordanfoster.TradingBot.Indicators.Indicator;
 import com.jordanfoster.TradingBot.Indicators.RSI.RSI;
 import com.jordanfoster.TradingBot.PriceFeed.LivePriceFeed;
+
+import java.util.ArrayList;
 
 public class TradingBot extends Thread{
 
@@ -88,25 +91,19 @@ public class TradingBot extends Thread{
         }
     }
 
-    boolean bitcoinBought = false;
-
     public void update(){
 
-        if(bitcoinBought == false){
-            if(ema.getData().get(0).getState() == State.BUY){
-                if(rsi.getData().get(0).getState() == State.BUY){
-                    System.out.println("Bought: " + livePriceFeed.getTradingPair(0).getCurrentPrice());
-                    bitcoinBought = true;
-                }
+        if(rsi.getData().get(0).getBought() == false){
+            if(rsi.getData().get(0).getState() == State.BUY){
+                System.out.println("Bought: " + livePriceFeed.getTradingPair(0).getCurrentPrice());
+                rsi.getData().get(0).setBought(true);
             }
         }
 
-        if(bitcoinBought){
-            if(ema.getData().get(0).getState() == State.SELL){
-                if(rsi.getData().get(0).getState() == State.SELL){
-                    System.out.println("Sold: " + livePriceFeed.getTradingPair(0).getCurrentPrice());
-                    bitcoinBought = false;
-                }
+        if(rsi.getData().get(0).getBought()){
+            if(rsi.getData().get(0).getState() == State.SELL){
+                System.out.println("Sold: " + livePriceFeed.getTradingPair(0).getCurrentPrice());
+                rsi.getData().get(0).setBought(false);
             }
         }
     }

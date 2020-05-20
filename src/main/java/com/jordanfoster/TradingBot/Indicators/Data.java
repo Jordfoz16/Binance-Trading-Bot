@@ -9,6 +9,8 @@ public abstract class Data {
     protected ArrayList<Double> data = new ArrayList<Double>();
     protected TradingBot.State state = TradingBot.State.NONE;
 
+    protected boolean isBought = false;
+
     public void addValue(double value){
         data.add(value);
         checkListSize();
@@ -27,6 +29,8 @@ public abstract class Data {
         this.state = state;
     }
 
+    public void setBought(boolean isBought){ this.isBought = isBought; }
+
     public Double get(int index){
         return data.get(index);
     }
@@ -38,6 +42,8 @@ public abstract class Data {
     public ArrayList<Double> getValues(){
         return data;
     }
+
+    public boolean getBought() { return isBought; }
 
     public TradingBot.State getState(){
         return state;
