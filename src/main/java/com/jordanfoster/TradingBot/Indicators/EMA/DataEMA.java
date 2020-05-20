@@ -1,64 +1,23 @@
 package com.jordanfoster.TradingBot.Indicators.EMA;
 
+import com.jordanfoster.TradingBot.Indicators.Data;
 import com.jordanfoster.TradingBot.TradingBot;
 
 import java.util.ArrayList;
 
-public class DataEMA {
+public class DataEMA extends Data {
 
     public int buyWaitCounter = 0;
     public int sellWaitCounter = 0;
-
-    private ArrayList<Double> emaValue = new ArrayList<Double>();
-
-    private TradingBot.State state = TradingBot.State.NONE;
 
     public DataEMA(double value){
         addValue(value);
     }
 
-    public void addValue(double value){
-        emaValue.add(value);
-        checkListSize();
-    }
-
-    private void checkListSize(){
-
-        int listSize = Integer.parseInt(TradingBot.fileConfig.getElement("price-feed", "price-history-size"));
-
-        if(emaValue.size() > listSize){
-            emaValue.remove(0);
+    public Double getPrevEMA(){
+        if(data.size() > 2){
+            return data.get(data.size() - 2);
         }
-    }
-
-    public void setState(TradingBot.State state){
-        this.state = state;
-    }
-
-    public Double get(int index){
-        return emaValue.get(index);
-    }
-
-    public Double getCurrent(){
-        return emaValue.get(emaValue.size() - 1);
-    }
-
-    public ArrayList<Double> getEmaValue(){
-        return emaValue;
-    }
-
-    public Double getPrev(){
-        if(emaValue.size() > 2){
-            return emaValue.get(emaValue.size() - 2);
-        }
-        return emaValue.get(emaValue.size() - 1);
-    }
-
-    public TradingBot.State getState(){
-        return state;
-    }
-
-    public String getStateString(){
-        return state.toString();
+        return data.get(data.size() - 1);
     }
 }

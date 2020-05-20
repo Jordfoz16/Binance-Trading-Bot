@@ -87,7 +87,7 @@ public class RSI {
 
                 double rsiValue = calculateStepTwoRSI(currentRSI.getPrevAverageGains(), currentRSI.getPrevAverageLosses(), averageGain, averageLosses);
 
-                currentRSI.addRSIValue(rsiValue);
+                currentRSI.addValue(rsiValue);
                 currentRSI.setPrevAverage(averageGain, averageLosses);
 
             }else{
@@ -101,13 +101,13 @@ public class RSI {
 
                 double rsiValue = calculateStepOneRSI(averageGain, averageLosses);
 
-                currentRSI.addRSIValue(rsiValue);
+                currentRSI.addValue(rsiValue);
                 currentRSI.setPrevAverage(averageGain, averageLosses);
             }
 
         }else{
             dataRsis.add(new DataRSI());
-            dataRsis.get(dataRsis.size() - 1).addRSIValue(50);
+            dataRsis.get(dataRsis.size() - 1).addValue(50);
         }
     }
 
@@ -120,8 +120,8 @@ public class RSI {
         for(int index = 0; index < TradingBot.livePriceFeed.getTradingPairs().size(); index++){
             DataRSI currentRSI = dataRsis.get(index);
 
-            currentRSI.getRsiValues().clear();
-            currentRSI.addRSIValue(50);
+            currentRSI.getValues().clear();
+            currentRSI.addValue(50);
 
 
             tempLivePriceFeed.getTradingPairs().add(new TradingPair(TradingBot.livePriceFeed.getTradingPair(index).getSymbol(), TradingBot.livePriceFeed.getTradingPair(index).get(0)));

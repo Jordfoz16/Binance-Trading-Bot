@@ -287,13 +287,13 @@ public class MainController {
         rsiData.setName("RSI");
         rsiData2.setName("RSI");
 
-        for(int i = 0; i < rsiHistory.get(selectedPair).getRsiValues().size(); i++){
+        for(int i = 0; i < rsiHistory.get(selectedPair).getValues().size(); i++){
             rsiData.getData().add(new XYChart.Data<>(i ,rsiHistory.get(selectedPair).get(i)));
         }
 
-        if(rsiHistory.get(selectedPair).getRsiValues().size() > 30){
-            xAxisRSI.setUpperBound(rsiHistory.get(selectedPair).getRsiValues().size() - 1);
-            xAxisRSITab.setUpperBound(rsiHistory.get(selectedPair).getRsiValues().size() - 1);
+        if(rsiHistory.get(selectedPair).getValues().size() > 30){
+            xAxisRSI.setUpperBound(rsiHistory.get(selectedPair).getValues().size() - 1);
+            xAxisRSITab.setUpperBound(rsiHistory.get(selectedPair).getValues().size() - 1);
         }
 
         rsiData2.setData(rsiData.getData());

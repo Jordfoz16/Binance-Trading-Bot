@@ -97,7 +97,7 @@ public class EMA {
             //k is the weighted multiplier
             double k = 2.0 / ((double) n + 1.0);
 
-            double prevEMA = dataEmas.get(index).getPrev();
+            double prevEMA = dataEmas.get(index).getPrevEMA();
 
             double ema = currentPrice * k + prevEMA * (1.0 - k);
 
@@ -116,7 +116,7 @@ public class EMA {
         for(int index = 0; index < TradingBot.livePriceFeed.getTradingPairs().size(); index++){
             DataEMA currentEMA = dataEmas.get(index);
 
-            currentEMA.getEmaValue().clear();
+            currentEMA.getValues().clear();
             currentEMA.addValue(TradingBot.livePriceFeed.getTradingPair(index).get(0));
 
 
