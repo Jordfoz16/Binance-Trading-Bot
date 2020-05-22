@@ -7,6 +7,7 @@ import com.jordanfoster.FileManagement.FileTradingPairs;
 import com.jordanfoster.TradingBot.Indicators.EMA.EMA;
 import com.jordanfoster.TradingBot.Indicators.Indicator;
 import com.jordanfoster.TradingBot.Indicators.RSI.RSI;
+import com.jordanfoster.TradingBot.PriceFeed.HistoricFeed;
 import com.jordanfoster.TradingBot.PriceFeed.LivePriceFeed;
 
 import java.util.ArrayList;
@@ -32,6 +33,8 @@ public class TradingBot extends Thread{
     public static EMA ema;
     public static RSI rsi;
 
+    public static HistoricFeed historicFeed;
+
     private static boolean isTrading = false;
 
     private boolean initialised = false;
@@ -44,11 +47,15 @@ public class TradingBot extends Thread{
         livePriceFeed = new LivePriceFeed();
         ema = new EMA();
         rsi = new RSI();
+
+        historicFeed = new HistoricFeed();
     }
 
     public void run(){
 
         long lastTime = System.currentTimeMillis();
+
+        //historicFeed.update();
 
         while(true){
 

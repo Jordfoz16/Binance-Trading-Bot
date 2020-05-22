@@ -18,7 +18,7 @@ public class LivePriceFeed extends PriceFeed{
         try {
             String apiResponse = binanceAPI.getTickerPrice();
 
-            ArrayList<JSONObject> priceFeed = jsonHandler.parseJSON(apiResponse);
+            JSONArray priceFeed = jsonHandler.parseJSON(apiResponse);
 
             JSONArray filter = TradingBot.fileTradingPairs.getAvailableTradingPairs();
 
@@ -28,13 +28,14 @@ public class LivePriceFeed extends PriceFeed{
 
                 //Loops through all of the symbols from the API call
                 for(int selectedIndex = 0; selectedIndex < priceFeed.size(); selectedIndex++){
+                    JSONObject current = (JSONObject) priceFeed.get(selectedIndex);
 
-                    String selectedSymbol = (String) priceFeed.get(selectedIndex).get("symbol");
+                    String selectedSymbol = (String)current.get("symbol");
 
                     //If the API symbol is equal to the filtered symbol it gets the price
                     if(filterSymbol.equals(selectedSymbol)){
 
-                        double selectedPrice = Double.parseDouble((String) priceFeed.get(selectedIndex).get("price"));
+                        double selectedPrice = Double.parseDouble((String) current.get("price"));
 
                         //If its hasn't been initialized, it adds the new trading pair
                         if(initialized == false){

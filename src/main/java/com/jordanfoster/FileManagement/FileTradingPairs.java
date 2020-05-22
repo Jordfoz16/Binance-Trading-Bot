@@ -27,6 +27,10 @@ public class FileTradingPairs {
         return tradingPairArray;
     }
 
+    public String getSymbol(int index){
+        return (String) tradingPairArray.get(index);
+    }
+
     private void readFile(){
         JSONParser jsonParser = new JSONParser();
 

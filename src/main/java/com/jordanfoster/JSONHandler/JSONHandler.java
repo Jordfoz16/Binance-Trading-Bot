@@ -2,49 +2,57 @@ package com.jordanfoster.JSONHandler;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ContainerFactory;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class JSONHandler {
 
-    public ArrayList<JSONObject> parseJSON(String jsonString){
+    public JSONArray parseJSON(String jsonString){
 
-        JSONParser parser = new JSONParser();
+        JSONParser jsonParser = new JSONParser();
 
-        ArrayList<JSONObject> jsonObjectsArray = new ArrayList<JSONObject>();
-
-        //Check if the JSON object is an Array
-        if(jsonString.charAt(0) == '{'){
-
-            try {
-                JSONObject jsonObject = (JSONObject) parser.parse(jsonString);
-
-                jsonObjectsArray.add(jsonObject);
-
-                return jsonObjectsArray;
-
-            } catch (ParseException e) {
-                System.out.println("ERROR: JSON Object Parsing Failed");
+        ContainerFactory containerFactory = new ContainerFactory() {
+            @Override
+            public Map createObjectContainer() {
+                return new LinkedHashMap<>();
             }
 
-        }else{
-            try {
-                JSONArray jsonArray = (JSONArray) parser.parse(jsonString);
+            @Override
+            public List creatArrayContainer() {
+                return new LinkedList<>();
+            }
+        };
 
-                for(int i = 0; i < jsonArray.size(); i++){
-                    JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-                    jsonObjectsArray.add(jsonObject);
+        JSONArray jsonArray = new JSONArray();
+
+        try {
+            Object result = jsonParser.parse(jsonString, containerFactory);
+
+            if(result instanceof LinkedHashMap){
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.putAll((Map) result);
+                jsonArray.add(jsonObject);
+
+            }else if(result instanceof LinkedList){
+
+                for(int i = 0; i < ((LinkedList) result).size(); i++){
+                    if(((LinkedList) result).get(i) instanceof LinkedHashMap){
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.putAll((Map) ((LinkedList) result).get(i));
+                        jsonArray.add(jsonObject);
+                    }else{
+                        jsonArray.add(result);
+                    }
                 }
-
-                return jsonObjectsArray;
-
-            } catch (ParseException e) {
-                System.out.println("ERROR: JSON Array Parsing Failed");
             }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
 
-        return null;
+        return jsonArray;
     }
 }
