@@ -55,8 +55,6 @@ public class TradingBot extends Thread{
 
         long lastTime = System.currentTimeMillis();
 
-        //historicFeed.update();
-
         while(true){
 
             if(isTrading){

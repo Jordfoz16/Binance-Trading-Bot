@@ -9,6 +9,10 @@ public class TradingPair {
     private String symbol;
     private ArrayList<Double> priceList = new ArrayList<Double>();
 
+    public TradingPair(String symbol){
+        this.symbol = symbol;
+    }
+
     public TradingPair(String symbol, double price){
         this.symbol = symbol;
         priceList.add(price);

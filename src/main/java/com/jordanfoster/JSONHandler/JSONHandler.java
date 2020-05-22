@@ -44,7 +44,9 @@ public class JSONHandler {
                         jsonObject.putAll((Map) ((LinkedList) result).get(i));
                         jsonArray.add(jsonObject);
                     }else{
-                        jsonArray.add(result);
+                        JSONArray tempArray = new JSONArray();
+                        tempArray.addAll((Collection) ((LinkedList) result).get(i));
+                        jsonArray.add(tempArray);
                     }
                 }
             }
