@@ -1,50 +1,28 @@
 package com.jordanfoster.TradingBot.PriceFeed;
 
-import com.jordanfoster.TradingBot.TradingBot;
+import com.jordanfoster.TradingBot.PriceFeed.CandleStick.CandleStickData;
 
 import java.util.ArrayList;
 
 public class TradingPair {
 
     private String symbol;
-    private ArrayList<Double> priceList = new ArrayList<Double>();
+    private ArrayList<CandleStickData> candleStickData = new ArrayList<CandleStickData>();
 
     public TradingPair(String symbol){
         this.symbol = symbol;
     }
 
-    public TradingPair(String symbol, double price){
-        this.symbol = symbol;
-        priceList.add(price);
+    public void add(long openTime, double open, double high, double low, double close, double volume, long closeTime){
+        candleStickData.add(new CandleStickData(openTime, open, high, low, close, volume, closeTime));
     }
 
-    public void addPrice(double price){
-        priceList.add(price);
-        checkListSize();
+    public CandleStickData getCandleStick(int index){
+        return candleStickData.get(index);
     }
 
-    private void checkListSize(){
-        int listSize = Integer.parseInt(TradingBot.fileConfig.getElement("price-feed", "price-history-size"));
-        //Keep the list size to the current size
-        if(priceList.size() > listSize){
-            //Removes the oldest price from the list
-            priceList.remove(0);
-        }
-    }
-
-    public String getSymbol(){
-        return symbol;
-    }
-
-    public double get(int index){
-        return priceList.get(index);
-    }
-
-    public double getCurrentPrice(){
-        return priceList.get(priceList.size() - 1);
-    }
-
-    public ArrayList<Double> getPriceList(){
-        return priceList;
+    public ArrayList<CandleStickData> getCandleStickData(){
+        return candleStickData;
     }
 }
+

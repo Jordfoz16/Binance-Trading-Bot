@@ -1,203 +1,71 @@
 package com.jordanfoster.TradingBot.Indicators.RSI;
 
 import com.jordanfoster.TradingBot.Indicators.Indicator;
-import com.jordanfoster.TradingBot.PriceFeed.LivePriceFeed;
 import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
-import com.jordanfoster.TradingBot.TradingBot;
-
-import java.util.ArrayList;
 
 public class RSI extends Indicator {
 
-    public int rsiPeriod = 600;
-    private int calibrationTime = 30;
-    private int rsiUpperBound = 60;
-    private int rsiLowerBound = 40;
+    @Override
+    public void updateIndicator(TradingPair currentCoin) {
 
-    public RSI(){
-        refreshValues();
-    }
+        for(int currentCandle = 0; currentCandle < currentCoin.getCandleStickData().size(); currentCandle++){
 
-    public void refreshValues(){
-        int currentPeriod = rsiPeriod;
+            //Add the initial value
+            if(currentCandle == 0){
+                long date = currentCoin.getCandleStick(currentCandle).closeTime;
+                double close = currentCoin.getCandleStick(currentCandle).close;
 
-        rsiPeriod = Integer.parseInt(TradingBot.fileConfig.getElement("rsi", "rsi-period"));
-        calibrationTime = Integer.parseInt(TradingBot.fileConfig.getElement("rsi", "rsi-calibration"));
-        rsiUpperBound = Integer.parseInt(TradingBot.fileConfig.getElement("rsi", "upper-bound"));
-        rsiLowerBound = Integer.parseInt(TradingBot.fileConfig.getElement("rsi", "lower-bound"));
-
-        if(rsiPeriod != currentPeriod && initialized){
-            periodChanged();
-        }
-    }
-
-    protected void updateState(int index){
-        DataRSI currentCoin = (DataRSI) dataArrayList.get(index);
-
-        if(calibrationTime <= calibrationCounter){
-
-            if(currentCoin.getCurrent() > rsiUpperBound){
-                currentCoin.setState(TradingBot.State.BUY);
-            }else if(currentCoin.getCurrent() < rsiLowerBound){
-                currentCoin.setState(TradingBot.State.SELL);
-            }else{
-                currentCoin.setState(TradingBot.State.HOLD);
+                tradingPairIndicator.add(new TradingPairRSI(date, close));
+                continue;
             }
 
-        }else{
-            currentCoin.setState(TradingBot.State.CALIBRATION);
-            calibrationCounter++;
-        }
-    }
+            //Add the basic info for each candle
+            long date = currentCoin.getCandleStick(currentCandle).closeTime;
+            double close = currentCoin.getCandleStick(currentCandle).close;
 
-    protected void calculate(int index, TradingPair tradingPair){
+            double change = close - currentCoin.getCandleStick(currentCandle - 1).close;
+            double gain = 0;
+            double loss = 0;
 
-        TradingPair currentPair = priceFeed.getTradingPair(index);
-
-        if(tradingPair != null){
-            currentPair = tradingPair;
-        }
-
-        if(initialized){
-
-            DataRSI currentRSI = (DataRSI) dataArrayList.get(index);
-
-            if(currentPair.getPriceList().size() > rsiPeriod){
-                //If there is enough data to use the full rsi period
-                //Uses the second step RSI calculation
-
-                double startingValue = currentPair.get(currentPair.getPriceList().size() - rsiPeriod - 1);
-
-                double averageGain = calculateAverage(findGain(startingValue, currentPair));
-                double averageLosses = calculateAverage(findLosses(startingValue, currentPair));
-
-                double rsiValue = calculateStepTwoRSI(currentRSI.getPrevAverageGains(), currentRSI.getPrevAverageLosses(), averageGain, averageLosses);
-
-                currentRSI.addValue(rsiValue);
-                currentRSI.setPrevAverage(averageGain, averageLosses);
-
-            }else{
-                //If there isn't enough data to use the full rsi period
-                //Uses the first step RSI calculation
-
-                double startingValue = currentPair.get(0);
-
-                double averageGain = calculateAverage(findGain(startingValue, currentPair));
-                double averageLosses = calculateAverage(findLosses(startingValue, currentPair));
-
-                double rsiValue = calculateStepOneRSI(averageGain, averageLosses);
-
-                currentRSI.addValue(rsiValue);
-                currentRSI.setPrevAverage(averageGain, averageLosses);
+            if(change > 0){
+                gain = Math.abs(change);
+            }else if(change < 0){
+                loss = Math.abs(change);
             }
 
-        }else{
-            dataArrayList.add(new DataRSI());
-            dataArrayList.get(dataArrayList.size() - 1).addValue(50);
-        }
-    }
+            //If there isn't enough data to calculate RSI
+            if(currentCandle < period && currentCandle != 0){
 
-    private void periodChanged(){
-
-        //Cycles through the the price feed and calculates new RSI values depending on the new period
-
-        LivePriceFeed tempLivePriceFeed = new LivePriceFeed();
-
-        for(int index = 0; index < priceFeed.getTradingPairs().size(); index++){
-            DataRSI currentRSI = (DataRSI) dataArrayList.get(index);
-
-            currentRSI.getValues().clear();
-            currentRSI.addValue(50);
-
-
-            tempLivePriceFeed.getTradingPairs().add(new TradingPair(priceFeed.getTradingPair(index).getSymbol(), priceFeed.getTradingPair(index).get(0)));
-
-            for(int i = 0; i < priceFeed.getTradingPair(index).getPriceList().size(); i++){
-                tempLivePriceFeed.getTradingPair(index).addPrice(priceFeed.getTradingPair(index).get(i));
-                calculate(index, tempLivePriceFeed.getTradingPair(index));
+                tradingPairIndicator.add(new TradingPairRSI(date, close, change, gain, loss));
+                continue;
             }
-        }
-    }
 
-    private double calculateStepOneRSI(double averageGains, double averageLosses){
-        double rsi = 0.0;
-
-        if(Double.isNaN(averageGains)) averageGains = 0;
-        if(Double.isNaN(averageLosses)) averageLosses = 0;
-
-        rsi = 100.0 - (100.0 / (1.0 + ((averageGains / rsiPeriod) / (averageLosses / rsiPeriod))));
-
-        return rsi;
-    }
-
-    private double calculateStepTwoRSI(double prevAverageGains, double prevAverageLosses, double averageGains, double averageLosses){
-
-        double rsi = 0.0;
-
-        if(Double.isNaN(averageGains)) averageGains = 0;
-        if(Double.isNaN(averageLosses)) averageLosses = 0;
-        if(Double.isNaN(prevAverageGains)) prevAverageGains = 0;
-        if(Double.isNaN(prevAverageLosses)) prevAverageLosses = 0;
-
-        rsi = 100.0 - (100.0 / (1.0 + ((prevAverageGains * 13 + averageGains) / (prevAverageLosses * 13 + averageLosses))));
-
-        return rsi;
-    }
-    private double calculateAverage(ArrayList<Double> list){
-        double average = 0;
-
-        for(int i = 0; i < list.size(); i++){
-            average += list.get(i);
-        }
-
-        average = average / (double) list.size();
-
-        return average;
-    }
-
-    private ArrayList<Double> findGain(double startingValue, TradingPair currentPair){
-        ArrayList<Double> gains = new ArrayList<Double>();
-
-        int period = 0;
-
-        if(currentPair.getPriceList().size() < rsiPeriod){
-            period = currentPair.getPriceList().size();
-        }else{
-            period = rsiPeriod;
-        }
-
-        for(int i = 0; i < period; i++){
-            double indexPrice = currentPair.get(currentPair.getPriceList().size() - i - 1);
-
-            if(indexPrice > startingValue){
-                double gain = ((indexPrice / startingValue) - 1.0) * 100.0;
-                gains.add(gain);
+            //Average Gains
+            double avgGain = gain;
+            for(int i = 1; i < period; i++){
+                avgGain += ((TradingPairRSI) tradingPairIndicator.get(currentCandle - i)).gain;
             }
-        }
-
-        return gains;
-    }
-
-    private ArrayList<Double> findLosses(double startingValue, TradingPair currentPair){
-        ArrayList<Double> losses = new ArrayList<Double>();
-
-        int period = 0;
-
-        if(currentPair.getPriceList().size() < rsiPeriod){
-            period = currentPair.getPriceList().size();
-        }else{
-            period = rsiPeriod;
-        }
-
-        for(int i = 0; i < period; i++){
-            double indexPrice = currentPair.get(currentPair.getPriceList().size() - i - 1);
-
-            if(indexPrice < startingValue){
-                double loss = ((startingValue / indexPrice) - 1.0) * 100.0;
-                losses.add(loss);
+            //Average Losses
+            double avgLoss = loss;
+            for(int i = 1; i < period; i++){
+                avgLoss += ((TradingPairRSI) tradingPairIndicator.get(currentCandle - i)).loss;
             }
-        }
 
-        return losses;
+            //If the amount of data is more than the period
+            if(currentCandle > period){
+                //Places more emphasis on the recent values
+                double prevAvgGain = ((TradingPairRSI) tradingPairIndicator.get(currentCandle - 1)).avgGain;
+                avgGain = ((prevAvgGain * (period - 1)) + gain) / period;
+
+                double prevAvgLoss = ((TradingPairRSI) tradingPairIndicator.get(currentCandle - 1)).avgLoss;
+                avgLoss = ((prevAvgLoss * (period - 1)) + loss) / period;
+            }
+
+            //RSI calculation
+            double RS = avgGain / avgLoss;
+            double RSI = 100 - (100 / (1 + RS));
+
+            tradingPairIndicator.add(new TradingPairRSI(date, close, change, gain, loss, avgGain, avgLoss, RSI));
+        }
     }
 }

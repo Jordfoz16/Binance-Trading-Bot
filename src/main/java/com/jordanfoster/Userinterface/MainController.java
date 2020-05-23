@@ -1,8 +1,5 @@
 package com.jordanfoster.Userinterface;
 
-import com.jordanfoster.TradingBot.Indicators.Data;
-import com.jordanfoster.TradingBot.Indicators.EMA.DataEMA;
-import com.jordanfoster.TradingBot.Indicators.RSI.DataRSI;
 import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
 import com.jordanfoster.TradingBot.Testing.Tester;
 import com.jordanfoster.TradingBot.TradingBot;
@@ -191,29 +188,29 @@ public class MainController {
     }
 
     private ArrayList<TradingPair> priceHistory;
-    private ArrayList<Data> emaHistory;
-    private ArrayList<Data> rsiHistory;
+//    private ArrayList<Data> emaHistory;
+//    private ArrayList<Data> rsiHistory;
     private int selectedPair = 0;
 
-    public void updateOverview(ArrayList<TradingPair> priceFeed, ArrayList<Data> emaFeed, ArrayList<Data> rsiFeed, int selectedPair){
-        this.priceHistory = priceFeed;
-        this.emaHistory = emaFeed;
-        this.rsiHistory = rsiFeed;
-        this.selectedPair = selectedPair;
-
-        if(priceHistory.size() == 0) return;
-
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-
-                updatePriceChart();
-                updateRSIChart();
-                updateState();
-            }
-        });
-
-    }
+//    public void updateOverview(ArrayList<TradingPair> priceFeed, ArrayList<Data> emaFeed, ArrayList<Data> rsiFeed, int selectedPair){
+//        this.priceHistory = priceFeed;
+//        this.emaHistory = emaFeed;
+//        this.rsiHistory = rsiFeed;
+//        this.selectedPair = selectedPair;
+//
+//        if(priceHistory.size() == 0) return;
+//
+//        Platform.runLater(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                updatePriceChart();
+//                updateRSIChart();
+//                updateState();
+//            }
+//        });
+//
+//    }
 
     /*
     Overview Tab
@@ -229,87 +226,87 @@ public class MainController {
 
     public void updateState(){
 
-        Data currentEMA = emaHistory.get(selectedPair);
-        Data currentRSI = rsiHistory.get(selectedPair);
-
-        lblIndicatorEMA.setText(currentEMA.getStateString());
-        lblIndicatorRSI.setText(currentRSI.getStateString());
+//        Data currentEMA = emaHistory.get(selectedPair);
+//        Data currentRSI = rsiHistory.get(selectedPair);
+//
+//        lblIndicatorEMA.setText(currentEMA.getStateString());
+//        lblIndicatorRSI.setText(currentRSI.getStateString());
     }
 
     protected void updatePriceChart(){
 
-        chartPrice.getData().clear();
-        chartEMATab.getData().clear();
-
-        XYChart.Series<Integer, Double> priceData = new XYChart.Series<>();
-        XYChart.Series<Integer, Double> emaData = new XYChart.Series<>();
-
-        XYChart.Series<Integer, Double> priceData2 = new XYChart.Series<>();
-        XYChart.Series<Integer, Double> emaData2 = new XYChart.Series<>();
-
-        priceData.setName("BTCUSDT");
-        priceData2.setName(priceData.getName());
-
-        emaData.setName("EMA");
-        emaData2.setName(emaData.getName());
-
-        for(int i = 0; i < priceHistory.get(selectedPair).getPriceList().size(); i++){
-            priceData.getData().add(new XYChart.Data<>(i ,priceHistory.get(selectedPair).get(i)));
-            emaData.getData().add(new XYChart.Data<>(i ,emaHistory.get(selectedPair).get(i)));
-        }
-
-        if(priceHistory.get(selectedPair).getPriceList().size() > 30){
-            xAxisPrice.setUpperBound(priceHistory.get(selectedPair).getPriceList().size() - 1);
-            xAxisEMATab.setUpperBound(priceHistory.get(selectedPair).getPriceList().size() - 1);
-        }
-
-        priceData2.setData(priceData.getData());
-        emaData2.setData(emaData.getData());
-
-        chartPrice.getData().add(priceData);
-        chartPrice.getData().add(emaData);
-
-        chartEMATab.getData().add(priceData2);
-        chartEMATab.getData().add(emaData2);
-
-        xAxisPrice.autosize();
-        yAxisPrice.autosize();
+//        chartPrice.getData().clear();
+//        chartEMATab.getData().clear();
+//
+//        XYChart.Series<Integer, Double> priceData = new XYChart.Series<>();
+//        XYChart.Series<Integer, Double> emaData = new XYChart.Series<>();
+//
+//        XYChart.Series<Integer, Double> priceData2 = new XYChart.Series<>();
+//        XYChart.Series<Integer, Double> emaData2 = new XYChart.Series<>();
+//
+//        priceData.setName("BTCUSDT");
+//        priceData2.setName(priceData.getName());
+//
+//        emaData.setName("EMA");
+//        emaData2.setName(emaData.getName());
+//
+//        for(int i = 0; i < priceHistory.get(selectedPair).getPriceList().size(); i++){
+//            priceData.getData().add(new XYChart.Data<>(i ,priceHistory.get(selectedPair).get(i)));
+//            emaData.getData().add(new XYChart.Data<>(i ,emaHistory.get(selectedPair).get(i)));
+//        }
+//
+//        if(priceHistory.get(selectedPair).getPriceList().size() > 30){
+//            xAxisPrice.setUpperBound(priceHistory.get(selectedPair).getPriceList().size() - 1);
+//            xAxisEMATab.setUpperBound(priceHistory.get(selectedPair).getPriceList().size() - 1);
+//        }
+//
+//        priceData2.setData(priceData.getData());
+//        emaData2.setData(emaData.getData());
+//
+//        chartPrice.getData().add(priceData);
+//        chartPrice.getData().add(emaData);
+//
+//        chartEMATab.getData().add(priceData2);
+//        chartEMATab.getData().add(emaData2);
+//
+//        xAxisPrice.autosize();
+//        yAxisPrice.autosize();
     }
 
     protected void updateRSIChart(){
 
-        chartRSI.getData().clear();
-        chartRSITab.getData().clear();
-
-        XYChart.Series<Integer, Double> rsiData = new XYChart.Series<>();
-
-        XYChart.Series<Integer, Double> rsiData2 = new XYChart.Series<>();
-
-        rsiData.setName("RSI");
-        rsiData2.setName("RSI");
-
-        for(int i = 0; i < rsiHistory.get(selectedPair).getValues().size(); i++){
-            rsiData.getData().add(new XYChart.Data<>(i ,rsiHistory.get(selectedPair).get(i)));
-        }
-
-        if(rsiHistory.get(selectedPair).getValues().size() > 30){
-            xAxisRSI.setUpperBound(rsiHistory.get(selectedPair).getValues().size() - 1);
-            xAxisRSITab.setUpperBound(rsiHistory.get(selectedPair).getValues().size() - 1);
-        }
-
-        rsiData2.setData(rsiData.getData());
-
-        chartRSI.getData().add(rsiData);
-        chartRSITab.getData().add(rsiData2);
-
-
-        //Setting colour of the line
-        Color color = Color.GREEN; // or any other color
-        String rgb = String.format("%d, %d, %d", (int) (color.getRed() * 255), (int) (color.getGreen() * 255), (int) (color.getBlue() * 255));
-        Node line = rsiData.getNode().lookup(".chart-series-line");
-        Node line2 = rsiData2.getNode().lookup(".chart-series-line");
-        line.setStyle("-fx-stroke: rgba(" + rgb + ", 1.0);");
-        line2.setStyle("-fx-stroke: rgba(" + rgb + ", 1.0);");
+//        chartRSI.getData().clear();
+//        chartRSITab.getData().clear();
+//
+//        XYChart.Series<Integer, Double> rsiData = new XYChart.Series<>();
+//
+//        XYChart.Series<Integer, Double> rsiData2 = new XYChart.Series<>();
+//
+//        rsiData.setName("RSI");
+//        rsiData2.setName("RSI");
+//
+//        for(int i = 0; i < rsiHistory.get(selectedPair).getValues().size(); i++){
+//            rsiData.getData().add(new XYChart.Data<>(i ,rsiHistory.get(selectedPair).get(i)));
+//        }
+//
+//        if(rsiHistory.get(selectedPair).getValues().size() > 30){
+//            xAxisRSI.setUpperBound(rsiHistory.get(selectedPair).getValues().size() - 1);
+//            xAxisRSITab.setUpperBound(rsiHistory.get(selectedPair).getValues().size() - 1);
+//        }
+//
+//        rsiData2.setData(rsiData.getData());
+//
+//        chartRSI.getData().add(rsiData);
+//        chartRSITab.getData().add(rsiData2);
+//
+//
+//        //Setting colour of the line
+//        Color color = Color.GREEN; // or any other color
+//        String rgb = String.format("%d, %d, %d", (int) (color.getRed() * 255), (int) (color.getGreen() * 255), (int) (color.getBlue() * 255));
+//        Node line = rsiData.getNode().lookup(".chart-series-line");
+//        Node line2 = rsiData2.getNode().lookup(".chart-series-line");
+//        line.setStyle("-fx-stroke: rgba(" + rgb + ", 1.0);");
+//        line2.setStyle("-fx-stroke: rgba(" + rgb + ", 1.0);");
     }
 
     /*
