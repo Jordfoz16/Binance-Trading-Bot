@@ -9,11 +9,11 @@ public abstract class Indicator {
 
     public boolean isEnabled = true;
 
-    protected int period = 14;
-    protected ArrayList<TradingPairIndicator> tradingPairIndicator = new ArrayList<>();
+    protected ArrayList<TradingPairIndicator> coinIndicators = new ArrayList<>();
 
     public void update(PriceFeed priceFeed){
         if(!isEnabled) return;
+        coinIndicators.clear();
 
         //Cycle through each coin
         for(int coinIndex = 0; coinIndex < priceFeed.getTradingPairs().size(); coinIndex++){

@@ -3,19 +3,25 @@ package com.jordanfoster.TradingBot.Indicators.RSI;
 import com.jordanfoster.TradingBot.Indicators.Indicator;
 import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
 
+
 public class RSI extends Indicator {
+
+    public int period = 5;
 
     @Override
     public void updateIndicator(TradingPair currentCoin) {
+        TradingPairRSI currentTradingPairRSI = new TradingPairRSI(currentCoin.getSymbol());
 
         for(int currentCandle = 0; currentCandle < currentCoin.getCandleStickData().size(); currentCandle++){
+
+            String symbol = currentCoin.getSymbol();
 
             //Add the initial value
             if(currentCandle == 0){
                 long date = currentCoin.getCandleStick(currentCandle).closeTime;
                 double close = currentCoin.getCandleStick(currentCandle).close;
 
-                tradingPairIndicator.add(new TradingPairRSI(date, close));
+                currentTradingPairRSI.addRSI(date, close);
                 continue;
             }
 
@@ -36,28 +42,25 @@ public class RSI extends Indicator {
             //If there isn't enough data to calculate RSI
             if(currentCandle < period && currentCandle != 0){
 
-                tradingPairIndicator.add(new TradingPairRSI(date, close, change, gain, loss));
+                currentTradingPairRSI.addRSI(date, close, change, gain, loss);
                 continue;
             }
 
-            //Average Gains
+            //Average Gains and Losses
             double avgGain = gain;
-            for(int i = 1; i < period; i++){
-                avgGain += ((TradingPairRSI) tradingPairIndicator.get(currentCandle - i)).gain;
-            }
-            //Average Losses
             double avgLoss = loss;
             for(int i = 1; i < period; i++){
-                avgLoss += ((TradingPairRSI) tradingPairIndicator.get(currentCandle - i)).loss;
+                avgGain += currentTradingPairRSI.getCandle(currentCandle - i).gain;
+                avgLoss += currentTradingPairRSI.getCandle(currentCandle - i).loss;
             }
 
             //If the amount of data is more than the period
             if(currentCandle > period){
                 //Places more emphasis on the recent values
-                double prevAvgGain = ((TradingPairRSI) tradingPairIndicator.get(currentCandle - 1)).avgGain;
+                double prevAvgGain = currentTradingPairRSI.getCandle(currentCandle - 1).avgGain;
                 avgGain = ((prevAvgGain * (period - 1)) + gain) / period;
 
-                double prevAvgLoss = ((TradingPairRSI) tradingPairIndicator.get(currentCandle - 1)).avgLoss;
+                double prevAvgLoss = currentTradingPairRSI.getCandle(currentCandle - 1).avgLoss;
                 avgLoss = ((prevAvgLoss * (period - 1)) + loss) / period;
             }
 
@@ -65,7 +68,9 @@ public class RSI extends Indicator {
             double RS = avgGain / avgLoss;
             double RSI = 100 - (100 / (1 + RS));
 
-            tradingPairIndicator.add(new TradingPairRSI(date, close, change, gain, loss, avgGain, avgLoss, RSI));
+            currentTradingPairRSI.addRSI(date, close, change, gain, loss, avgGain, avgLoss, RSI);
         }
+
+        coinIndicators.add(currentTradingPairRSI);
     }
 }

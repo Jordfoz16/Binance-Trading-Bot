@@ -17,6 +17,10 @@ public class TradingPair {
         candleStickData.add(new CandleStickData(openTime, open, high, low, close, volume, closeTime));
     }
 
+    public String getSymbol(){
+        return symbol;
+    }
+
     public CandleStickData getCandleStick(int index){
         return candleStickData.get(index);
     }

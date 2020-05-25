@@ -76,7 +76,7 @@ public class BinanceAPI {
 
         parameters.add(new Parameter("symbol", symbol));
         parameters.add(new Parameter("interval", interval));
-        parameters.add(new Parameter("limit", Integer.toString(1000)));
+        parameters.add(new Parameter("limit", Integer.toString(500)));
 
         return callAPI(parameters, api);
     }

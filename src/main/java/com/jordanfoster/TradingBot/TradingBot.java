@@ -3,6 +3,7 @@ package com.jordanfoster.TradingBot;
 import com.jordanfoster.FileManagement.FileConfig;
 import com.jordanfoster.FileManagement.FileOrders;
 import com.jordanfoster.FileManagement.FileTradingPairs;
+import com.jordanfoster.TradingBot.Indicators.EMA.EMA;
 import com.jordanfoster.TradingBot.Indicators.RSI.RSI;
 import com.jordanfoster.TradingBot.PriceFeed.CandleStick.CandleStickFeed;
 
@@ -27,6 +28,7 @@ public class TradingBot extends Thread{
 
     private CandleStickFeed candleStickFeed = new CandleStickFeed();
     private RSI rsi = new RSI();
+    private EMA ema = new EMA();
 
     private boolean initialised = false;
     private int intervalRate = 10000;
@@ -52,6 +54,7 @@ public class TradingBot extends Thread{
 
                     update();
                     candleStickFeed.update();
+                    ema.update(candleStickFeed);
                     rsi.update(candleStickFeed);
 
                     //Update line chart data

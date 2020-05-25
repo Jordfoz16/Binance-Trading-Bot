@@ -6,6 +6,37 @@ import java.util.ArrayList;
 
 public class TradingPairRSI extends TradingPairIndicator {
 
+    public String symbol;
+
+    private ArrayList<RSIData> rsiData = new ArrayList<>();
+
+    public TradingPairRSI(String symbol){
+        super(symbol);
+    }
+
+    public void addRSI(long date, double close){
+        add(new RSIData(date, close));
+    }
+
+    public void addRSI(long date, double close, double change, double gain, double loss){
+        add(new RSIData(date, close, change, gain, loss));
+    }
+
+    public void addRSI(long date, double close, double change, double gain, double loss, double avgGain, double avgLoss, double RSI){
+        add(new RSIData(date, close, change, gain, loss, avgGain, avgLoss, RSI));
+    }
+
+    private void add(RSIData newData){
+        rsiData.add(newData);
+    }
+
+    public RSIData getCandle(int index){
+        return rsiData.get(index);
+    }
+
+}
+
+class RSIData{
     public long date;
     public double close;
     public double change;
@@ -15,12 +46,12 @@ public class TradingPairRSI extends TradingPairIndicator {
     public double avgLoss;
     public double RSI;
 
-    public TradingPairRSI(long date, double close){
+    public RSIData(long date, double close){
         this.date = date;
         this.close = close;
     }
 
-    public TradingPairRSI(long date, double close, double change, double gain, double loss){
+    public RSIData(long date, double close, double change, double gain, double loss){
         this.date = date;
         this.close = close;
         this.change = change;
@@ -28,7 +59,7 @@ public class TradingPairRSI extends TradingPairIndicator {
         this.loss = loss;
     }
 
-    public TradingPairRSI(long date, double close, double change, double gain, double loss, double avgGain, double avgLoss, double RSI){
+    public RSIData(long date, double close, double change, double gain, double loss, double avgGain, double avgLoss, double RSI){
         this.date = date;
         this.close = close;
         this.change = change;
@@ -38,22 +69,5 @@ public class TradingPairRSI extends TradingPairIndicator {
         this.avgLoss = avgLoss;
         this.RSI = RSI;
     }
-//    private DataRSI dataRSI = new DataRSI();
-//
-//    public void add(long date, double close){
-//        dataRSIArrayList.add(new DataRSI(date, close));
-//    }
-//
-//    public void add(long date, double close, double change, double gain, double loss){
-//        dataRSIArrayList.add(new DataRSI(date, close, change, gain, loss));
-//    }
-//
-//    public void add(long date, double close, double change, double gain, double loss, double avgGain, double avgLoss, double RSI){
-//        dataRSIArrayList.add(new DataRSI(date, close, change, gain, loss, avgGain, avgLoss, RSI));
-//    }
-//
-//    public DataRSI get(int index){
-//        return dataRSIArrayList.get(index);
-//    }
 }
 
