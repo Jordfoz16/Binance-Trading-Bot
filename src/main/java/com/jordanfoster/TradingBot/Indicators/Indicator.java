@@ -13,6 +13,7 @@ public abstract class Indicator {
 
     public void update(PriceFeed priceFeed){
         if(!isEnabled) return;
+        loadValues();
         coinIndicators.clear();
 
         //Cycle through each coin
@@ -21,6 +22,8 @@ public abstract class Indicator {
             updateIndicator(currentCoin);
         }
     }
+
+    public abstract void loadValues();
 
     public abstract void updateIndicator(TradingPair currentCoin);
 

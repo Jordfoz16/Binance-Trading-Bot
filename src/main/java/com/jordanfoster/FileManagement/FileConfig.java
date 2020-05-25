@@ -85,15 +85,15 @@ public class FileConfig {
         JSONObject priceFeedElements = new JSONObject();
 
         //EMA Values
-        emaElements.put("n-value", 28);
+        emaElements.put("short-period-value", 9);
+        emaElements.put("medium-period-value", 21);
+        emaElements.put("long-period-value", 200);
         emaElements.put("buy-wait", 1);
         emaElements.put("sell-wait", 0);
-        emaElements.put("calibration-time", 12);
         configObject.put("ema", emaElements);
 
         //RSI Values
         rsiElements.put("rsi-period", 14);
-        rsiElements.put("rsi-calibration", 12);
         rsiElements.put("lower-bound", 40);
         rsiElements.put("upper-bound", 60);
         configObject.put("rsi", rsiElements);
@@ -104,7 +104,6 @@ public class FileConfig {
         configObject.put("account", accountElements);
 
         //Price Feed Value
-        priceFeedElements.put("price-history-size", 600);
         priceFeedElements.put("interval-rate", 10000);
         configObject.put("price-feed", priceFeedElements);
 

@@ -68,7 +68,7 @@ public class BinanceAPI {
         return callAPI(parameters, api);
     }
 
-    public String getCandlestick(String symbol, String interval) throws IOException {
+    public String getCandlestick(String symbol, String interval, int limit) throws IOException {
 
         String api = "/api/v3/klines";
 
@@ -76,7 +76,7 @@ public class BinanceAPI {
 
         parameters.add(new Parameter("symbol", symbol));
         parameters.add(new Parameter("interval", interval));
-        parameters.add(new Parameter("limit", Integer.toString(1000)));
+        parameters.add(new Parameter("limit", Integer.toString(limit)));
 
         return callAPI(parameters, api);
     }

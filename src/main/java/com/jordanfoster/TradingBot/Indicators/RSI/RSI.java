@@ -2,11 +2,12 @@ package com.jordanfoster.TradingBot.Indicators.RSI;
 
 import com.jordanfoster.TradingBot.Indicators.Indicator;
 import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
+import com.jordanfoster.TradingBot.TradingBot;
 
 
 public class RSI extends Indicator {
 
-    public int period = 5;
+    public int period = 14;
 
     @Override
     public void updateIndicator(TradingPair currentCoin) {
@@ -72,5 +73,9 @@ public class RSI extends Indicator {
         }
 
         coinIndicators.add(currentTradingPairRSI);
+    }
+
+    public void loadValues(){
+        period = Integer.parseInt(TradingBot.fileConfig.getElement("rsi", "rsi-period"));
     }
 }

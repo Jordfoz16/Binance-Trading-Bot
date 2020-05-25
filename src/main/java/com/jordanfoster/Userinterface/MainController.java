@@ -5,7 +5,7 @@ import com.jordanfoster.TradingBot.Indicators.EMA.TradingPairEMA;
 import com.jordanfoster.TradingBot.Indicators.RSI.TradingPairRSI;
 import com.jordanfoster.TradingBot.Indicators.TradingPairIndicator;
 import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
-import com.jordanfoster.TradingBot.Testing.Tester;
+import com.jordanfoster.TradingBot.BackTesting.BackTester;
 import com.jordanfoster.TradingBot.TradingBot;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -38,10 +38,8 @@ public class MainController {
     @FXML private ComboBox<String> cbTradingPairs;
 
     //Overview Tab - Charts
-    private boolean initializedPriceChart = false;
-    private boolean initializedRSIChart = false;
-    private int chartUpperBound = 500;
-    private int chartLowerBound = 400;
+    private int chartUpperBound = 1000;
+    private int chartLowerBound = 200;
     @FXML private LineChart<Integer, Double> chartPrice;
     @FXML private NumberAxis xAxisPrice;
     @FXML private NumberAxis yAxisPrice;
@@ -56,23 +54,15 @@ public class MainController {
     @FXML private LineChart<Integer, Double> chartEMATab;
     @FXML private NumberAxis xAxisEMATab;
     @FXML private NumberAxis yAxisEMATab;
-
-    //EMA Tab - Value
-    @FXML private TextField txtNValue;
-
-    //EMA Tab - Time Wait Value
+    @FXML private TextField txtShortPeriod;
+    @FXML private TextField txtMediumPeriod;
+    @FXML private TextField txtLongPeriod;
     @FXML private TextField txtBuyWaitTime;
     @FXML private TextField txtSellWaitTime;
-
-    //EMA Tab - Calibration
-    @FXML private TextField txtCalibrationTime;
-
-    //EMA Tab - Save
     @FXML private Button btnSaveEMA;
 
     //RSI Tab
     @FXML private TextField txtRSIPeriod;
-    @FXML private TextField txtRSICalibration;
     @FXML private TextField txtUpperRSI;
     @FXML private TextField txtLowerRSI;
     @FXML private LineChart<Integer, Double> chartRSITab;
@@ -99,8 +89,6 @@ public class MainController {
     @FXML private TextField txtTestingRSIUpper;
     @FXML private TextField txtTestingRSILower;
 
-
-
     //Order Book Tab
     @FXML private TextField txtTrades;
     @FXML private TableView tableOrderBook;
@@ -118,33 +106,40 @@ public class MainController {
     @FXML private TextField txtIntervalRate;
 
     //Settings Tab - Config
-    @FXML private TextField txtPriceFeedSize;
 
     //Log Tab
     @FXML private TextArea txtLog;
 
+    //Selected Coin
+    private int selectedPair = 0;
+
+    //Chart Data
+    private ArrayList<TradingPair> priceHistory = new ArrayList<>();
+    private ArrayList<TradingPairIndicator> emaHistory = new ArrayList<>();
+    private ArrayList<TradingPairIndicator> rsiHistory = new ArrayList<>();
+
     @FXML protected void initialize(){
         initConfigValues();
         initConfigLineChart();
+        initTradingPairSelector();
     }
 
     private void initConfigValues(){
         //EMA Tab
-        txtNValue.setText(TradingBot.fileConfig.getElement("ema","n-value"));
+        txtShortPeriod.setText(TradingBot.fileConfig.getElement("ema","short-period-value"));
+        txtMediumPeriod.setText(TradingBot.fileConfig.getElement("ema","medium-period-value"));
+        txtLongPeriod.setText(TradingBot.fileConfig.getElement("ema","long-period-value"));
         txtBuyWaitTime.setText(TradingBot.fileConfig.getElement("ema","buy-wait"));
         txtSellWaitTime.setText(TradingBot.fileConfig.getElement("ema","sell-wait"));
-        txtCalibrationTime.setText(TradingBot.fileConfig.getElement("ema","calibration-time"));
 
         //RSI Tab
         txtRSIPeriod.setText(TradingBot.fileConfig.getElement("rsi", "rsi-period"));
-        txtRSICalibration.setText(TradingBot.fileConfig.getElement("rsi", "rsi-calibration"));
         txtUpperRSI.setText(TradingBot.fileConfig.getElement("rsi", "upper-bound"));
         txtLowerRSI.setText(TradingBot.fileConfig.getElement("rsi", "lower-bound"));
 
         //Account Tab
         txtAPI.setText(TradingBot.fileConfig.getElement("account","api-key"));
         txtSecret.setText(TradingBot.fileConfig.getElement("account","secret-key"));
-        txtPriceFeedSize.setText(TradingBot.fileConfig.getElement("price-feed", "price-history-size"));
         txtIntervalRate.setText(TradingBot.fileConfig.getElement("price-feed", "interval-rate"));
     }
 
@@ -162,7 +157,7 @@ public class MainController {
         xAxisPrice.setUpperBound(chartUpperBound);
 
         yAxisPrice.setForceZeroInRange(false);
-        yAxisPrice.setTickUnit(0.1);
+        yAxisPrice.setTickUnit(20);
 
         xAxisEMATab.setAutoRanging(false);
         xAxisEMATab.setTickUnit(10);
@@ -170,7 +165,7 @@ public class MainController {
         xAxisEMATab.setUpperBound(chartUpperBound);
 
         yAxisEMATab.setForceZeroInRange(false);
-        yAxisEMATab.setTickUnit(0.1);
+        yAxisEMATab.setTickUnit(20);
 
         //RSI Chart
 
@@ -195,17 +190,20 @@ public class MainController {
         yAxisRSITab.setLowerBound(0);
     }
 
+    private void initTradingPairSelector(){
+        for(int i = 0; i < TradingBot.fileTradingPairs.getAvailableTradingPairs().size(); i++){
+            cbTradingPairs.getItems().add(TradingBot.fileTradingPairs.getSymbol(i));
+        }
+
+        cbTradingPairs.getSelectionModel().selectFirst();
+    }
+
     public void tabChange(){
         updatePriceChart();
         updateRSIChart();
     }
 
-    private ArrayList<TradingPair> priceHistory = new ArrayList<>();
-    private ArrayList<TradingPairIndicator> emaHistory = new ArrayList<>();
-    private ArrayList<TradingPairIndicator> rsiHistory = new ArrayList<>();
-    private int selectedPair = 0;
-
-    public synchronized void updateOverview(ArrayList<TradingPair> priceFeed, ArrayList<TradingPairIndicator> emaFeed, ArrayList<TradingPairIndicator> rsiFeed, int selectedPair){
+    public synchronized void updateOverview(ArrayList<TradingPair> priceFeed, ArrayList<TradingPairIndicator> emaFeed, ArrayList<TradingPairIndicator> rsiFeed){
 
         priceHistory.clear();
         priceHistory.addAll(priceFeed);
@@ -215,8 +213,6 @@ public class MainController {
 
         rsiHistory.clear();
         rsiHistory.addAll(rsiFeed);
-
-        this.selectedPair = selectedPair;
 
         Platform.runLater(new Runnable() {
             @Override
@@ -250,6 +246,10 @@ public class MainController {
 //        lblIndicatorRSI.setText(currentRSI.getStateString());
     }
 
+    public void updateSelectedPair(){
+        selectedPair = cbTradingPairs.getSelectionModel().getSelectedIndex();
+    }
+
     protected void updatePriceChart(){
 
         chartPrice.getData().clear();
@@ -262,9 +262,9 @@ public class MainController {
 
         priceData.setName("BTCUSDT");
 
-        emaData.setName("EMA " + EMA.periodSmall);
-        emaData2.setName("EMA " + EMA.periodMed);
-        emaData3.setName("EMA " + EMA.periodLarge);
+        emaData.setName("EMA " + EMA.periodShort);
+        emaData2.setName("EMA " + EMA.periodMedium);
+        emaData3.setName("EMA " + EMA.periodLong);
 
         for(int i = chartLowerBound; i < chartUpperBound; i++){
             priceData.getData().add(new XYChart.Data<>(i ,priceHistory.get(selectedPair).getCandleStick(i).close));
@@ -302,10 +302,10 @@ public class MainController {
             rsiData.getData().add(new XYChart.Data<>(i , ((TradingPairRSI) rsiHistory.get(selectedPair)).getCandle(i).RSI));
         }
 
-        if(tabPanel.getSelectionModel().getSelectedIndex() == 0){
-            chartRSI.getData().add(rsiData);
-        }else if(tabPanel.getSelectionModel().getSelectedIndex() == 2){
+        if(tabPanel.getSelectionModel().getSelectedIndex() == 2){
             chartRSITab.getData().add(rsiData);
+        }else{
+            chartRSI.getData().add(rsiData);
         }
 
         //Setting colour of the line
@@ -320,10 +320,11 @@ public class MainController {
      */
 
     @FXML protected void emaSave(){
-        TradingBot.fileConfig.editElement("ema","n-value", Integer.parseInt(txtNValue.getText()));
+        TradingBot.fileConfig.editElement("ema","short-period-value", Integer.parseInt(txtShortPeriod.getText()));
+        TradingBot.fileConfig.editElement("ema","medium-period-value", Integer.parseInt(txtMediumPeriod.getText()));
+        TradingBot.fileConfig.editElement("ema","long-period-value", Integer.parseInt(txtLongPeriod.getText()));
         TradingBot.fileConfig.editElement("ema","buy-wait", Integer.parseInt(txtBuyWaitTime.getText()));
         TradingBot.fileConfig.editElement("ema","sell-wait", Integer.parseInt(txtSellWaitTime.getText()));
-        TradingBot.fileConfig.editElement("ema","calibration-time", Integer.parseInt(txtCalibrationTime.getText()));
     }
 
     /*
@@ -332,7 +333,6 @@ public class MainController {
 
     @FXML protected void rsiSave(){
         TradingBot.fileConfig.editElement("rsi", "rsi-period", Integer.parseInt(txtRSIPeriod.getText()));
-        TradingBot.fileConfig.editElement("rsi", "rsi-calibration", Integer.parseInt(txtRSICalibration.getText()));
         TradingBot.fileConfig.editElement("rsi", "upper-bound", Integer.parseInt(txtUpperRSI.getText()));
         TradingBot.fileConfig.editElement("rsi", "lower-bound", Integer.parseInt(txtLowerRSI.getText()));
     }
@@ -342,7 +342,7 @@ public class MainController {
      */
 
     public void runTests(){
-        Tester tester = new Tester();
+        BackTester backTester = new BackTester();
     }
 
     /*
@@ -356,7 +356,6 @@ public class MainController {
     @FXML protected void accountSave(){
         TradingBot.fileConfig.editElement("account","api-key", txtAPI.getText());
         TradingBot.fileConfig.editElement("account","secret-key", txtSecret.getText());
-        TradingBot.fileConfig.editElement("price-feed", "price-history-size", Integer.parseInt(txtPriceFeedSize.getText()));
         TradingBot.fileConfig.editElement("price-feed", "interval-rate", Integer.parseInt(txtIntervalRate.getText()));
     }
 

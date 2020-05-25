@@ -37,7 +37,7 @@ public class CandleStickFeed extends PriceFeed {
             for(int index = 0; index < TradingBot.fileTradingPairs.getAvailableTradingPairs().size(); index++){
                 String apiResponse = null;
                 try {
-                    apiResponse = binanceAPI.getCandlestick(TradingBot.fileTradingPairs.getSymbol(index), interval);
+                    apiResponse = binanceAPI.getCandlestick(TradingBot.fileTradingPairs.getSymbol(index), interval, 1000);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

@@ -63,7 +63,7 @@ public class TradingBot extends Thread{
                     rsi.update(candleStickFeed);
 
                     //Update line chart data
-                    BinanceTradingBot.mainController.updateOverview(candleStickFeed.getTradingPairs(), ema.getIndicator(), rsi.getIndicator(),0);
+                    BinanceTradingBot.mainController.updateOverview(candleStickFeed.getTradingPairs(), ema.getIndicator(), rsi.getIndicator());
 
                     intervalRate = Integer.parseInt(fileConfig.getElement("price-feed", "interval-rate"));
                 }else{
