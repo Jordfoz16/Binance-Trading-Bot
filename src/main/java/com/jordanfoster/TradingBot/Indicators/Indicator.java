@@ -23,4 +23,8 @@ public abstract class Indicator {
     }
 
     public abstract void updateIndicator(TradingPair currentCoin);
+
+    public ArrayList<TradingPairIndicator> getIndicator(){
+        return coinIndicators;
+    }
 }

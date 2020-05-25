@@ -1,5 +1,9 @@
 package com.jordanfoster.Userinterface;
 
+import com.jordanfoster.TradingBot.Indicators.EMA.EMA;
+import com.jordanfoster.TradingBot.Indicators.EMA.TradingPairEMA;
+import com.jordanfoster.TradingBot.Indicators.RSI.TradingPairRSI;
+import com.jordanfoster.TradingBot.Indicators.TradingPairIndicator;
 import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
 import com.jordanfoster.TradingBot.Testing.Tester;
 import com.jordanfoster.TradingBot.TradingBot;
@@ -15,6 +19,8 @@ import javafx.scene.paint.Color;
 import java.util.ArrayList;
 
 public class MainController {
+
+    @FXML private TabPane tabPanel;
 
     //Overview Tab
     @FXML private Button btnStart;
@@ -34,6 +40,8 @@ public class MainController {
     //Overview Tab - Charts
     private boolean initializedPriceChart = false;
     private boolean initializedRSIChart = false;
+    private int chartUpperBound = 500;
+    private int chartLowerBound = 400;
     @FXML private LineChart<Integer, Double> chartPrice;
     @FXML private NumberAxis xAxisPrice;
     @FXML private NumberAxis yAxisPrice;
@@ -150,26 +158,26 @@ public class MainController {
 
         xAxisPrice.setAutoRanging(false);
         xAxisPrice.setTickUnit(10);
-        xAxisPrice.setLowerBound(0);
-        xAxisPrice.setUpperBound(30);
+        xAxisPrice.setLowerBound(chartLowerBound);
+        xAxisPrice.setUpperBound(chartUpperBound);
 
         yAxisPrice.setForceZeroInRange(false);
-        yAxisPrice.setTickUnit(0.01);
+        yAxisPrice.setTickUnit(0.1);
 
         xAxisEMATab.setAutoRanging(false);
         xAxisEMATab.setTickUnit(10);
-        xAxisEMATab.setLowerBound(0);
-        xAxisEMATab.setUpperBound(30);
+        xAxisEMATab.setLowerBound(chartLowerBound);
+        xAxisEMATab.setUpperBound(chartUpperBound);
 
         yAxisEMATab.setForceZeroInRange(false);
-        yAxisEMATab.setTickUnit(0.01);
+        yAxisEMATab.setTickUnit(0.1);
 
         //RSI Chart
 
         xAxisRSI.setAutoRanging(false);
         xAxisRSI.setTickUnit(10);
-        xAxisRSI.setLowerBound(0);
-        xAxisRSI.setUpperBound(30);
+        xAxisRSI.setLowerBound(chartLowerBound);
+        xAxisRSI.setUpperBound(chartUpperBound);
 
         yAxisRSI.setAutoRanging(false);
         yAxisRSI.setTickUnit(20);
@@ -178,8 +186,8 @@ public class MainController {
 
         xAxisRSITab.setAutoRanging(false);
         xAxisRSITab.setTickUnit(10);
-        xAxisRSITab.setLowerBound(0);
-        xAxisRSITab.setUpperBound(30);
+        xAxisRSITab.setLowerBound(chartLowerBound);
+        xAxisRSITab.setUpperBound(chartUpperBound);
 
         yAxisRSITab.setAutoRanging(false);
         yAxisRSITab.setTickUnit(20);
@@ -187,30 +195,39 @@ public class MainController {
         yAxisRSITab.setLowerBound(0);
     }
 
-    private ArrayList<TradingPair> priceHistory;
-//    private ArrayList<Data> emaHistory;
-//    private ArrayList<Data> rsiHistory;
+    public void tabChange(){
+        updatePriceChart();
+        updateRSIChart();
+    }
+
+    private ArrayList<TradingPair> priceHistory = new ArrayList<>();
+    private ArrayList<TradingPairIndicator> emaHistory = new ArrayList<>();
+    private ArrayList<TradingPairIndicator> rsiHistory = new ArrayList<>();
     private int selectedPair = 0;
 
-//    public void updateOverview(ArrayList<TradingPair> priceFeed, ArrayList<Data> emaFeed, ArrayList<Data> rsiFeed, int selectedPair){
-//        this.priceHistory = priceFeed;
-//        this.emaHistory = emaFeed;
-//        this.rsiHistory = rsiFeed;
-//        this.selectedPair = selectedPair;
-//
-//        if(priceHistory.size() == 0) return;
-//
-//        Platform.runLater(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//                updatePriceChart();
-//                updateRSIChart();
-//                updateState();
-//            }
-//        });
-//
-//    }
+    public synchronized void updateOverview(ArrayList<TradingPair> priceFeed, ArrayList<TradingPairIndicator> emaFeed, ArrayList<TradingPairIndicator> rsiFeed, int selectedPair){
+
+        priceHistory.clear();
+        priceHistory.addAll(priceFeed);
+
+        emaHistory.clear();
+        emaHistory.addAll(emaFeed);
+
+        rsiHistory.clear();
+        rsiHistory.addAll(rsiFeed);
+
+        this.selectedPair = selectedPair;
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                updatePriceChart();
+                updateRSIChart();
+                updateState();
+            }
+        });
+
+    }
 
     /*
     Overview Tab
@@ -235,78 +252,67 @@ public class MainController {
 
     protected void updatePriceChart(){
 
-//        chartPrice.getData().clear();
-//        chartEMATab.getData().clear();
-//
-//        XYChart.Series<Integer, Double> priceData = new XYChart.Series<>();
-//        XYChart.Series<Integer, Double> emaData = new XYChart.Series<>();
-//
-//        XYChart.Series<Integer, Double> priceData2 = new XYChart.Series<>();
-//        XYChart.Series<Integer, Double> emaData2 = new XYChart.Series<>();
-//
-//        priceData.setName("BTCUSDT");
-//        priceData2.setName(priceData.getName());
-//
-//        emaData.setName("EMA");
-//        emaData2.setName(emaData.getName());
-//
-//        for(int i = 0; i < priceHistory.get(selectedPair).getPriceList().size(); i++){
-//            priceData.getData().add(new XYChart.Data<>(i ,priceHistory.get(selectedPair).get(i)));
-//            emaData.getData().add(new XYChart.Data<>(i ,emaHistory.get(selectedPair).get(i)));
-//        }
-//
-//        if(priceHistory.get(selectedPair).getPriceList().size() > 30){
-//            xAxisPrice.setUpperBound(priceHistory.get(selectedPair).getPriceList().size() - 1);
-//            xAxisEMATab.setUpperBound(priceHistory.get(selectedPair).getPriceList().size() - 1);
-//        }
-//
-//        priceData2.setData(priceData.getData());
-//        emaData2.setData(emaData.getData());
-//
-//        chartPrice.getData().add(priceData);
-//        chartPrice.getData().add(emaData);
-//
-//        chartEMATab.getData().add(priceData2);
-//        chartEMATab.getData().add(emaData2);
-//
-//        xAxisPrice.autosize();
-//        yAxisPrice.autosize();
+        chartPrice.getData().clear();
+        chartEMATab.getData().clear();
+
+        XYChart.Series<Integer, Double> priceData = new XYChart.Series<>();
+        XYChart.Series<Integer, Double> emaData = new XYChart.Series<>();
+        XYChart.Series<Integer, Double> emaData2 = new XYChart.Series<>();
+        XYChart.Series<Integer, Double> emaData3 = new XYChart.Series<>();
+
+        priceData.setName("BTCUSDT");
+
+        emaData.setName("EMA " + EMA.periodSmall);
+        emaData2.setName("EMA " + EMA.periodMed);
+        emaData3.setName("EMA " + EMA.periodLarge);
+
+        for(int i = chartLowerBound; i < chartUpperBound; i++){
+            priceData.getData().add(new XYChart.Data<>(i ,priceHistory.get(selectedPair).getCandleStick(i).close));
+            emaData.getData().add(new XYChart.Data<>(i , ((TradingPairEMA) emaHistory.get(selectedPair)).getCandleSmall(i).EMA));
+            emaData2.getData().add(new XYChart.Data<>(i , ((TradingPairEMA) emaHistory.get(selectedPair)).getCandleMed(i).EMA));
+            emaData3.getData().add(new XYChart.Data<>(i , ((TradingPairEMA) emaHistory.get(selectedPair)).getCandleLarge(i).EMA));
+
+        }
+
+        if(tabPanel.getSelectionModel().getSelectedIndex() == 0){
+            chartPrice.getData().add(priceData);
+            chartPrice.getData().add(emaData);
+            chartPrice.getData().add(emaData2);
+            chartPrice.getData().add(emaData3);
+        }else if(tabPanel.getSelectionModel().getSelectedIndex() == 1){
+            chartEMATab.getData().add(priceData);
+            chartEMATab.getData().add(emaData);
+            chartEMATab.getData().add(emaData2);
+            chartEMATab.getData().add(emaData3);
+        }
+
+        yAxisPrice.autosize();
     }
 
     protected void updateRSIChart(){
 
-//        chartRSI.getData().clear();
-//        chartRSITab.getData().clear();
-//
-//        XYChart.Series<Integer, Double> rsiData = new XYChart.Series<>();
-//
-//        XYChart.Series<Integer, Double> rsiData2 = new XYChart.Series<>();
-//
-//        rsiData.setName("RSI");
-//        rsiData2.setName("RSI");
-//
-//        for(int i = 0; i < rsiHistory.get(selectedPair).getValues().size(); i++){
-//            rsiData.getData().add(new XYChart.Data<>(i ,rsiHistory.get(selectedPair).get(i)));
-//        }
-//
-//        if(rsiHistory.get(selectedPair).getValues().size() > 30){
-//            xAxisRSI.setUpperBound(rsiHistory.get(selectedPair).getValues().size() - 1);
-//            xAxisRSITab.setUpperBound(rsiHistory.get(selectedPair).getValues().size() - 1);
-//        }
-//
-//        rsiData2.setData(rsiData.getData());
-//
-//        chartRSI.getData().add(rsiData);
-//        chartRSITab.getData().add(rsiData2);
-//
-//
-//        //Setting colour of the line
-//        Color color = Color.GREEN; // or any other color
-//        String rgb = String.format("%d, %d, %d", (int) (color.getRed() * 255), (int) (color.getGreen() * 255), (int) (color.getBlue() * 255));
-//        Node line = rsiData.getNode().lookup(".chart-series-line");
-//        Node line2 = rsiData2.getNode().lookup(".chart-series-line");
-//        line.setStyle("-fx-stroke: rgba(" + rgb + ", 1.0);");
-//        line2.setStyle("-fx-stroke: rgba(" + rgb + ", 1.0);");
+        chartRSI.getData().clear();
+        chartRSITab.getData().clear();
+
+        XYChart.Series<Integer, Double> rsiData = new XYChart.Series<>();
+
+        rsiData.setName("RSI");
+
+        for(int i = chartLowerBound; i < chartUpperBound; i++){
+            rsiData.getData().add(new XYChart.Data<>(i , ((TradingPairRSI) rsiHistory.get(selectedPair)).getCandle(i).RSI));
+        }
+
+        if(tabPanel.getSelectionModel().getSelectedIndex() == 0){
+            chartRSI.getData().add(rsiData);
+        }else if(tabPanel.getSelectionModel().getSelectedIndex() == 2){
+            chartRSITab.getData().add(rsiData);
+        }
+
+        //Setting colour of the line
+        Color color = Color.GREEN; // or any other color
+        String rgb = String.format("%d, %d, %d", (int) (color.getRed() * 255), (int) (color.getGreen() * 255), (int) (color.getBlue() * 255));
+        Node line = rsiData.getNode().lookup(".chart-series-line");
+        line.setStyle("-fx-stroke: rgba(" + rgb + ", 1.0);");
     }
 
     /*

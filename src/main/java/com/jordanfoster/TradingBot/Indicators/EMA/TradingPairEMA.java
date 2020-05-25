@@ -1,6 +1,7 @@
 package com.jordanfoster.TradingBot.Indicators.EMA;
 
 import com.jordanfoster.TradingBot.Indicators.TradingPairIndicator;
+import com.jordanfoster.TradingBot.PriceFeed.CandleStick.CandleStickData;
 
 import java.util.ArrayList;
 
@@ -29,15 +30,13 @@ public class TradingPairEMA extends TradingPairIndicator {
     public EMAData getCandleSmall(int index){
         return emaSmall.get(index);
     }
-}
 
-class EMAData{
+    public EMAData getCandleMed(int index){
+        return emaMed.get(index);
+    }
 
-    public double close;
-    public double EMA;
-
-    public EMAData(double close, double EMA){
-        this.close = close;
-        this.EMA = EMA;
+    public EMAData getCandleLarge(int index){
+        return emaLarge.get(index);
     }
 }
+

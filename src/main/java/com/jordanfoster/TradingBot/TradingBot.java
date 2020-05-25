@@ -1,9 +1,11 @@
 package com.jordanfoster.TradingBot;
 
+import com.jordanfoster.BinanceTradingBot;
 import com.jordanfoster.FileManagement.FileConfig;
 import com.jordanfoster.FileManagement.FileOrders;
 import com.jordanfoster.FileManagement.FileTradingPairs;
 import com.jordanfoster.TradingBot.Indicators.EMA.EMA;
+import com.jordanfoster.TradingBot.Indicators.EMA.TradingPairEMA;
 import com.jordanfoster.TradingBot.Indicators.RSI.RSI;
 import com.jordanfoster.TradingBot.PriceFeed.CandleStick.CandleStickFeed;
 
@@ -43,6 +45,9 @@ public class TradingBot extends Thread{
 
         long lastTime = System.currentTimeMillis();
 
+//        candleStickFeed.update();
+//        ema.update(candleStickFeed);
+
         while(true){
 
             if(isTrading){
@@ -58,7 +63,7 @@ public class TradingBot extends Thread{
                     rsi.update(candleStickFeed);
 
                     //Update line chart data
-                    //BinanceTradingBot.mainController.updateOverview(livePriceFeed.getTradingPairs(), ema.getData(), rsi.getData(),0);
+                    BinanceTradingBot.mainController.updateOverview(candleStickFeed.getTradingPairs(), ema.getIndicator(), rsi.getIndicator(),0);
 
                     intervalRate = Integer.parseInt(fileConfig.getElement("price-feed", "interval-rate"));
                 }else{

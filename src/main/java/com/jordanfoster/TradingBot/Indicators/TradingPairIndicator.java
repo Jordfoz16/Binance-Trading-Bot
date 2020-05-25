@@ -1,5 +1,7 @@
 package com.jordanfoster.TradingBot.Indicators;
 
+import com.jordanfoster.TradingBot.PriceFeed.CandleStick.CandleStickData;
+
 public abstract class TradingPairIndicator {
 
     protected String symbol;

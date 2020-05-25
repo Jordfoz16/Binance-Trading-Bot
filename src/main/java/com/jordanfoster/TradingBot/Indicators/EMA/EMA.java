@@ -8,9 +8,9 @@ import java.util.ArrayList;
 
 public class EMA extends Indicator {
 
-    public int periodSmall = 9;
-    public int periodMed = 21;
-    public int periodLarge = 200;
+    public static int periodSmall = 9;
+    public static int periodMed = 21;
+    public static int periodLarge = 200;
 
     private double kSmall = 2.0 / (periodSmall + 1.0);
     private double kMed = 2.0 / (periodMed + 1.0);
@@ -48,26 +48,35 @@ public class EMA extends Indicator {
 
             if(currentCandle < periodSmall) continue;
 
-            double emaLast = currentTradingPairEMA.getCandleSmall(currentCandle - 1).EMA;
+            double emaLast;
 
             if(currentCandle >= periodSmall){
+                emaLast = currentTradingPairEMA.getCandleSmall(currentCandle - 1).EMA;
                 double EMA = close * kSmall + emaLast * (1.0 - kSmall);
 
                 currentTradingPairEMA.addEMASmall(close, EMA);
             }
 
             if(currentCandle >= periodMed){
+                emaLast = currentTradingPairEMA.getCandleMed(currentCandle - 1).EMA;
                 double EMA = close * kMed + emaLast * (1.0 - kMed);
 
                 currentTradingPairEMA.addEMAMed(close, EMA);
             }
 
             if(currentCandle >= periodLarge){
+                emaLast = currentTradingPairEMA.getCandleLarge(currentCandle - 1).EMA;
                 double EMA = close * kLarge + emaLast * (1.0 - kLarge);
 
                 currentTradingPairEMA.addEMALarge(close, EMA);
             }
         }
+
+//        for(int i = 0; i < currentTradingPairEMA.emaSmall.size(); i++){
+//            System.out.println("Price, " + currentTradingPairEMA.emaSmall.get(i).close + ", EMA9, " + currentTradingPairEMA.emaSmall.get(i).EMA +
+//                    ", EMA21, " + currentTradingPairEMA.emaMed.get(i).EMA +
+//                    ", EMA200, " + currentTradingPairEMA.emaLarge.get(i).EMA);
+//        }
         coinIndicators.add(currentTradingPairEMA);
     }
 }

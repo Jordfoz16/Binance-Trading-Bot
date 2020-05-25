@@ -18,22 +18,22 @@ public class BinanceTradingBot extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/MainInterface.fxml"));
-//        Parent root = loader.load();
-//        primaryStage.setTitle("Binance Trading Bot v2.0");
-//        primaryStage.setScene(new Scene(root, 800, 700));
-//        primaryStage.setResizable(false);
-//        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-//            @Override
-//            public void handle(WindowEvent e) {
-//                Platform.exit();
-//                System.exit(0);
-//            }
-//        });
-//
-//        mainController = loader.getController();
-//
-//        primaryStage.show();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserInterface/MainInterface.fxml"));
+        Parent root = loader.load();
+        primaryStage.setTitle("Binance Trading Bot v2.0");
+        primaryStage.setScene(new Scene(root, 800, 700));
+        primaryStage.setResizable(false);
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent e) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
+
+        mainController = loader.getController();
+
+        primaryStage.show();
     }
 
     public static void main(String[] args){
@@ -42,6 +42,6 @@ public class BinanceTradingBot extends Application {
         bot.start();
 
         //Launch the GUI
-        //launch(args);
+        launch(args);
     }
 }
