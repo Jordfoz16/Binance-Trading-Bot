@@ -60,6 +60,8 @@
                            </font>
                         </Label>
                         <Label layoutX="443.0" layoutY="187.0" text="Selected Pair:" />
+                        <Label layoutX="446.0" layoutY="233.0" text="Chart Zoom:" />
+                        <ComboBox fx:id="cbChartZoom" layoutX="561.0" layoutY="228.0" onAction="#updateChartZoom" prefHeight="27.0" prefWidth="188.0" />
                      </children></AnchorPane>
                 </content>
               </Tab>

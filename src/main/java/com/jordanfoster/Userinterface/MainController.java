@@ -36,10 +36,11 @@ public class MainController {
     @FXML private Label lblIndicatorEMA;
     @FXML private Label lblIndicatorRSI;
     @FXML private ComboBox<String> cbTradingPairs;
+    @FXML private ComboBox<String> cbChartZoom;
 
     //Overview Tab - Charts
     private int chartUpperBound = 1000;
-    private int chartLowerBound = 200;
+    private int chartLowerBound = 950;
     @FXML private LineChart<Integer, Double> chartPrice;
     @FXML private NumberAxis xAxisPrice;
     @FXML private NumberAxis yAxisPrice;
@@ -196,6 +197,13 @@ public class MainController {
         }
 
         cbTradingPairs.getSelectionModel().selectFirst();
+
+        for(int i = 1; i <= 20; i++){
+            cbChartZoom.getItems().add(Integer.toString(50 * i));
+        }
+
+        cbChartZoom.getSelectionModel().selectFirst();
+
     }
 
     public void tabChange(){
@@ -250,69 +258,79 @@ public class MainController {
         selectedPair = cbTradingPairs.getSelectionModel().getSelectedIndex();
     }
 
+    public void updateChartZoom(){
+        chartLowerBound = 1000 - Integer.parseInt(cbChartZoom.getValue());
+        xAxisPrice.setLowerBound(chartLowerBound);
+        xAxisEMATab.setLowerBound(chartLowerBound);
+        xAxisRSI.setLowerBound(chartLowerBound);
+        xAxisRSITab.setLowerBound(chartLowerBound);
+    }
+
     protected void updatePriceChart(){
+        if(tabPanel.getSelectionModel().getSelectedIndex() == 0 || tabPanel.getSelectionModel().getSelectedIndex() == 1){
 
-        chartPrice.getData().clear();
-        chartEMATab.getData().clear();
+            chartPrice.getData().clear();
+            chartEMATab.getData().clear();
 
-        XYChart.Series<Integer, Double> priceData = new XYChart.Series<>();
-        XYChart.Series<Integer, Double> emaData = new XYChart.Series<>();
-        XYChart.Series<Integer, Double> emaData2 = new XYChart.Series<>();
-        XYChart.Series<Integer, Double> emaData3 = new XYChart.Series<>();
+            XYChart.Series<Integer, Double> priceData = new XYChart.Series<>();
+            XYChart.Series<Integer, Double> emaData = new XYChart.Series<>();
+            XYChart.Series<Integer, Double> emaData2 = new XYChart.Series<>();
+            XYChart.Series<Integer, Double> emaData3 = new XYChart.Series<>();
 
-        priceData.setName("BTCUSDT");
+            priceData.setName("BTCUSDT");
 
-        emaData.setName("EMA " + EMA.periodShort);
-        emaData2.setName("EMA " + EMA.periodMedium);
-        emaData3.setName("EMA " + EMA.periodLong);
+            emaData.setName("EMA " + EMA.periodShort);
+            emaData2.setName("EMA " + EMA.periodMedium);
+            emaData3.setName("EMA " + EMA.periodLong);
 
-        for(int i = chartLowerBound; i < chartUpperBound; i++){
-            priceData.getData().add(new XYChart.Data<>(i ,priceHistory.get(selectedPair).getCandleStick(i).close));
-            emaData.getData().add(new XYChart.Data<>(i , ((TradingPairEMA) emaHistory.get(selectedPair)).getCandleSmall(i).EMA));
-            emaData2.getData().add(new XYChart.Data<>(i , ((TradingPairEMA) emaHistory.get(selectedPair)).getCandleMed(i).EMA));
-            emaData3.getData().add(new XYChart.Data<>(i , ((TradingPairEMA) emaHistory.get(selectedPair)).getCandleLarge(i).EMA));
+            for(int i = chartLowerBound; i < chartUpperBound; i++){
+                priceData.getData().add(new XYChart.Data<>(i ,priceHistory.get(selectedPair).getCandleStick(i).close));
+                emaData.getData().add(new XYChart.Data<>(i , ((TradingPairEMA) emaHistory.get(selectedPair)).getCandleSmall(i).EMA));
+                emaData2.getData().add(new XYChart.Data<>(i , ((TradingPairEMA) emaHistory.get(selectedPair)).getCandleMed(i).EMA));
+                emaData3.getData().add(new XYChart.Data<>(i , ((TradingPairEMA) emaHistory.get(selectedPair)).getCandleLarge(i).EMA));
 
+            }
+
+            if(tabPanel.getSelectionModel().getSelectedIndex() == 0){
+                chartPrice.getData().add(priceData);
+                chartPrice.getData().add(emaData);
+                chartPrice.getData().add(emaData2);
+                chartPrice.getData().add(emaData3);
+            }else if (tabPanel.getSelectionModel().getSelectedIndex() == 1) {
+                chartEMATab.getData().add(priceData);
+                chartEMATab.getData().add(emaData);
+                chartEMATab.getData().add(emaData2);
+                chartEMATab.getData().add(emaData3);
+            }
         }
-
-        if(tabPanel.getSelectionModel().getSelectedIndex() == 0){
-            chartPrice.getData().add(priceData);
-            chartPrice.getData().add(emaData);
-            chartPrice.getData().add(emaData2);
-            chartPrice.getData().add(emaData3);
-        }else if(tabPanel.getSelectionModel().getSelectedIndex() == 1){
-            chartEMATab.getData().add(priceData);
-            chartEMATab.getData().add(emaData);
-            chartEMATab.getData().add(emaData2);
-            chartEMATab.getData().add(emaData3);
-        }
-
         yAxisPrice.autosize();
     }
 
     protected void updateRSIChart(){
+        if(tabPanel.getSelectionModel().getSelectedIndex() == 0 || tabPanel.getSelectionModel().getSelectedIndex() == 2){
 
-        chartRSI.getData().clear();
-        chartRSITab.getData().clear();
+            chartRSI.getData().clear();
+            chartRSITab.getData().clear();
 
-        XYChart.Series<Integer, Double> rsiData = new XYChart.Series<>();
+            XYChart.Series<Integer, Double> rsiData = new XYChart.Series<>();
 
-        rsiData.setName("RSI");
+            rsiData.setName("RSI");
 
-        for(int i = chartLowerBound; i < chartUpperBound; i++){
-            rsiData.getData().add(new XYChart.Data<>(i , ((TradingPairRSI) rsiHistory.get(selectedPair)).getCandle(i).RSI));
-        }
+            for(int i = chartLowerBound; i < chartUpperBound; i++){
+                rsiData.getData().add(new XYChart.Data<>(i , ((TradingPairRSI) rsiHistory.get(selectedPair)).getCandle(i).RSI));
+            }
 
-        if(tabPanel.getSelectionModel().getSelectedIndex() == 2){
-            chartRSITab.getData().add(rsiData);
-        }else{
-            chartRSI.getData().add(rsiData);
-        }
-
-        //Setting colour of the line
-        Color color = Color.GREEN; // or any other color
-        String rgb = String.format("%d, %d, %d", (int) (color.getRed() * 255), (int) (color.getGreen() * 255), (int) (color.getBlue() * 255));
-        Node line = rsiData.getNode().lookup(".chart-series-line");
-        line.setStyle("-fx-stroke: rgba(" + rgb + ", 1.0);");
+                if(tabPanel.getSelectionModel().getSelectedIndex() == 0){
+                    chartRSI.getData().add(rsiData);
+                }else if(tabPanel.getSelectionModel().getSelectedIndex() == 2){
+                    chartRSITab.getData().add(rsiData);
+                }
+                //Setting colour of the line
+                Color color = Color.GREEN; // or any other color
+                String rgb = String.format("%d, %d, %d", (int) (color.getRed() * 255), (int) (color.getGreen() * 255), (int) (color.getBlue() * 255));
+                Node line = rsiData.getNode().lookup(".chart-series-line");
+                line.setStyle("-fx-stroke: rgba(" + rgb + ", 1.0);");
+            }
     }
 
     /*
