@@ -26,18 +26,24 @@ public class CandleStickFeed extends PriceFeed {
      */
 
     private int selectedCoin = 0;
-    private String interval = "5m";
+    private String interval = "30m";
+
+    public int limit = 1000;
 
     @Override
-    public void update() {
+    public void update(boolean loadValues) {
         JSONHandler jsonHandler = new JSONHandler();
 
             tradingPairs.clear();
 
+            if(loadValues){
+                interval = TradingBot.fileConfig.getElement("price-feed", "interval-rate");
+            }
+
             for(int index = 0; index < TradingBot.fileTradingPairs.getAvailableTradingPairs().size(); index++){
                 String apiResponse = null;
                 try {
-                    apiResponse = binanceAPI.getCandlestick(TradingBot.fileTradingPairs.getSymbol(index), interval, 1000);
+                    apiResponse = binanceAPI.getCandlestick(TradingBot.fileTradingPairs.getSymbol(index), interval, limit);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -61,5 +67,9 @@ public class CandleStickFeed extends PriceFeed {
                     tradingPairs.get(index).add(openTime, open, high, low, close, volume, closeTime);
                 }
             }
+    }
+
+    public void setInterval(String interval){
+        this.interval = interval;
     }
 }

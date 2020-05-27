@@ -1,4 +1,4 @@
-package com.jordanfoster.TradingBot.Indicators.EMA;
+package com.jordanfoster.TradingBot.Indicators.EMA.TradingPair;
 
 public class EMAData{
 

@@ -1,7 +1,6 @@
-package com.jordanfoster.TradingBot.Indicators.EMA;
+package com.jordanfoster.TradingBot.Indicators.EMA.TradingPair;
 
 import com.jordanfoster.TradingBot.Indicators.TradingPairIndicator;
-import com.jordanfoster.TradingBot.PriceFeed.CandleStick.CandleStickData;
 
 import java.util.ArrayList;
 

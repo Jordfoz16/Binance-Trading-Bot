@@ -1,6 +1,7 @@
 package com.jordanfoster.TradingBot.Indicators.RSI;
 
 import com.jordanfoster.TradingBot.Indicators.Indicator;
+import com.jordanfoster.TradingBot.Indicators.RSI.TradingPair.TradingPairRSI;
 import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
 import com.jordanfoster.TradingBot.TradingBot;
 
@@ -8,6 +9,8 @@ import com.jordanfoster.TradingBot.TradingBot;
 public class RSI extends Indicator {
 
     public int period = 14;
+    public int upperBound = 60;
+    public int lowerBound = 40;
 
     @Override
     public void updateIndicator(TradingPair currentCoin) {
@@ -77,5 +80,13 @@ public class RSI extends Indicator {
 
     public void loadValues(){
         period = Integer.parseInt(TradingBot.fileConfig.getElement("rsi", "rsi-period"));
+        upperBound = Integer.parseInt(TradingBot.fileConfig.getElement("rsi", "upper-bound"));
+        lowerBound = Integer.parseInt(TradingBot.fileConfig.getElement("rsi", "lower-bound"));
+    }
+
+    public void setValues(int period, int upperBound, int lowerBound){
+        this.period = period;
+        this.upperBound = upperBound;
+        this.lowerBound = lowerBound;
     }
 }

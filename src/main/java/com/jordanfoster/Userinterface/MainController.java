@@ -1,9 +1,10 @@
 package com.jordanfoster.Userinterface;
 
 import com.jordanfoster.TradingBot.Indicators.EMA.EMA;
-import com.jordanfoster.TradingBot.Indicators.EMA.TradingPairEMA;
-import com.jordanfoster.TradingBot.Indicators.RSI.TradingPairRSI;
+import com.jordanfoster.TradingBot.Indicators.EMA.TradingPair.TradingPairEMA;
+import com.jordanfoster.TradingBot.Indicators.RSI.TradingPair.TradingPairRSI;
 import com.jordanfoster.TradingBot.Indicators.TradingPairIndicator;
+import com.jordanfoster.TradingBot.Orderbook.OrderBook;
 import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
 import com.jordanfoster.TradingBot.BackTesting.BackTester;
 import com.jordanfoster.TradingBot.TradingBot;
@@ -75,7 +76,6 @@ public class MainController {
     @FXML private Label lblEndingDate;
     @FXML private Label lblDataPoints;
     @FXML private Label lblEMAIndications;
-    @FXML private Label lblIntervalRate;
     @FXML private Label lblRSIIndications;
     @FXML private Label lblTestNumberOfTrades;
     @FXML private Label lblTestProfitableTrades;
@@ -89,24 +89,22 @@ public class MainController {
     @FXML private TextField txtTestingRSIPeriod;
     @FXML private TextField txtTestingRSIUpper;
     @FXML private TextField txtTestingRSILower;
+    @FXML private ComboBox<String> cbTestInterval;
 
     //Order Book Tab
     @FXML private TextField txtTrades;
     @FXML private TableView tableOrderBook;
 
-    //Account Tab
+    //Setting Tab
     @FXML private TextField txtAPI;
     @FXML private TextField txtSecret;
     @FXML private Button btnSaveAPI;
-
-    //Account Tab - Network Test
     @FXML private Label lblConnection;
     @FXML private Label lblWalletConnection;
     @FXML private Label lblPriceConnection;
     @FXML private Button btnNetworkTest;
     @FXML private TextField txtIntervalRate;
-
-    //Settings Tab - Config
+    @FXML private ComboBox<String> cbInterval;
 
     //Log Tab
     @FXML private TextArea txtLog;
@@ -123,6 +121,8 @@ public class MainController {
         initConfigValues();
         initConfigLineChart();
         initTradingPairSelector();
+        initInterval();
+        initTesting();
     }
 
     private void initConfigValues(){
@@ -141,7 +141,7 @@ public class MainController {
         //Account Tab
         txtAPI.setText(TradingBot.fileConfig.getElement("account","api-key"));
         txtSecret.setText(TradingBot.fileConfig.getElement("account","secret-key"));
-        txtIntervalRate.setText(TradingBot.fileConfig.getElement("price-feed", "interval-rate"));
+        txtIntervalRate.setText(TradingBot.fileConfig.getElement("price-feed", "polling-rate"));
     }
 
     private void initConfigLineChart(){
@@ -204,6 +204,26 @@ public class MainController {
 
         cbChartZoom.getSelectionModel().selectFirst();
 
+    }
+
+    private void initInterval(){
+        cbInterval.getItems().add("1m");
+        cbInterval.getItems().add("3m");
+        cbInterval.getItems().add("5m");
+        cbInterval.getItems().add("15m");
+        cbInterval.getItems().add("30m");
+        cbInterval.getItems().add("1h");
+        cbInterval.getItems().add("2h");
+        cbInterval.getItems().add("4h");
+        cbInterval.getItems().add("6h");
+        cbInterval.getItems().add("8h");
+        cbInterval.getItems().add("12h");
+        cbInterval.getItems().add("1d");
+        cbInterval.getItems().add("3d");
+        cbInterval.getItems().add("1w");
+        cbInterval.getItems().add("1M");
+
+        cbInterval.getSelectionModel().select(TradingBot.fileConfig.getElement("price-feed", "interval-rate"));
     }
 
     public void tabChange(){
@@ -359,8 +379,57 @@ public class MainController {
     Testing Tab
      */
 
+    BackTester backTester = new BackTester();
+
+    public void initTesting(){
+        txtTestingRSIPeriod.setText(TradingBot.fileConfig.getElement("rsi", "rsi-period"));
+        txtTestingRSIUpper.setText(TradingBot.fileConfig.getElement("rsi", "upper-bound"));
+        txtTestingRSILower.setText(TradingBot.fileConfig.getElement("rsi", "lower-bound"));
+
+        cbTestInterval.getItems().add("1m");
+        cbTestInterval.getItems().add("3m");
+        cbTestInterval.getItems().add("5m");
+        cbTestInterval.getItems().add("15m");
+        cbTestInterval.getItems().add("30m");
+        cbTestInterval.getItems().add("1h");
+        cbTestInterval.getItems().add("2h");
+        cbTestInterval.getItems().add("4h");
+        cbTestInterval.getItems().add("6h");
+        cbTestInterval.getItems().add("8h");
+        cbTestInterval.getItems().add("12h");
+        cbTestInterval.getItems().add("1d");
+        cbTestInterval.getItems().add("3d");
+        cbTestInterval.getItems().add("1w");
+        cbTestInterval.getItems().add("1M");
+
+        cbTestInterval.getSelectionModel().select(TradingBot.fileConfig.getElement("price-feed", "interval-rate"));
+
+        updateRSIValues();
+    }
+
+    public void updateRSIValues(){
+        int period = Integer.parseInt(txtTestingRSIPeriod.getText());
+        int upper = Integer.parseInt(txtTestingRSIUpper.getText());
+        int lower = Integer.parseInt(txtTestingRSILower.getText());
+
+        backTester.setRSIValues(period, upper, lower);
+        backTester.setInterval(cbTestInterval.getValue());
+    }
+
     public void runTests(){
-        BackTester backTester = new BackTester();
+        updateRSIValues();
+        backTester.run();
+        updateBackTest();
+    }
+
+    public void  updateBackTest(){
+        lblTestNumberOfTrades.setText(Integer.toString(backTester.numberOfTrades));
+        lblTestTotalProfit.setText(Double.toString(backTester.profit));
+        lblTestProfitableTrades.setText(Integer.toString(backTester.numberOfProfitable));
+        lblTestUnprofitableTrades.setText(Integer.toString(backTester.numberOfUnprofitable));
+        lblTestLargestProfit.setText(Double.toString(backTester.largestProfit));
+        lblTestLargestLoss.setText(Double.toString(backTester.largestLoss));
+        lblRSIIndications.setText(Integer.toString(backTester.rsiIndication));
     }
 
     /*
@@ -374,7 +443,8 @@ public class MainController {
     @FXML protected void accountSave(){
         TradingBot.fileConfig.editElement("account","api-key", txtAPI.getText());
         TradingBot.fileConfig.editElement("account","secret-key", txtSecret.getText());
-        TradingBot.fileConfig.editElement("price-feed", "interval-rate", Integer.parseInt(txtIntervalRate.getText()));
+        TradingBot.fileConfig.editElement("price-feed", "polling-rate", Integer.parseInt(txtIntervalRate.getText()));
+        TradingBot.fileConfig.editElement("price-feed", "interval-rate", cbInterval.getValue());
     }
 
     /*

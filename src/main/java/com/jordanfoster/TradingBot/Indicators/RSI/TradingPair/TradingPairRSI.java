@@ -1,13 +1,10 @@
-package com.jordanfoster.TradingBot.Indicators.RSI;
+package com.jordanfoster.TradingBot.Indicators.RSI.TradingPair;
 
 import com.jordanfoster.TradingBot.Indicators.TradingPairIndicator;
-import com.jordanfoster.TradingBot.PriceFeed.CandleStick.CandleStickData;
 
 import java.util.ArrayList;
 
 public class TradingPairRSI extends TradingPairIndicator {
-
-    public String symbol;
 
     private ArrayList<RSIData> rsiData = new ArrayList<>();
 

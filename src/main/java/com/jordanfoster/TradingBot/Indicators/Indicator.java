@@ -1,5 +1,6 @@
 package com.jordanfoster.TradingBot.Indicators;
 
+import com.jordanfoster.TradingBot.Indicators.RSI.TradingPair.TradingPairRSI;
 import com.jordanfoster.TradingBot.PriceFeed.PriceFeed;
 import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
 
@@ -11,9 +12,11 @@ public abstract class Indicator {
 
     protected ArrayList<TradingPairIndicator> coinIndicators = new ArrayList<>();
 
-    public void update(PriceFeed priceFeed){
+    public void update(PriceFeed priceFeed, boolean loadValues){
         if(!isEnabled) return;
-        loadValues();
+        if(loadValues){
+            loadValues();
+        }
         coinIndicators.clear();
 
         //Cycle through each coin
@@ -30,4 +33,6 @@ public abstract class Indicator {
     public ArrayList<TradingPairIndicator> getIndicator(){
         return coinIndicators;
     }
+
+    public TradingPairIndicator getIndicator(int index){ return coinIndicators.get(index); }
 }

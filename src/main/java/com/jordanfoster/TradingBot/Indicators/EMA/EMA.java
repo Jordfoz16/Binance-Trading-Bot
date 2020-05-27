@@ -1,5 +1,6 @@
 package com.jordanfoster.TradingBot.Indicators.EMA;
 
+import com.jordanfoster.TradingBot.Indicators.EMA.TradingPair.TradingPairEMA;
 import com.jordanfoster.TradingBot.Indicators.Indicator;
 import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
 import com.jordanfoster.TradingBot.TradingBot;

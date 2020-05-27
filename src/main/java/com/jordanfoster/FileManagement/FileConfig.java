@@ -104,7 +104,8 @@ public class FileConfig {
         configObject.put("account", accountElements);
 
         //Price Feed Value
-        priceFeedElements.put("interval-rate", 10000);
+        priceFeedElements.put("polling-rate", 10000);
+        priceFeedElements.put("interval-rate", "5m");
         configObject.put("price-feed", priceFeedElements);
 
         fileManagement.write(path, configObject.toJSONString());

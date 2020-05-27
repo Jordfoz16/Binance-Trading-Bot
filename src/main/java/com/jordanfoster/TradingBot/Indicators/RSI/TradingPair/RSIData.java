@@ -1,4 +1,4 @@
-package com.jordanfoster.TradingBot.Indicators.RSI;
+package com.jordanfoster.TradingBot.Indicators.RSI.TradingPair;
 
 public class RSIData{
     public long date;
