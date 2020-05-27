@@ -1,117 +1,81 @@
 package com.jordanfoster.TradingBot.Indicators.EMA;
 
-import com.jordanfoster.TradingBot.Indicators.Data;
+import com.jordanfoster.TradingBot.Indicators.EMA.TradingPair.TradingPairEMA;
 import com.jordanfoster.TradingBot.Indicators.Indicator;
-import com.jordanfoster.TradingBot.PriceFeed.LivePriceFeed;
 import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
 import com.jordanfoster.TradingBot.TradingBot;
 
 public class EMA extends Indicator {
 
-    private int n = 10;
+    public static int periodShort = 9;
+    public static int periodMedium = 21;
+    public static int periodLong = 200;
 
-    private int buyWaitTime = 0;
-    private int sellWaitTime = 0;
-    private int calibrationTime = 10;
+    @Override
+    public void updateIndicator(TradingPair currentCoin) {
+        TradingPairEMA currentTradingPairEMA = new TradingPairEMA(currentCoin.getSymbol());
 
-    public EMA(){
-        refreshValues();
-    }
+        double kSmall = 2.0 / (periodShort + 1.0);
+        double kMed = 2.0 / (periodMedium + 1.0);
+        double kLarge = 2.0 / (periodLong + 1.0);
 
-    public void refreshValues(){
-        int currentN = n;
+        for(int currentCandle = 0; currentCandle < currentCoin.getCandleStickData().size(); currentCandle++){
 
-        n = Integer.parseInt(TradingBot.fileConfig.getElement("ema", "n-value"));
-        buyWaitTime = Integer.parseInt(TradingBot.fileConfig.getElement("ema", "buy-wait"));
-        sellWaitTime = Integer.parseInt(TradingBot.fileConfig.getElement("ema", "sell-wait"));
-        calibrationTime = Integer.parseInt(TradingBot.fileConfig.getElement("ema", "calibration-time"));
+            double close = currentCoin.getCandleStick(currentCandle).close;
 
-        if(n != currentN && initialized){
-            periodChanged();
-        }
-    }
+            //Use simple moving average when under the period
+            if(currentCandle < periodLong){
+                double periodSum = 0;
 
-    protected void updateState(int index){
+                for(int i = 0; i <= currentCandle; i++){
+                    periodSum += currentCoin.getCandleStick(i).close;
 
-        DataEMA currentCoin = (DataEMA)dataArrayList.get(index);
-
-        //Checks to make sure calibration time is completed
-        if(calibrationTime <= calibrationCounter){
-
-            if(priceFeed.getTradingPair(index).getCurrentPrice() > currentCoin.getCurrent()){
-                //Doesn't buy unless its above the waiting time
-                if(buyWaitTime <= currentCoin.buyWaitCounter){
-                    currentCoin.setState(TradingBot.State.BUY);
-                }else{
-                    currentCoin.setState(TradingBot.State.HOLD);
-                    currentCoin.buyWaitCounter++;
-                }
-                //Resets the counter for selling
-                currentCoin.sellWaitCounter = 0;
-            }else{
-                if(sellWaitTime <= currentCoin.sellWaitCounter){
-                    currentCoin.setState(TradingBot.State.SELL);
-                }else{
-                    currentCoin.setState(TradingBot.State.HOLD);
-                    currentCoin.sellWaitCounter++;
                 }
 
-                //Resets the counter for buying
-                currentCoin.buyWaitCounter = 0;
+                double SMA = periodSum / (currentCandle + 1);
+
+                if(currentCandle < periodShort){
+                    currentTradingPairEMA.addEMASmall(close, SMA);
+                }
+
+                if(currentCandle < periodMedium){
+                    currentTradingPairEMA.addEMAMed(close, SMA);
+                }
+
+                currentTradingPairEMA.addEMALarge(close, SMA);
             }
 
-        }else{
-            currentCoin.setState(TradingBot.State.CALIBRATION);
-            calibrationCounter++;
-        }
-    }
+            if(currentCandle < periodShort) continue;
 
-    protected void calculate(int index, TradingPair tradingPair){
+            double emaLast;
 
-        TradingPair currentPair = priceFeed.getTradingPair(index);
+            if(currentCandle >= periodShort){
+                emaLast = currentTradingPairEMA.getCandleSmall(currentCandle - 1).EMA;
+                double EMA = close * kSmall + emaLast * (1.0 - kSmall);
 
-        if(tradingPair != null){
-            currentPair = tradingPair;
-        }
+                currentTradingPairEMA.addEMASmall(close, EMA);
+            }
 
-        double currentPrice = currentPair.getCurrentPrice();
+            if(currentCandle >= periodMedium){
+                emaLast = currentTradingPairEMA.getCandleMed(currentCandle - 1).EMA;
+                double EMA = close * kMed + emaLast * (1.0 - kMed);
 
-        if (initialized){
-            //k is the weighted multiplier
-            double k = 2.0 / ((double) n + 1.0);
+                currentTradingPairEMA.addEMAMed(close, EMA);
+            }
 
-            DataEMA currentEMA = (DataEMA)dataArrayList.get(index);
+            if(currentCandle >= periodLong){
+                emaLast = currentTradingPairEMA.getCandleLarge(currentCandle - 1).EMA;
+                double EMA = close * kLarge + emaLast * (1.0 - kLarge);
 
-            double prevEMA = currentEMA.getPrevEMA();
-
-            double ema = currentPrice * k + prevEMA * (1.0 - k);
-
-            dataArrayList.get(index).addValue(ema);
-
-        }else {
-            //Setting up the array list on the first loop
-            dataArrayList.add(new DataEMA(currentPrice));
-        }
-    }
-
-    public void periodChanged(){
-
-        LivePriceFeed tempLivePriceFeed = new LivePriceFeed();
-
-        for(int index = 0; index < priceFeed.getTradingPairs().size(); index++){
-            Data currentEMA = dataArrayList.get(index);
-
-            currentEMA.getValues().clear();
-            currentEMA.addValue(priceFeed.getTradingPair(index).get(0));
-
-
-            tempLivePriceFeed.getTradingPairs().add(new TradingPair(priceFeed.getTradingPair(index).getSymbol(), priceFeed.getTradingPair(index).get(0)));
-
-            for(int i = 0; i < priceFeed.getTradingPair(index).getPriceList().size(); i++){
-                tempLivePriceFeed.getTradingPair(index).addPrice(priceFeed.getTradingPair(index).get(i));
-                calculate(index, tempLivePriceFeed.getTradingPair(index));
+                currentTradingPairEMA.addEMALarge(close, EMA);
             }
         }
+        coinIndicators.add(currentTradingPairEMA);
+    }
 
+    public void loadValues(){
+        periodShort = Integer.parseInt(TradingBot.fileConfig.getElement("ema", "short-period-value"));
+        periodMedium = Integer.parseInt(TradingBot.fileConfig.getElement("ema", "medium-period-value"));
+        periodLong = Integer.parseInt(TradingBot.fileConfig.getElement("ema", "long-period-value"));
     }
 }

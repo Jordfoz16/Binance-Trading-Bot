@@ -16,7 +16,7 @@ public abstract class PriceFeed {
         binanceAPI = new BinanceAPI();
     }
 
-    public abstract void update();
+    public abstract void update(boolean setInterval);
 
     public void clear(){
         tradingPairs.clear();

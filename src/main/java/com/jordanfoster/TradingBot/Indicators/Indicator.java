@@ -1,46 +1,38 @@
 package com.jordanfoster.TradingBot.Indicators;
 
-import com.jordanfoster.TradingBot.Indicators.EMA.DataEMA;
+import com.jordanfoster.TradingBot.Indicators.RSI.TradingPair.TradingPairRSI;
 import com.jordanfoster.TradingBot.PriceFeed.PriceFeed;
 import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
-import com.jordanfoster.TradingBot.TradingBot;
 
 import java.util.ArrayList;
 
 public abstract class Indicator {
 
-    protected int calibrationCounter = 0;
-    protected boolean initialized = false;
+    public boolean isEnabled = true;
 
-    protected ArrayList<Data> dataArrayList = new ArrayList<Data>();
-    protected PriceFeed priceFeed;
+    protected ArrayList<TradingPairIndicator> coinIndicators = new ArrayList<>();
 
-    public abstract void refreshValues();
-
-    public void update(PriceFeed priceFeed){
-        refreshValues();
-
-        this.priceFeed = priceFeed;
-
-        for(int index = 0; index < priceFeed.getTradingPairs().size(); index++){
-            calculate(index, null);
-            updateState(index);
+    public void update(PriceFeed priceFeed, boolean loadValues){
+        if(!isEnabled) return;
+        if(loadValues){
+            loadValues();
         }
+        coinIndicators.clear();
 
-        initialized = true;
+        //Cycle through each coin
+        for(int coinIndex = 0; coinIndex < priceFeed.getTradingPairs().size(); coinIndex++){
+            TradingPair currentCoin = priceFeed.getTradingPair(coinIndex);
+            updateIndicator(currentCoin);
+        }
     }
 
-    protected abstract void updateState(int index);
+    public abstract void loadValues();
 
-    protected abstract void calculate(int index, TradingPair tradingPair);
+    public abstract void updateIndicator(TradingPair currentCoin);
 
-    public void clear(){
-        dataArrayList.clear();
-        calibrationCounter = 0;
-        initialized = false;
+    public ArrayList<TradingPairIndicator> getIndicator(){
+        return coinIndicators;
     }
 
-    public ArrayList<Data> getData(){
-        return dataArrayList;
-    }
+    public TradingPairIndicator getIndicator(int index){ return coinIndicators.get(index); }
 }
