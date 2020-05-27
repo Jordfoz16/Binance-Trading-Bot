@@ -1,6 +1,12 @@
 package com.jordanfoster.TradingBot.Indicators.RSI.TradingPair;
 
 public class RSIData{
+
+    /*
+    RSIData - is an object data structure for storing
+    all data needed to store and calculate an RSI value.
+     */
+
     public long date;
     public double close;
     public double change;

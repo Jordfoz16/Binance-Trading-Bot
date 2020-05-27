@@ -6,6 +6,11 @@ import java.util.ArrayList;
 
 public class TradingPairRSI extends TradingPairIndicator {
 
+    /*
+    TradingPairRSI - stores all of the RSI values for
+    each trading pair.
+     */
+
     private ArrayList<RSIData> rsiData = new ArrayList<>();
 
     public TradingPairRSI(String symbol){

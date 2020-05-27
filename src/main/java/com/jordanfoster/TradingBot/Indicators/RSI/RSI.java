@@ -8,6 +8,12 @@ import com.jordanfoster.TradingBot.TradingBot;
 
 public class RSI extends Indicator {
 
+    /*
+    RSI - relative strength index trading strategy.
+    This class calculates an RSI value for every candle stick for
+    the selected trading pair
+     */
+
     public int period = 14;
     public int upperBound = 60;
     public int lowerBound = 40;

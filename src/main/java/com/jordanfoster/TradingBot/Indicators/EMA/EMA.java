@@ -7,6 +7,12 @@ import com.jordanfoster.TradingBot.TradingBot;
 
 public class EMA extends Indicator {
 
+    /*
+    EMA - is the exponential moving average trading strategy.
+    This class calculates an EMA value for every candle stick for
+    the selected trading pair
+     */
+
     public static int periodShort = 9;
     public static int periodMedium = 21;
     public static int periodLong = 200;

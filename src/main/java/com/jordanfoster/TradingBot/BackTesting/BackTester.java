@@ -12,11 +12,15 @@ import java.io.IOException;
 
 public class BackTester {
 
+    /*
+    BackTester - loops through historical data to test the
+    trading strategies. It then produces information on how the
+    trading strategy performed.
+     */
+
     private CandleStickFeed candleStickFeed = new CandleStickFeed();
     private OrderBook orderBook = new OrderBook();
     private RSI rsi = new RSI();
-
-
 
     public int numberOfTrades = 0;
     public int numberOfProfitable = 0;
@@ -26,10 +30,6 @@ public class BackTester {
     public double largestProfit = 0;
     public double largestLoss = 0;
     public double profit = 0;
-
-    public BackTester(){
-
-    }
 
     public void setRSIValues(int period, int upperBound, int lowerBound){
         rsi.setValues(period, upperBound, lowerBound);
@@ -41,6 +41,7 @@ public class BackTester {
 
     public void run(){
 
+        //Reset values and order book before new backtest
         numberOfTrades = 0;
         numberOfProfitable = 0;
         numberOfUnprofitable = 0;
@@ -49,20 +50,25 @@ public class BackTester {
         largestProfit = 0;
         largestLoss = 0;
         profit = 0;
-
         orderBook.clear();
 
+        //Updates price feed and RSI indicator
         candleStickFeed.update(false);
         rsi.update(candleStickFeed, false);
 
         StrategyRSI strategyRSI = new StrategyRSI();
 
+        //Loops through each candle stick
         for(int candleIndex = 0; candleIndex < candleStickFeed.limit; candleIndex++){
+            //Updates teh strategy for current candle stick
             strategyRSI.update(candleStickFeed, rsi, candleIndex);
 
+            //Loops through each coin
             for(int coinIndex = 0; coinIndex < candleStickFeed.getTradingPairs().size(); coinIndex++){
 
+                //Checks if the coin has already been bought
                 if(!orderBook.isBought(candleStickFeed.getTradingPair(coinIndex).getSymbol())){
+                    //Checks if the RSI indicators state is to buy
                     if(rsi.getIndicator(coinIndex).getState() == TradingPairIndicator.State.BUY){
                         String symbol = candleStickFeed.getTradingPair(coinIndex).getSymbol();
                         double price = candleStickFeed.getTradingPair(coinIndex).getCandleStick(candleIndex).close;
@@ -70,6 +76,7 @@ public class BackTester {
                         rsiIndication++;
                     }
                 }else{
+                    //If the coin has been bought it checks if the RSI is indicating to sell
                     if(rsi.getIndicator(coinIndex).getState() == TradingPairIndicator.State.SELL){
                         String symbol = candleStickFeed.getTradingPair(coinIndex).getSymbol();
                         double price = candleStickFeed.getTradingPair(coinIndex).getCandleStick(candleIndex).close;
@@ -79,6 +86,7 @@ public class BackTester {
             }
         }
 
+        //Loops over the closed orders to get data for the performance
         for(int i = 0; i < orderBook.getClosedOrder().size(); i++){
             profit += orderBook.getClosedOrder(i).getProfit();
             numberOfTrades++;

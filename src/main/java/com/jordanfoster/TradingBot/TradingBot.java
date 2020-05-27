@@ -14,14 +14,6 @@ import com.jordanfoster.TradingBot.PriceFeed.CandleStick.CandleStickFeed;
 
 public class TradingBot extends Thread{
 
-    public enum State{
-        BUY,
-        SELL,
-        NONE,
-        HOLD,
-        CALIBRATION
-    }
-
     public static String apiKey = "";
     public static String secretKey = "";
 
@@ -44,16 +36,9 @@ public class TradingBot extends Thread{
         fileOrders = new FileOrders();
     }
 
-    boolean bought = false;
-    double boughtPrice = 0;
-    double profit = 0;
-
     public void run(){
 
         long lastTime = System.currentTimeMillis();
-
-//        candleStickFeed.update();
-//        ema.update(candleStickFeed);
 
         while(true){
 
@@ -63,53 +48,7 @@ public class TradingBot extends Thread{
                 if(nowTime - lastTime > intervalRate || initialised == false){
                     if(initialised == false) initialised = true;
                     lastTime = nowTime;
-
                     update();
-                    candleStickFeed.update(true);
-                    ema.update(candleStickFeed, true);
-                    rsi.update(candleStickFeed, true);
-
-
-
-//                    StrategyRSI strategyRSI = new StrategyRSI();
-
-                    //strategyRSI.update(candleStickFeed, rsi, 0);
-
-//                    profit = 0;
-//                    bought = false;
-//                    boughtPrice = 0;
-//
-//                    for(int i = 0; i < candleStickFeed.getTradingPair(1).getCandleStickData().size(); i++){
-//                        strategyRSI.update(candleStickFeed, rsi, i);
-//
-//                        if(bought == false){
-//                            if(rsi.getIndicator(0).getState() == TradingPairIndicator.State.BUY){
-//                                bought = true;
-//                                boughtPrice = candleStickFeed.getTradingPair(1).getCandleStick(i).close;
-//                            }
-//                        }else if(bought == true){
-//
-//                            double currentPrice = candleStickFeed.getTradingPair(1).getCandleStick(i).close;
-//                            double takeProfit = boughtPrice * 10;
-//                            double takeLoss = boughtPrice * 0;
-//
-//                            if(rsi.getIndicator(0).getState() == TradingPairIndicator.State.SELL ||
-//                            currentPrice > takeProfit ||
-//                            currentPrice < takeLoss){
-//                                bought = false;
-//                                profit += candleStickFeed.getTradingPair(1).getCandleStick(i).close - boughtPrice;
-//                            }
-//                        }
-//
-//                        System.out.println("State: " + rsi.getIndicator(1).getSymbol());
-//                    }
-//
-//                    System.out.println("Total Profit: " + profit);
-
-                    //Update line chart data
-                    BinanceTradingBot.mainController.updateOverview(candleStickFeed.getTradingPairs(), ema.getIndicator(), rsi.getIndicator());
-
-                    intervalRate = Integer.parseInt(fileConfig.getElement("price-feed", "polling-rate"));
                 }else{
                     try {
                         Thread.sleep(intervalRate / 5);
@@ -131,6 +70,15 @@ public class TradingBot extends Thread{
 
     public void update(){
 
+        candleStickFeed.update(true);
+        ema.update(candleStickFeed, true);
+        rsi.update(candleStickFeed, true);
+
+
+        //Update line chart data
+        BinanceTradingBot.mainController.updateOverview(candleStickFeed.getTradingPairs(), ema.getIndicator(), rsi.getIndicator());
+
+        intervalRate = Integer.parseInt(fileConfig.getElement("price-feed", "polling-rate"));
     }
 
     public static synchronized void setTrading(boolean value){

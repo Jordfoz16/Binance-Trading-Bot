@@ -10,6 +10,12 @@ import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
 
 public class StrategyRSI extends Strategy {
 
+    /*
+    StrategyRSI - decides whether a coin should be bought,
+    sold or held. It loops through each coin at a certain
+    candle to provide a state of BUY, SELL, HOLD.
+     */
+
     @Override
     public void update(PriceFeed priceFeed, Indicator indicatorData, int candleIndex) {
 

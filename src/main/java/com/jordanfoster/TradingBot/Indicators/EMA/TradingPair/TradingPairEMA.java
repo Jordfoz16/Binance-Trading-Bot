@@ -6,6 +6,11 @@ import java.util.ArrayList;
 
 public class TradingPairEMA extends TradingPairIndicator {
 
+    /*
+    TradingPairEMA - store the EMA data for each of the
+    trading pairs.
+     */
+
     public ArrayList<EMAData> emaSmall = new ArrayList<>();
     public ArrayList<EMAData> emaMed = new ArrayList<>();
     public ArrayList<EMAData> emaLarge = new ArrayList<>();

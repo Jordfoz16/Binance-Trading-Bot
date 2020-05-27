@@ -5,6 +5,12 @@ import java.util.HashMap;
 
 public class OrderBook {
 
+    /*
+    OrderBook - keeps track of currently open positions
+    as well as all closed positions. It also checks if a
+    trading has already been bought.
+     */
+
     private HashMap<String, BoughtTradingPair> openOrders = new HashMap<>();
     private ArrayList<SoldTradingPair> closedOrders = new ArrayList<>();
 
@@ -16,7 +22,7 @@ public class OrderBook {
     public void sellOrder(String symbol, double price){
         BoughtTradingPair sell = openOrders.get(symbol);
 
-        closedOrders.add(new SoldTradingPair(sell.getPrice(), price, sell.getAmount()));
+        closedOrders.add(new SoldTradingPair(symbol, sell.getPrice(), price, sell.getAmount()));
 
         openOrders.remove(symbol);
     }
