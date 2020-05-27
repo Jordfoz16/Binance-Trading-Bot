@@ -41,7 +41,7 @@ public class MainController {
 
     //Overview Tab - Charts
     private int chartUpperBound = 1000;
-    private int chartLowerBound = 950;
+    private int chartLowerBound = 800;
     @FXML private LineChart<Integer, Double> chartPrice;
     @FXML private NumberAxis xAxisPrice;
     @FXML private NumberAxis yAxisPrice;
@@ -202,7 +202,7 @@ public class MainController {
             cbChartZoom.getItems().add(Integer.toString(50 * i));
         }
 
-        cbChartZoom.getSelectionModel().selectFirst();
+        cbChartZoom.getSelectionModel().select("200");
 
     }
 

@@ -45,8 +45,6 @@ public class EMA extends Indicator {
                 currentTradingPairEMA.addEMALarge(close, SMA);
             }
 
-            if(currentCandle < periodShort) continue;
-
             double emaLast;
 
             if(currentCandle >= periodShort){
