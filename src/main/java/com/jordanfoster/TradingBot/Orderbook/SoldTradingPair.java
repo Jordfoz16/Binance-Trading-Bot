@@ -12,7 +12,7 @@ public class SoldTradingPair {
     private double boughtPrice;
     private double soldPrice;
     private double amount;
-    private double change;
+    private double profit;
 
     public SoldTradingPair(String symbol, double boughtPrice, double soldPrice, double amount){
         this.symbol = symbol;
@@ -20,10 +20,10 @@ public class SoldTradingPair {
         this.soldPrice = soldPrice;
         this.amount = amount;
 
-        change = boughtPrice - soldPrice;
+        profit = (soldPrice - boughtPrice) * amount;
     }
 
     public double getProfit(){
-        return change;
+        return profit;
     }
 }

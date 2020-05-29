@@ -1,17 +1,12 @@
 package com.jordanfoster.TradingBot.BackTesting;
 
-import com.jordanfoster.Networking.BinanceAPI;
 import com.jordanfoster.TradingBot.Indicators.EMA.EMA;
 import com.jordanfoster.TradingBot.Indicators.EMA.Strategy.StrategyEMACrossover;
 import com.jordanfoster.TradingBot.Indicators.RSI.RSI;
 import com.jordanfoster.TradingBot.Indicators.RSI.Strategy.StrategyRSI;
 import com.jordanfoster.TradingBot.Indicators.Strategy;
-import com.jordanfoster.TradingBot.Indicators.TradingPairIndicator;
 import com.jordanfoster.TradingBot.Orderbook.OrderBook;
 import com.jordanfoster.TradingBot.PriceFeed.CandleStick.CandleStickFeed;
-import com.jordanfoster.TradingBot.TradingBot;
-
-import java.io.IOException;
 
 public class BackTester {
 
@@ -25,6 +20,9 @@ public class BackTester {
     private OrderBook orderBook = new OrderBook();
     private RSI rsi = new RSI();
     private EMA ema = new EMA();
+
+    public double startValue = 1000;
+    public double accountValue = startValue;
 
     public int numberOfTrades = 0;
     public int numberOfProfitable = 0;
@@ -58,6 +56,7 @@ public class BackTester {
         largestProfit = 0;
         largestLoss = 0;
         profit = 0;
+        accountValue = startValue;
         orderBook.clear();
 
         //Updates price feed and RSI indicator
@@ -87,7 +86,13 @@ public class BackTester {
                         emaIndication++;
                         if(strategyRSI.getState(symbol) == Strategy.State.BUY){
                             rsiIndication++;
-                            orderBook.buyOrder(symbol, price, 1);
+
+                            double riskPrice = (accountValue * 0.1);
+                            double amount = riskPrice / price;
+
+                            accountValue = accountValue - riskPrice;
+
+                            orderBook.buyOrder(symbol, price, amount);
                         }
                     }
 
@@ -95,6 +100,7 @@ public class BackTester {
 
                     if(strategyEMACrossover.getState(symbol) == Strategy.State.SELL){
                         if(strategyRSI.getState(symbol) == Strategy.State.SELL){
+                            accountValue = accountValue + (price * orderBook.getOpenOrder(symbol).getAmount());
                             orderBook.sellOrder(symbol, price);
                         }
                     }
@@ -102,9 +108,23 @@ public class BackTester {
             }
         }
 
+
+        //Closes all remaining open positions
+        for(int coinIndex = 0; coinIndex < candleStickFeed.getTradingPairs().size(); coinIndex++){
+            if(orderBook.isBought(candleStickFeed.getTradingPair(coinIndex).getSymbol())){
+
+                int lastCandle = candleStickFeed.getTradingPair(coinIndex).getCandleStickData().size() - 1;
+                double currentPrice = candleStickFeed.getTradingPair(coinIndex).getCandleStick(lastCandle).close;
+
+                accountValue = accountValue + (currentPrice * orderBook.getOpenOrder(candleStickFeed.getTradingPair(coinIndex).getSymbol()).getAmount());
+
+                orderBook.sellOrder(candleStickFeed.getTradingPair(coinIndex).getSymbol(), currentPrice);
+            }
+        }
+
         //Loops over the closed orders to get data for the performance
         for(int i = 0; i < orderBook.getClosedOrder().size(); i++){
-            profit += orderBook.getClosedOrder(i).getProfit();
+            profit = profit + orderBook.getClosedOrder(i).getProfit();
             numberOfTrades++;
 
             if(orderBook.getClosedOrder(i).getProfit() > 0){
@@ -119,6 +139,8 @@ public class BackTester {
                 largestLoss = orderBook.getClosedOrder(i).getProfit();
             }
         }
+
+        System.out.println("Account Value: " + accountValue);
     }
 
 }
