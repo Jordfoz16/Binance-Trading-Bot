@@ -2,9 +2,12 @@ package com.jordanfoster.Userinterface;
 
 import com.jordanfoster.TradingBot.Indicators.EMA.EMA;
 import com.jordanfoster.TradingBot.Indicators.EMA.TradingPair.TradingPairEMA;
+import com.jordanfoster.TradingBot.Indicators.RSI.RSI;
 import com.jordanfoster.TradingBot.Indicators.RSI.TradingPair.TradingPairRSI;
 import com.jordanfoster.TradingBot.Indicators.TradingPairIndicator;
 import com.jordanfoster.TradingBot.Orderbook.OrderBook;
+import com.jordanfoster.TradingBot.PriceFeed.CandleStick.CandleStickFeed;
+import com.jordanfoster.TradingBot.PriceFeed.PriceFeed;
 import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
 import com.jordanfoster.TradingBot.BackTesting.BackTester;
 import com.jordanfoster.TradingBot.TradingBot;
@@ -59,8 +62,6 @@ public class MainController {
     @FXML private TextField txtShortPeriod;
     @FXML private TextField txtMediumPeriod;
     @FXML private TextField txtLongPeriod;
-    @FXML private TextField txtBuyWaitTime;
-    @FXML private TextField txtSellWaitTime;
     @FXML private Button btnSaveEMA;
 
     //RSI Tab
@@ -83,9 +84,9 @@ public class MainController {
     @FXML private Label lblTestTotalProfit;
     @FXML private Label lblTestLargestProfit;
     @FXML private Label lblTestLargestLoss;
-    @FXML private TextField txtEMAnValue;
-    @FXML private TextField txtEMABuyWait;
-    @FXML private TextField txtEMASellWait;
+    @FXML private TextField txtTestShortPeriod;
+    @FXML private TextField txtTestMediumPeriod;
+    @FXML private TextField txtTestLongPeriod;
     @FXML private TextField txtTestingRSIPeriod;
     @FXML private TextField txtTestingRSIUpper;
     @FXML private TextField txtTestingRSILower;
@@ -113,9 +114,9 @@ public class MainController {
     private int selectedPair = 0;
 
     //Chart Data
-    private ArrayList<TradingPair> priceHistory = new ArrayList<>();
-    private ArrayList<TradingPairIndicator> emaHistory = new ArrayList<>();
-    private ArrayList<TradingPairIndicator> rsiHistory = new ArrayList<>();
+    private CandleStickFeed candleStickFeed = new CandleStickFeed();
+    private EMA ema = new EMA();
+    private RSI rsi = new RSI();
 
     @FXML protected void initialize(){
         initConfigValues();
@@ -130,8 +131,6 @@ public class MainController {
         txtShortPeriod.setText(TradingBot.fileConfig.getElement("ema","short-period-value"));
         txtMediumPeriod.setText(TradingBot.fileConfig.getElement("ema","medium-period-value"));
         txtLongPeriod.setText(TradingBot.fileConfig.getElement("ema","long-period-value"));
-        txtBuyWaitTime.setText(TradingBot.fileConfig.getElement("ema","buy-wait"));
-        txtSellWaitTime.setText(TradingBot.fileConfig.getElement("ema","sell-wait"));
 
         //RSI Tab
         txtRSIPeriod.setText(TradingBot.fileConfig.getElement("rsi", "rsi-period"));
@@ -231,18 +230,19 @@ public class MainController {
         updateRSIChart();
     }
 
-    public synchronized void updateOverview(ArrayList<TradingPair> priceFeed, ArrayList<TradingPairIndicator> emaFeed, ArrayList<TradingPairIndicator> rsiFeed){
+    public synchronized void updateOverview(CandleStickFeed candleStickFeed, EMA ema, RSI rsi){
 
-        priceHistory.clear();
-        priceHistory.addAll(priceFeed);
+        this.candleStickFeed.clear();
+        this.candleStickFeed.getTradingPairs().addAll(candleStickFeed.getTradingPairs());
 
-        emaHistory.clear();
-        emaHistory.addAll(emaFeed);
+        this.ema.getIndicator().clear();
+        this.ema.getIndicator().addAll(ema.getIndicator());
 
-        rsiHistory.clear();
-        rsiHistory.addAll(rsiFeed);
+        this.rsi.getIndicator().clear();
+        this.rsi.getIndicator().addAll(rsi.getIndicator());
 
         Platform.runLater(new Runnable() {
+
             @Override
             public void run() {
                 updatePriceChart();
@@ -299,15 +299,15 @@ public class MainController {
 
             priceData.setName("BTCUSDT");
 
-            emaData.setName("EMA " + EMA.periodShort);
-            emaData2.setName("EMA " + EMA.periodMedium);
-            emaData3.setName("EMA " + EMA.periodLong);
+            emaData.setName("EMA " + ema.periodShort);
+            emaData2.setName("EMA " + ema.periodMedium);
+            emaData3.setName("EMA " + ema.periodLong);
 
             for(int i = chartLowerBound; i < chartUpperBound; i++){
-                priceData.getData().add(new XYChart.Data<>(i ,priceHistory.get(selectedPair).getCandleStick(i).close));
-                emaData.getData().add(new XYChart.Data<>(i , ((TradingPairEMA) emaHistory.get(selectedPair)).getCandleSmall(i).EMA));
-                emaData2.getData().add(new XYChart.Data<>(i , ((TradingPairEMA) emaHistory.get(selectedPair)).getCandleMed(i).EMA));
-                emaData3.getData().add(new XYChart.Data<>(i , ((TradingPairEMA) emaHistory.get(selectedPair)).getCandleLarge(i).EMA));
+                priceData.getData().add(new XYChart.Data<>(i , candleStickFeed.getTradingPair(selectedPair).getCandleStick(i).close));
+                emaData.getData().add(new XYChart.Data<>(i , ((TradingPairEMA) ema.getIndicator(selectedPair)).getCandleSmall(i).EMA));
+                emaData2.getData().add(new XYChart.Data<>(i , ((TradingPairEMA) ema.getIndicator(selectedPair)).getCandleMed(i).EMA));
+                emaData3.getData().add(new XYChart.Data<>(i , ((TradingPairEMA) ema.getIndicator(selectedPair)).getCandleLarge(i).EMA));
 
             }
 
@@ -337,7 +337,7 @@ public class MainController {
             rsiData.setName("RSI");
 
             for(int i = chartLowerBound; i < chartUpperBound; i++){
-                rsiData.getData().add(new XYChart.Data<>(i , ((TradingPairRSI) rsiHistory.get(selectedPair)).getCandle(i).RSI));
+                rsiData.getData().add(new XYChart.Data<>(i , ((TradingPairRSI) rsi.getIndicator(selectedPair)).getCandle(i).RSI));
             }
 
                 if(tabPanel.getSelectionModel().getSelectedIndex() == 0){
@@ -361,8 +361,6 @@ public class MainController {
         TradingBot.fileConfig.editElement("ema","short-period-value", Integer.parseInt(txtShortPeriod.getText()));
         TradingBot.fileConfig.editElement("ema","medium-period-value", Integer.parseInt(txtMediumPeriod.getText()));
         TradingBot.fileConfig.editElement("ema","long-period-value", Integer.parseInt(txtLongPeriod.getText()));
-        TradingBot.fileConfig.editElement("ema","buy-wait", Integer.parseInt(txtBuyWaitTime.getText()));
-        TradingBot.fileConfig.editElement("ema","sell-wait", Integer.parseInt(txtSellWaitTime.getText()));
     }
 
     /*
@@ -386,6 +384,11 @@ public class MainController {
         txtTestingRSIUpper.setText(TradingBot.fileConfig.getElement("rsi", "upper-bound"));
         txtTestingRSILower.setText(TradingBot.fileConfig.getElement("rsi", "lower-bound"));
 
+        txtTestShortPeriod.setText(TradingBot.fileConfig.getElement("ema", "short-period-value"));
+        txtTestMediumPeriod.setText(TradingBot.fileConfig.getElement("ema", "medium-period-value"));
+        txtTestLongPeriod.setText(TradingBot.fileConfig.getElement("ema", "long-period-value"));
+
+
         cbTestInterval.getItems().add("1m");
         cbTestInterval.getItems().add("3m");
         cbTestInterval.getItems().add("5m");
@@ -403,8 +406,6 @@ public class MainController {
         cbTestInterval.getItems().add("1M");
 
         cbTestInterval.getSelectionModel().select(TradingBot.fileConfig.getElement("price-feed", "interval-rate"));
-
-        updateRSIValues();
     }
 
     public void updateRSIValues(){
@@ -416,8 +417,17 @@ public class MainController {
         backTester.setInterval(cbTestInterval.getValue());
     }
 
+    public void updateEMAValues(){
+        int shortPeriod = Integer.parseInt(txtTestShortPeriod.getText());
+        int mediumPeriod = Integer.parseInt(txtTestMediumPeriod.getText());
+        int longPeriod = Integer.parseInt(txtTestLongPeriod.getText());
+
+        backTester.setEMAValue(shortPeriod, mediumPeriod, longPeriod);
+    }
+
     public void runTests(){
         updateRSIValues();
+        updateEMAValues();
         backTester.run();
         updateBackTest();
     }
@@ -430,6 +440,7 @@ public class MainController {
         lblTestLargestProfit.setText(Double.toString(backTester.largestProfit));
         lblTestLargestLoss.setText(Double.toString(backTester.largestLoss));
         lblRSIIndications.setText(Integer.toString(backTester.rsiIndication));
+        lblEMAIndications.setText(Integer.toString(backTester.emaIndication));
     }
 
     /*

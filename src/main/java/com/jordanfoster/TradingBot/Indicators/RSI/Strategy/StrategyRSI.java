@@ -8,12 +8,19 @@ import com.jordanfoster.TradingBot.Indicators.TradingPairIndicator;
 import com.jordanfoster.TradingBot.PriceFeed.PriceFeed;
 import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
 
+import static com.jordanfoster.TradingBot.Indicators.Strategy.State.BUY;
+
 public class StrategyRSI extends Strategy {
 
     /*
-    StrategyRSI - decides whether a coin should be bought,
-    sold or held. It loops through each coin at a certain
+    StrategyRSI - decides whether a trading pair should be bought,
+    sold or held. It loops through each trading pair at a certain
     candle to provide a state of BUY, SELL, HOLD.
+
+    If the RSI for a trading pair is below the lower bound it is considered
+    over sold, this will result in the strategy indicating a buy. If the RSI
+    for a trading pair is above the upper bound it is considered over bought
+    which will result in the strategy indicating a sell.
      */
 
     @Override
@@ -29,25 +36,17 @@ public class StrategyRSI extends Strategy {
             int upperBound = ((RSI) indicatorData).upperBound;
             int lowerBound = ((RSI) indicatorData).lowerBound;
 
-//            if(upperBound < currentRSIPair.getCandle(candleIndex).RSI){
-//                state = State.BUY;
-//            }else if(lowerBound > currentRSIPair.getCandle(candleIndex).RSI){
-//                state = State.SELL;
-//            }else{
-//                state = State.HOLD;
-//            }
-
             if(currentRSIPair.getCandle(candleIndex).RSI < lowerBound){
-                currentRSIPair.setState(TradingPairIndicator.State.BUY);
+                setState(currentTradingPair.getSymbol(), State.BUY);
                 continue;
             }
 
             if(currentRSIPair.getCandle(candleIndex).RSI > upperBound){
-                currentRSIPair.setState(TradingPairIndicator.State.SELL);
+                setState(currentTradingPair.getSymbol(), State.SELL);
                 continue;
             }
 
-            currentRSIPair.setState(TradingPairIndicator.State.HOLD);
+            setState(currentTradingPair.getSymbol(), State.HOLD);
         }
     }
 }

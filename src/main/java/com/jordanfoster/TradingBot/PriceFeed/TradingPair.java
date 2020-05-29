@@ -6,6 +6,11 @@ import java.util.ArrayList;
 
 public class TradingPair {
 
+    /*
+    TradingPair - stores all of the information about a single
+    trading pair.
+     */
+
     private String symbol;
     private ArrayList<CandleStickData> candleStickData = new ArrayList<CandleStickData>();
 

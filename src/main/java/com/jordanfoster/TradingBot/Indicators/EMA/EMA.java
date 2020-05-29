@@ -13,9 +13,9 @@ public class EMA extends Indicator {
     the selected trading pair
      */
 
-    public static int periodShort = 9;
-    public static int periodMedium = 21;
-    public static int periodLong = 200;
+    public int periodShort = 9;
+    public int periodMedium = 21;
+    public int periodLong = 200;
 
     @Override
     public void updateIndicator(TradingPair currentCoin) {
@@ -81,5 +81,11 @@ public class EMA extends Indicator {
         periodShort = Integer.parseInt(TradingBot.fileConfig.getElement("ema", "short-period-value"));
         periodMedium = Integer.parseInt(TradingBot.fileConfig.getElement("ema", "medium-period-value"));
         periodLong = Integer.parseInt(TradingBot.fileConfig.getElement("ema", "long-period-value"));
+    }
+
+    public void setValues(int periodShort, int periodMedium, int periodLong){
+        this.periodShort = periodShort;
+        this.periodMedium = periodMedium;
+        this.periodLong = periodLong;
     }
 }

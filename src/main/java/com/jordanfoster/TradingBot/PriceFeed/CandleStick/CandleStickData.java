@@ -2,6 +2,11 @@ package com.jordanfoster.TradingBot.PriceFeed.CandleStick;
 
 public class CandleStickData {
 
+    /*
+    CandleStickData - is an object data structure for storing
+    candle stick data.
+     */
+
     public long openTime;
     public double open;
     public double high;

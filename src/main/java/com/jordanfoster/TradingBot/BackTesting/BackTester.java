@@ -1,8 +1,11 @@
 package com.jordanfoster.TradingBot.BackTesting;
 
 import com.jordanfoster.Networking.BinanceAPI;
+import com.jordanfoster.TradingBot.Indicators.EMA.EMA;
+import com.jordanfoster.TradingBot.Indicators.EMA.Strategy.StrategyEMACrossover;
 import com.jordanfoster.TradingBot.Indicators.RSI.RSI;
 import com.jordanfoster.TradingBot.Indicators.RSI.Strategy.StrategyRSI;
+import com.jordanfoster.TradingBot.Indicators.Strategy;
 import com.jordanfoster.TradingBot.Indicators.TradingPairIndicator;
 import com.jordanfoster.TradingBot.Orderbook.OrderBook;
 import com.jordanfoster.TradingBot.PriceFeed.CandleStick.CandleStickFeed;
@@ -21,6 +24,7 @@ public class BackTester {
     private CandleStickFeed candleStickFeed = new CandleStickFeed();
     private OrderBook orderBook = new OrderBook();
     private RSI rsi = new RSI();
+    private EMA ema = new EMA();
 
     public int numberOfTrades = 0;
     public int numberOfProfitable = 0;
@@ -33,6 +37,10 @@ public class BackTester {
 
     public void setRSIValues(int period, int upperBound, int lowerBound){
         rsi.setValues(period, upperBound, lowerBound);
+    }
+
+    public void setEMAValue(int periodShort, int periodMedium, int periodLong){
+        ema.setValues(periodShort, periodMedium, periodLong);
     }
 
     public void setInterval(String interval){
@@ -55,32 +63,40 @@ public class BackTester {
         //Updates price feed and RSI indicator
         candleStickFeed.update(false);
         rsi.update(candleStickFeed, false);
+        ema.update(candleStickFeed, false);
 
         StrategyRSI strategyRSI = new StrategyRSI();
+        StrategyEMACrossover strategyEMACrossover = new StrategyEMACrossover();
 
         //Loops through each candle stick
         for(int candleIndex = 0; candleIndex < candleStickFeed.limit; candleIndex++){
             //Updates teh strategy for current candle stick
             strategyRSI.update(candleStickFeed, rsi, candleIndex);
+            strategyEMACrossover.update(candleStickFeed, ema, candleIndex);
 
             //Loops through each coin
             for(int coinIndex = 0; coinIndex < candleStickFeed.getTradingPairs().size(); coinIndex++){
 
+                String symbol = candleStickFeed.getTradingPair(coinIndex).getSymbol();
+                double price = candleStickFeed.getTradingPair(coinIndex).getCandleStick(candleIndex).close;
+
                 //Checks if the coin has already been bought
                 if(!orderBook.isBought(candleStickFeed.getTradingPair(coinIndex).getSymbol())){
-                    //Checks if the RSI indicators state is to buy
-                    if(rsi.getIndicator(coinIndex).getState() == TradingPairIndicator.State.BUY){
-                        String symbol = candleStickFeed.getTradingPair(coinIndex).getSymbol();
-                        double price = candleStickFeed.getTradingPair(coinIndex).getCandleStick(candleIndex).close;
-                        orderBook.buyOrder(symbol, price, 1);
-                        rsiIndication++;
+
+                    if(strategyEMACrossover.getState(symbol) == Strategy.State.BUY){
+                        emaIndication++;
+                        if(strategyRSI.getState(symbol) == Strategy.State.BUY){
+                            rsiIndication++;
+                            orderBook.buyOrder(symbol, price, 1);
+                        }
                     }
+
                 }else{
-                    //If the coin has been bought it checks if the RSI is indicating to sell
-                    if(rsi.getIndicator(coinIndex).getState() == TradingPairIndicator.State.SELL){
-                        String symbol = candleStickFeed.getTradingPair(coinIndex).getSymbol();
-                        double price = candleStickFeed.getTradingPair(coinIndex).getCandleStick(candleIndex).close;
-                        orderBook.sellOrder(symbol, price);
+
+                    if(strategyEMACrossover.getState(symbol) == Strategy.State.SELL){
+                        if(strategyRSI.getState(symbol) == Strategy.State.SELL){
+                            orderBook.sellOrder(symbol, price);
+                        }
                     }
                 }
             }

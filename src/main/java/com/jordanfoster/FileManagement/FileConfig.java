@@ -88,8 +88,6 @@ public class FileConfig {
         emaElements.put("short-period-value", 9);
         emaElements.put("medium-period-value", 21);
         emaElements.put("long-period-value", 200);
-        emaElements.put("buy-wait", 1);
-        emaElements.put("sell-wait", 0);
         configObject.put("ema", emaElements);
 
         //RSI Values
@@ -104,7 +102,7 @@ public class FileConfig {
         configObject.put("account", accountElements);
 
         //Price Feed Value
-        priceFeedElements.put("polling-rate", 10000);
+        priceFeedElements.put("polling-rate", 5000);
         priceFeedElements.put("interval-rate", "5m");
         configObject.put("price-feed", priceFeedElements);
 

@@ -11,6 +11,12 @@ import java.io.IOException;
 public class CandleStickFeed extends PriceFeed {
 
     /*
+
+    CandleStickFeed - sorts through the data that binance sends
+    about the candle sticks for a each of the trading pairs.
+
+
+    Information that binance sends
     1: Open Time
     2: Open
     3: High

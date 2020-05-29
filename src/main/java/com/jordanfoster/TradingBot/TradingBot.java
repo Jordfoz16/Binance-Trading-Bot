@@ -76,7 +76,7 @@ public class TradingBot extends Thread{
 
 
         //Update line chart data
-        BinanceTradingBot.mainController.updateOverview(candleStickFeed.getTradingPairs(), ema.getIndicator(), rsi.getIndicator());
+        BinanceTradingBot.mainController.updateOverview(candleStickFeed, ema, rsi);
 
         intervalRate = Integer.parseInt(fileConfig.getElement("price-feed", "polling-rate"));
     }
