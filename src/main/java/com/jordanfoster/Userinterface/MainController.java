@@ -443,6 +443,25 @@ public class MainController {
         lblEMAIndications.setText(Integer.toString(backTester.emaIndication));
     }
 
+    public void saveSetting(){
+
+        //Interval Rate
+        TradingBot.fileConfig.editElement("price-feed", "interval-rate", cbTestInterval.getValue());
+
+        //RSI Edits
+        TradingBot.fileConfig.editElement("rsi", "rsi-period", Integer.parseInt(txtTestingRSIPeriod.getText()));
+        TradingBot.fileConfig.editElement("rsi", "upper-bound", Integer.parseInt(txtTestingRSIUpper.getText()));
+        TradingBot.fileConfig.editElement("rsi", "lower-bound", Integer.parseInt(txtTestingRSILower.getText()));
+
+        //EMA Edits
+        TradingBot.fileConfig.editElement("ema","short-period-value", Integer.parseInt(txtTestShortPeriod.getText()));
+        TradingBot.fileConfig.editElement("ema","medium-period-value", Integer.parseInt(txtTestMediumPeriod.getText()));
+        TradingBot.fileConfig.editElement("ema","long-period-value", Integer.parseInt(txtTestLongPeriod.getText()));
+
+        initConfigValues();
+        cbInterval.getSelectionModel().select(TradingBot.fileConfig.getElement("price-feed", "interval-rate"));
+    }
+
     /*
     Order Book Tab
      */
