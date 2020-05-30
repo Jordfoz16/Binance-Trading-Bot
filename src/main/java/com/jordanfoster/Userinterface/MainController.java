@@ -223,13 +223,6 @@ public class MainController {
         cbInterval.getItems().add("1h");
         cbInterval.getItems().add("2h");
         cbInterval.getItems().add("4h");
-        cbInterval.getItems().add("6h");
-        cbInterval.getItems().add("8h");
-        cbInterval.getItems().add("12h");
-        cbInterval.getItems().add("1d");
-        cbInterval.getItems().add("3d");
-        cbInterval.getItems().add("1w");
-        cbInterval.getItems().add("1M");
 
         cbInterval.getSelectionModel().select(TradingBot.fileConfig.getElement("price-feed", "interval-rate"));
     }
@@ -403,13 +396,6 @@ public class MainController {
         cbTestInterval.getItems().add("1h");
         cbTestInterval.getItems().add("2h");
         cbTestInterval.getItems().add("4h");
-        cbTestInterval.getItems().add("6h");
-        cbTestInterval.getItems().add("8h");
-        cbTestInterval.getItems().add("12h");
-        cbTestInterval.getItems().add("1d");
-        cbTestInterval.getItems().add("3d");
-        cbTestInterval.getItems().add("1w");
-        cbTestInterval.getItems().add("1M");
 
         loadValues();
     }
