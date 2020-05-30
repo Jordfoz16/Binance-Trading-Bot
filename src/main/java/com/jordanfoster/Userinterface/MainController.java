@@ -4,11 +4,7 @@ import com.jordanfoster.TradingBot.Indicators.EMA.EMA;
 import com.jordanfoster.TradingBot.Indicators.EMA.TradingPair.TradingPairEMA;
 import com.jordanfoster.TradingBot.Indicators.RSI.RSI;
 import com.jordanfoster.TradingBot.Indicators.RSI.TradingPair.TradingPairRSI;
-import com.jordanfoster.TradingBot.Indicators.TradingPairIndicator;
-import com.jordanfoster.TradingBot.Orderbook.OrderBook;
 import com.jordanfoster.TradingBot.PriceFeed.CandleStick.CandleStickFeed;
-import com.jordanfoster.TradingBot.PriceFeed.PriceFeed;
-import com.jordanfoster.TradingBot.PriceFeed.TradingPair;
 import com.jordanfoster.TradingBot.BackTesting.BackTester;
 import com.jordanfoster.TradingBot.TradingBot;
 import javafx.application.Platform;
@@ -20,7 +16,8 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainController {
 
@@ -73,8 +70,10 @@ public class MainController {
     @FXML private NumberAxis yAxisRSITab;
 
     //Testing Tab
-    @FXML private Label lblStartingDate;
-    @FXML private Label lblEndingDate;
+    private BackTester backTester;
+    @FXML private TextField txtTestStartValue;
+    @FXML private Label lblTestStartingDate;
+    @FXML private Label lblTestEndingDate;
     @FXML private Label lblDataPoints;
     @FXML private Label lblEMAIndications;
     @FXML private Label lblRSIIndications;
@@ -84,13 +83,23 @@ public class MainController {
     @FXML private Label lblTestTotalProfit;
     @FXML private Label lblTestLargestProfit;
     @FXML private Label lblTestLargestLoss;
+    @FXML private Label lblTestFinalAccount;
     @FXML private TextField txtTestShortPeriod;
     @FXML private TextField txtTestMediumPeriod;
     @FXML private TextField txtTestLongPeriod;
     @FXML private TextField txtTestingRSIPeriod;
     @FXML private TextField txtTestingRSIUpper;
     @FXML private TextField txtTestingRSILower;
+    @FXML private TextField txtTestPeriodMin;
+    @FXML private TextField txtTestUpperMin;
+    @FXML private TextField txtTestLowerMin;
+    @FXML private TextField txtTestPeriodMax;
+    @FXML private TextField txtTestUpperMax;
+    @FXML private TextField txtTestLowerMax;
     @FXML private ComboBox<String> cbTestInterval;
+    @FXML private CheckBox checkTestEMA;
+    @FXML private CheckBox checkTestRSI;
+    @FXML private ProgressBar progressRSIAuto;
 
     //Order Book Tab
     @FXML private TextField txtTrades;
@@ -230,21 +239,25 @@ public class MainController {
         updateRSIChart();
     }
 
-    public synchronized void updateOverview(CandleStickFeed candleStickFeed, EMA ema, RSI rsi){
+    public synchronized void updateOverview(CandleStickFeed candleFeed, EMA emaIndicator, RSI rsiIndicator){
 
-        this.candleStickFeed.clear();
-        this.candleStickFeed.getTradingPairs().addAll(candleStickFeed.getTradingPairs());
-
-        this.ema.getIndicator().clear();
-        this.ema.getIndicator().addAll(ema.getIndicator());
-
-        this.rsi.getIndicator().clear();
-        this.rsi.getIndicator().addAll(rsi.getIndicator());
+//        this.candleStickFeed.clear();
+//        this.candleStickFeed.getTradingPairs().addAll(candleStickFeed.getTradingPairs());
+//
+//        this.ema.getIndicator().clear();
+//        this.ema.getIndicator().addAll(ema.getIndicator());
+//
+//        this.rsi.getIndicator().clear();
+//        this.rsi.getIndicator().addAll(rsi.getIndicator());
 
         Platform.runLater(new Runnable() {
 
             @Override
             public void run() {
+                candleStickFeed = candleFeed;
+                ema = emaIndicator;
+                rsi = rsiIndicator;
+
                 updatePriceChart();
                 updateRSIChart();
                 updateState();
@@ -377,18 +390,11 @@ public class MainController {
     Testing Tab
      */
 
-    BackTester backTester = new BackTester();
+    public void initBackTester(){
+        backTester = new BackTester();
+    }
 
     public void initTesting(){
-        txtTestingRSIPeriod.setText(TradingBot.fileConfig.getElement("rsi", "rsi-period"));
-        txtTestingRSIUpper.setText(TradingBot.fileConfig.getElement("rsi", "upper-bound"));
-        txtTestingRSILower.setText(TradingBot.fileConfig.getElement("rsi", "lower-bound"));
-
-        txtTestShortPeriod.setText(TradingBot.fileConfig.getElement("ema", "short-period-value"));
-        txtTestMediumPeriod.setText(TradingBot.fileConfig.getElement("ema", "medium-period-value"));
-        txtTestLongPeriod.setText(TradingBot.fileConfig.getElement("ema", "long-period-value"));
-
-
         cbTestInterval.getItems().add("1m");
         cbTestInterval.getItems().add("3m");
         cbTestInterval.getItems().add("5m");
@@ -405,6 +411,18 @@ public class MainController {
         cbTestInterval.getItems().add("1w");
         cbTestInterval.getItems().add("1M");
 
+        loadValues();
+    }
+
+    public void loadValues(){
+        txtTestingRSIPeriod.setText(TradingBot.fileConfig.getElement("rsi", "rsi-period"));
+        txtTestingRSIUpper.setText(TradingBot.fileConfig.getElement("rsi", "upper-bound"));
+        txtTestingRSILower.setText(TradingBot.fileConfig.getElement("rsi", "lower-bound"));
+
+        txtTestShortPeriod.setText(TradingBot.fileConfig.getElement("ema", "short-period-value"));
+        txtTestMediumPeriod.setText(TradingBot.fileConfig.getElement("ema", "medium-period-value"));
+        txtTestLongPeriod.setText(TradingBot.fileConfig.getElement("ema", "long-period-value"));
+
         cbTestInterval.getSelectionModel().select(TradingBot.fileConfig.getElement("price-feed", "interval-rate"));
     }
 
@@ -414,7 +432,6 @@ public class MainController {
         int lower = Integer.parseInt(txtTestingRSILower.getText());
 
         backTester.setRSIValues(period, upper, lower);
-        backTester.setInterval(cbTestInterval.getValue());
     }
 
     public void updateEMAValues(){
@@ -425,22 +442,126 @@ public class MainController {
         backTester.setEMAValue(shortPeriod, mediumPeriod, longPeriod);
     }
 
-    public void runTests(){
-        updateRSIValues();
-        updateEMAValues();
-        backTester.run();
-        updateBackTest();
+    public void updateBackTestValues(){
+        backTester.setStartValue(Integer.parseInt(txtTestStartValue.getText()));
+        backTester.setInterval(cbTestInterval.getValue());
     }
 
-    public void  updateBackTest(){
-        lblTestNumberOfTrades.setText(Integer.toString(backTester.numberOfTrades));
-        lblTestTotalProfit.setText(Double.toString(backTester.profit));
-        lblTestProfitableTrades.setText(Integer.toString(backTester.numberOfProfitable));
-        lblTestUnprofitableTrades.setText(Integer.toString(backTester.numberOfUnprofitable));
-        lblTestLargestProfit.setText(Double.toString(backTester.largestProfit));
-        lblTestLargestLoss.setText(Double.toString(backTester.largestLoss));
-        lblRSIIndications.setText(Integer.toString(backTester.rsiIndication));
-        lblEMAIndications.setText(Integer.toString(backTester.emaIndication));
+    public void runTests(){
+        updateBackTestValues();
+        updateRSIValues();
+        updateEMAValues();
+        backTester.updatePriceFeed();
+        backTester.run();
+        updateResults(backTester);
+
+        Thread thread = new Thread("Back Testing") {
+            public void run() {
+
+            }
+        };
+    }
+
+    public void autoRSIValue(){
+
+        Thread thread = new Thread("RSI Auto") {
+            public void run(){
+
+                updateBackTestValues();
+                updateEMAValues();
+                backTester.updatePriceFeed();
+
+                int rsiMinValue = Integer.parseInt(txtTestPeriodMin.getText());
+                int rsiMaxValue = Integer.parseInt(txtTestPeriodMax.getText());
+
+                int rsiUpperMax = Integer.parseInt(txtTestUpperMax.getText());
+                int rsiUpperMin = Integer.parseInt(txtTestUpperMin.getText());
+
+                int rsiLowerMax = Integer.parseInt(txtTestLowerMax.getText());
+                int rsiLowerMin = Integer.parseInt(txtTestLowerMin.getText());
+
+                double profit = 0;
+                int bestPeriodValue = 1;
+                int bestUpper = 1;
+                int bestLower = 1;
+
+                int counter = 0;
+
+                for(int rsiIndex = rsiMinValue; rsiIndex < rsiMaxValue; rsiIndex++){
+                    for(int rsiUpper = rsiUpperMin; rsiUpper < rsiUpperMax; rsiUpper++){
+                        for(int rsiLower = rsiLowerMin; rsiLower < rsiLowerMax; rsiLower++){
+                            backTester.setRSIValues(rsiIndex, rsiUpper, rsiLower);
+                            backTester.run();
+
+                            //Update the values
+                            counter++;
+                            double progress = (double)counter / (double)((rsiMaxValue - rsiMinValue) * (rsiUpperMax - rsiUpperMin) * (rsiLowerMax - rsiLowerMin));
+                            updateAutoRSIProgress(progress);
+                            updateAutoRSIValues(rsiIndex, rsiUpper, rsiLower);
+
+                            if(backTester.profit > profit){
+                                profit = backTester.profit;
+                                bestPeriodValue = rsiIndex;
+                                bestUpper = rsiUpper;
+                                bestLower = rsiLower;
+                            }
+                        }
+                    }
+                }
+                //Run the best results
+                backTester.setRSIValues(bestPeriodValue, bestUpper, bestLower);
+                backTester.run();
+                updateResults(backTester);
+
+                txtTestingRSIPeriod.setText(Integer.toString(bestPeriodValue));
+                txtTestingRSIUpper.setText(Integer.toString(bestUpper));
+                txtTestingRSILower.setText(Integer.toString(bestLower));
+            }
+        };
+
+        thread.start();
+    }
+
+    public void updateAutoRSIValues(int period, int upper, int lower){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                txtTestingRSIPeriod.setText(Integer.toString(period));
+                txtTestingRSIUpper.setText(Integer.toString(upper));
+                txtTestingRSILower.setText(Integer.toString(lower));
+            }
+        });
+    }
+
+    public void updateAutoRSIProgress(double progress){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                progressRSIAuto.setProgress(progress);
+            }
+        });
+    }
+
+    public void updateResults(BackTester backTester){
+
+        Platform.runLater(new Runnable() {
+
+            @Override
+            public void run() {
+                lblTestStartingDate.setText(getDate(backTester.startTime));
+                lblTestEndingDate.setText(getDate(backTester.endTime));
+                lblDataPoints.setText(Integer.toString(backTester.dataPoints));
+                lblTestNumberOfTrades.setText(Integer.toString(backTester.numberOfTrades));
+                lblTestTotalProfit.setText(Double.toString(backTester.profit));
+                lblTestProfitableTrades.setText(Integer.toString(backTester.numberOfProfitable));
+                lblTestUnprofitableTrades.setText(Integer.toString(backTester.numberOfUnprofitable));
+                lblTestLargestProfit.setText(Double.toString(backTester.largestProfit));
+                lblTestLargestLoss.setText(Double.toString(backTester.largestLoss));
+                lblRSIIndications.setText(Integer.toString(backTester.rsiIndication));
+                lblEMAIndications.setText(Integer.toString(backTester.emaIndication));
+                lblTestFinalAccount.setText(Double.toString(backTester.accountValue));
+            }
+        });
     }
 
     public void saveSetting(){
@@ -460,6 +581,15 @@ public class MainController {
 
         initConfigValues();
         cbInterval.getSelectionModel().select(TradingBot.fileConfig.getElement("price-feed", "interval-rate"));
+    }
+
+    public String getDate(long unixTimestamp){
+        Date date = new Date(unixTimestamp);
+
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM, HH:mm");
+        String formattedDate = format.format(date);
+
+        return formattedDate;
     }
 
     /*

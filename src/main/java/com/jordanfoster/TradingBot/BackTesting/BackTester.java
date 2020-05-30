@@ -24,6 +24,9 @@ public class BackTester {
     public double startValue = 1000;
     public double accountValue = startValue;
 
+    public long startTime = 0;
+    public long endTime = 0;
+    public int dataPoints = 0;
     public int numberOfTrades = 0;
     public int numberOfProfitable = 0;
     public int numberOfUnprofitable = 0;
@@ -32,6 +35,10 @@ public class BackTester {
     public double largestProfit = 0;
     public double largestLoss = 0;
     public double profit = 0;
+
+    public void setStartValue(int startValue){
+        this.startValue = startValue;
+    }
 
     public void setRSIValues(int period, int upperBound, int lowerBound){
         rsi.setValues(period, upperBound, lowerBound);
@@ -45,9 +52,16 @@ public class BackTester {
         candleStickFeed.setInterval(interval);
     }
 
+    public void updatePriceFeed(){
+        candleStickFeed.update(false);
+    }
+
     public void run(){
 
-        //Reset values and order book before new backtest
+        //Reset values and order book before new back test
+        startTime = 0;
+        endTime = 0;
+        dataPoints = 0;
         numberOfTrades = 0;
         numberOfProfitable = 0;
         numberOfUnprofitable = 0;
@@ -59,13 +73,15 @@ public class BackTester {
         accountValue = startValue;
         orderBook.clear();
 
-        //Updates price feed and RSI indicator
-        candleStickFeed.update(false);
+        //Updates EMA and RSI indicator
         rsi.update(candleStickFeed, false);
         ema.update(candleStickFeed, false);
 
         StrategyRSI strategyRSI = new StrategyRSI();
         StrategyEMACrossover strategyEMACrossover = new StrategyEMACrossover();
+
+        startTime = candleStickFeed.getTradingPair(0).getCandleStick(0).openTime;
+        endTime = candleStickFeed.getTradingPair(0).getCandleStick(candleStickFeed.getTradingPair(0).getCandleStickData().size() - 1).closeTime;
 
         //Loops through each candle stick
         for(int candleIndex = 0; candleIndex < candleStickFeed.limit; candleIndex++){
@@ -105,6 +121,8 @@ public class BackTester {
                         }
                     }
                 }
+
+                dataPoints++;
             }
         }
 
@@ -139,8 +157,6 @@ public class BackTester {
                 largestLoss = orderBook.getClosedOrder(i).getProfit();
             }
         }
-
-        System.out.println("Account Value: " + accountValue);
     }
 
 }

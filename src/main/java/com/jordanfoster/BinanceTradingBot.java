@@ -32,6 +32,7 @@ public class BinanceTradingBot extends Application {
         });
 
         mainController = loader.getController();
+        mainController.initBackTester();
 
         primaryStage.show();
     }
