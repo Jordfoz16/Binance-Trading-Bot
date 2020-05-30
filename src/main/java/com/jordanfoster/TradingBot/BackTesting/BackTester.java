@@ -104,6 +104,7 @@ public class BackTester {
                             rsiIndication++;
 
                             double riskPrice = (accountValue * 0.1);
+                            if(riskPrice < 10) riskPrice = 10;
                             double amount = riskPrice / price;
 
                             accountValue = accountValue - riskPrice;
