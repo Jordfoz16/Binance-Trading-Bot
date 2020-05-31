@@ -26,7 +26,7 @@ public class PracticeAccount {
     public double largestLoss = 0;
     public double profit = 0;
 
-    public boolean isTrading = true;
+    public boolean isTrading = false;
 
     public void update(CandleStickFeed candleStickFeed, EMA ema, RSI rsi){
         if(!isTrading) return;

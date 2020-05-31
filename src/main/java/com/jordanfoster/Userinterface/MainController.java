@@ -586,11 +586,11 @@ public class MainController {
      */
 
     public void startPractice(){
-
+        TradingBot.practiceAccount.isTrading = true;
     }
 
     public void stopPractice(){
-
+        TradingBot.practiceAccount.isTrading = false;
     }
 
     /*
