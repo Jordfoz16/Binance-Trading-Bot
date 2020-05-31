@@ -23,7 +23,6 @@ public class BackTester {
 
     public double startValue = 1000;
     public double accountValue = startValue;
-
     public long startTime = 0;
     public long endTime = 0;
     public int dataPoints = 0;
@@ -95,31 +94,36 @@ public class BackTester {
                 String symbol = candleStickFeed.getTradingPair(coinIndex).getSymbol();
                 double price = candleStickFeed.getTradingPair(coinIndex).getCandleStick(candleIndex).close;
 
+                if(strategyEMACrossover.getState(symbol) == Strategy.State.BUY){
+                    emaIndication++;
+                }
+
+                if(strategyRSI.getState(symbol) == Strategy.State.BUY){
+                    rsiIndication++;
+                }
+
                 //Checks if the coin has already been bought
                 if(!orderBook.isBought(candleStickFeed.getTradingPair(coinIndex).getSymbol())){
 
-                    if(strategyEMACrossover.getState(symbol) == Strategy.State.BUY){
-                        emaIndication++;
-                        if(strategyRSI.getState(symbol) == Strategy.State.BUY){
-                            rsiIndication++;
+                    if(strategyEMACrossover.getState(symbol) == Strategy.State.BUY &&
+                            strategyRSI.getState(symbol) == Strategy.State.BUY){
 
-                            double riskPrice = (accountValue * 0.1);
-                            if(riskPrice < 10) riskPrice = 10;
-                            double amount = riskPrice / price;
+                        double riskPrice = (accountValue * 0.1);
+                        if(riskPrice < 10) riskPrice = 10;
+                        double amount = riskPrice / price;
 
-                            accountValue = accountValue - riskPrice;
+                        accountValue = accountValue - riskPrice;
 
-                            orderBook.buyOrder(symbol, price, amount);
-                        }
+                        orderBook.buyOrder(symbol, price, amount);
                     }
 
                 }else{
+                    if(strategyEMACrossover.getState(symbol) == Strategy.State.SELL &&
+                            strategyRSI.getState(symbol) == Strategy.State.SELL){
 
-                    if(strategyEMACrossover.getState(symbol) == Strategy.State.SELL){
-                        if(strategyRSI.getState(symbol) == Strategy.State.SELL){
-                            accountValue = accountValue + (price * orderBook.getOpenOrder(symbol).getAmount());
-                            orderBook.sellOrder(symbol, price);
-                        }
+                        accountValue = accountValue + (price * orderBook.getOpenOrder(symbol).getAmount());
+                        orderBook.sellOrder(symbol, price);
+
                     }
                 }
 

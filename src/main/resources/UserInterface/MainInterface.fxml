@@ -239,6 +239,15 @@
                      </children></AnchorPane>
                 </content>
             </Tab>
+            <Tab text="Practice">
+                <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Button layoutX="79.0" layoutY="96.0" mnemonicParsing="false" onAction="#startPractice" text="Start" />
+                        <Button layoutX="172.0" layoutY="96.0" mnemonicParsing="false" onAction="#stopPractice" text="Stop" />
+                     </children></AnchorPane>
+                </content>
+            </Tab>
             <Tab text="Order Book">
                 <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">

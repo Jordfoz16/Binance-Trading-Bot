@@ -101,6 +101,9 @@ public class MainController {
     @FXML private CheckBox checkTestRSI;
     @FXML private ProgressBar progressRSIAuto;
 
+    //Practice Tab
+
+
     //Order Book Tab
     @FXML private TextField txtTrades;
     @FXML private TableView tableOrderBook;
@@ -576,6 +579,18 @@ public class MainController {
         String formattedDate = format.format(date);
 
         return formattedDate;
+    }
+
+    /*
+    Practice Tab
+     */
+
+    public void startPractice(){
+
+    }
+
+    public void stopPractice(){
+
     }
 
     /*

@@ -10,6 +10,7 @@ import com.jordanfoster.TradingBot.Indicators.RSI.RSI;
 import com.jordanfoster.TradingBot.Indicators.RSI.Strategy.StrategyRSI;
 import com.jordanfoster.TradingBot.Indicators.Strategy;
 import com.jordanfoster.TradingBot.Indicators.TradingPairIndicator;
+import com.jordanfoster.TradingBot.PracticeAccount.PracticeAccount;
 import com.jordanfoster.TradingBot.PriceFeed.CandleStick.CandleStickFeed;
 
 public class TradingBot extends Thread{
@@ -27,6 +28,8 @@ public class TradingBot extends Thread{
     public RSI rsi = new RSI();
     public EMA ema = new EMA();
 
+    public static PracticeAccount practiceAccount = new PracticeAccount();
+
     private boolean initialised = false;
     private int intervalRate = 10000;
 
@@ -41,26 +44,15 @@ public class TradingBot extends Thread{
         long lastTime = System.currentTimeMillis();
 
         while(true){
+            long nowTime = System.currentTimeMillis();
 
-            if(isTrading){
-                long nowTime = System.currentTimeMillis();
-
-                if(nowTime - lastTime > intervalRate || initialised == false){
-                    if(initialised == false) initialised = true;
-                    lastTime = nowTime;
-                    update();
-                }else{
-                    try {
-                        Thread.sleep(intervalRate / 5);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+            if(nowTime - lastTime > intervalRate || initialised == false){
+                if(initialised == false) initialised = true;
+                lastTime = nowTime;
+                update();
             }else{
-
-                //Pauses between each isTrading check
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(intervalRate / 5);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -74,6 +66,7 @@ public class TradingBot extends Thread{
         ema.update(candleStickFeed, true);
         rsi.update(candleStickFeed, true);
 
+        practiceAccount.update(candleStickFeed, ema, rsi);
 
         //Update line chart data
         BinanceTradingBot.mainController.updateOverview(candleStickFeed, ema, rsi);
