@@ -80,22 +80,23 @@ public class BackTester {
         StrategyEMACrossover strategyEMACrossover = new StrategyEMACrossover();
 
         startTime = candleStickFeed.getTradingPair(0).getCandleStick(0).openTime;
-        endTime = candleStickFeed.getTradingPair(0).getCandleStick(candleStickFeed.getTradingPair(0).getCandleStickData().size() - 1).closeTime;
+        endTime = candleStickFeed.getTradingPair(0).getLast().closeTime;
 
-        //Loops through each candle stick
-        for(int candleIndex = 0; candleIndex < candleStickFeed.limit; candleIndex++){
-            //Updates teh strategy for current candle stick
-            strategyRSI.update(candleStickFeed, rsi, candleIndex);
-            strategyEMACrossover.update(candleStickFeed, ema, candleIndex);
+        //Loops through each coin
+        for(int coinIndex = 0; coinIndex < candleStickFeed.getTradingPairs().size(); coinIndex++){
 
-            //Loops through each coin
-            for(int coinIndex = 0; coinIndex < candleStickFeed.getTradingPairs().size(); coinIndex++){
+            String symbol = candleStickFeed.getTradingPair(coinIndex).getSymbol();
 
-                String symbol = candleStickFeed.getTradingPair(coinIndex).getSymbol();
+            //Loops through each candle stick
+            for(int candleIndex = 0; candleIndex < candleStickFeed.getTradingPair(coinIndex).getSize(); candleIndex++){
+                //Updates teh strategy for current candle stick
+                strategyRSI.update(candleStickFeed, rsi, candleIndex);
+                strategyEMACrossover.update(candleStickFeed, ema, candleIndex);
+
                 double price = candleStickFeed.getTradingPair(coinIndex).getCandleStick(candleIndex).close;
 
                 if(strategyEMACrossover.getState(symbol) == Strategy.State.BUY){
-                    emaIndication++;
+                        emaIndication++;
                 }
 
                 if(strategyRSI.getState(symbol) == Strategy.State.BUY){
@@ -103,10 +104,9 @@ public class BackTester {
                 }
 
                 //Checks if the coin has already been bought
-                if(!orderBook.isBought(candleStickFeed.getTradingPair(coinIndex).getSymbol())){
+                if(!orderBook.isBought(symbol)){
 
-                    if(strategyEMACrossover.getState(symbol) == Strategy.State.BUY &&
-                            strategyRSI.getState(symbol) == Strategy.State.BUY){
+                    if(strategyEMACrossover.getState(symbol) == Strategy.State.BUY && strategyRSI.getState(symbol) == Strategy.State.BUY){
 
                         double riskPrice = (accountValue * 0.1);
                         if(riskPrice < 10) riskPrice = 10;
@@ -118,8 +118,7 @@ public class BackTester {
                     }
 
                 }else{
-                    if(strategyEMACrossover.getState(symbol) == Strategy.State.SELL &&
-                            strategyRSI.getState(symbol) == Strategy.State.SELL){
+                    if(strategyEMACrossover.getState(symbol) == Strategy.State.SELL && strategyRSI.getState(symbol) == Strategy.State.SELL){
 
                         accountValue = accountValue + (price * orderBook.getOpenOrder(symbol).getAmount());
                         orderBook.sellOrder(symbol, price);
@@ -136,8 +135,7 @@ public class BackTester {
         for(int coinIndex = 0; coinIndex < candleStickFeed.getTradingPairs().size(); coinIndex++){
             if(orderBook.isBought(candleStickFeed.getTradingPair(coinIndex).getSymbol())){
 
-                int lastCandle = candleStickFeed.getTradingPair(coinIndex).getCandleStickData().size() - 1;
-                double currentPrice = candleStickFeed.getTradingPair(coinIndex).getCandleStick(lastCandle).close;
+                double currentPrice = candleStickFeed.getTradingPair(coinIndex).getLast().close;
 
                 accountValue = accountValue + (currentPrice * orderBook.getOpenOrder(candleStickFeed.getTradingPair(coinIndex).getSymbol()).getAmount());
 

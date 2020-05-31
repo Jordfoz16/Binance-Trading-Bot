@@ -36,27 +36,37 @@ public class PracticeAccount {
         StrategyEMACrossover strategyEMACrossover = new StrategyEMACrossover();
         StrategyRSI strategyRSI = new StrategyRSI();
 
-        for(int coinIndex = 0; coinIndex < candleStickFeed.getTradingPairs().size(); coinIndex++){
+        for(int coinIndex = 0; coinIndex < candleStickFeed.getTradingPairs().size(); coinIndex++) {
 
             String symbol = candleStickFeed.getTradingPair(coinIndex).getSymbol();
             int lastCandle = candleStickFeed.getTradingPair(coinIndex).getCandleStickData().size() - 1;
+            double price = candleStickFeed.getTradingPair(coinIndex).getCandleStick(lastCandle).close;
+
 
             strategyEMACrossover.update(candleStickFeed, ema, lastCandle);
             strategyRSI.update(candleStickFeed, rsi, lastCandle);
 
-            if (bought == false) {
-                if(strategyEMACrossover.getState(symbol) == Strategy.State.BUY &&
-                        strategyRSI.getState(symbol) == Strategy.State.BUY){
-                    bought = true;
-                    System.out.println("BOUGHT: " + candleStickFeed.getTradingPair(coinIndex).getCandleStick(lastCandle).close);
-            }else {
-                if (strategyEMACrossover.getState(symbol) == Strategy.State.SELL &&
-                        strategyEMACrossover.getState(symbol) == Strategy.State.SELL) {
-                    bought = false;
-                    System.out.println("SOLD: " + candleStickFeed.getTradingPair(coinIndex).getCandleStick(lastCandle).close);
+            if (!orderBook.isBought(symbol)) {
+                if (strategyEMACrossover.getState(symbol) == Strategy.State.BUY && strategyRSI.getState(symbol) == Strategy.State.BUY) {
+
+                    double riskPrice = (accountValue * 0.1);
+                    if(riskPrice < 10) riskPrice = 10;
+                    double amount = riskPrice / price;
+
+                    accountValue = accountValue - riskPrice;
+
+                    orderBook.buyOrder(symbol, price, amount);
+
+                    System.out.println("BUY - " + symbol + " - " + price);
+                } else {
+                    if (strategyEMACrossover.getState(symbol) == Strategy.State.SELL && strategyEMACrossover.getState(symbol) == Strategy.State.SELL) {
+                        accountValue = accountValue + (price * orderBook.getOpenOrder(symbol).getAmount());
+                        orderBook.sellOrder(symbol, price);
+                        System.out.println("SOLD - " + symbol + " - " + price);
+                    }
                 }
             }
-            }
         }
+        System.out.println("Account Value - " + accountValue);
     }
 }

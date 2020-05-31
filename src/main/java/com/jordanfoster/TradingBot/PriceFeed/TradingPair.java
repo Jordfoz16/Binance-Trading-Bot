@@ -33,5 +33,13 @@ public class TradingPair {
     public ArrayList<CandleStickData> getCandleStickData(){
         return candleStickData;
     }
+
+    public int getSize(){
+        return candleStickData.size();
+    }
+
+    public CandleStickData getLast(){
+        return candleStickData.get(getSize() - 1);
+    }
 }
 

@@ -30,4 +30,8 @@ public abstract class PriceFeed {
     public TradingPair getTradingPair(int index){
         return tradingPairs.get(index);
     }
+
+    public int getSize(){
+        return tradingPairs.size();
+    }
 }
