@@ -26,6 +26,8 @@ public class PracticeAccount {
     public double largestLoss = 0;
     public double profit = 0;
 
+    public boolean bought = false;
+
     public boolean isTrading = false;
 
     public void update(CandleStickFeed candleStickFeed, EMA ema, RSI rsi){
@@ -42,12 +44,18 @@ public class PracticeAccount {
             strategyEMACrossover.update(candleStickFeed, ema, lastCandle);
             strategyRSI.update(candleStickFeed, rsi, lastCandle);
 
-            if(strategyEMACrossover.getState(symbol) == Strategy.State.BUY &&
-                    strategyRSI.getState(symbol) == Strategy.State.BUY){
-                System.out.println("BOUGHT: " + candleStickFeed.getTradingPair(coinIndex).getCandleStick(lastCandle).close);
-            }else if(strategyEMACrossover.getState(symbol) == Strategy.State.SELL &&
-                    strategyEMACrossover.getState(symbol) == Strategy.State.SELL){
-                System.out.println("SOLD: " + candleStickFeed.getTradingPair(coinIndex).getCandleStick(lastCandle).close);
+            if (bought == false) {
+                if(strategyEMACrossover.getState(symbol) == Strategy.State.BUY &&
+                        strategyRSI.getState(symbol) == Strategy.State.BUY){
+                    bought = true;
+                    System.out.println("BOUGHT: " + candleStickFeed.getTradingPair(coinIndex).getCandleStick(lastCandle).close);
+            }else {
+                if (strategyEMACrossover.getState(symbol) == Strategy.State.SELL &&
+                        strategyEMACrossover.getState(symbol) == Strategy.State.SELL) {
+                    bought = false;
+                    System.out.println("SOLD: " + candleStickFeed.getTradingPair(coinIndex).getCandleStick(lastCandle).close);
+                }
+            }
             }
         }
     }
