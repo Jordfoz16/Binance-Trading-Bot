@@ -237,19 +237,17 @@ public class MainController {
 
     public synchronized void updateOverview(CandleStickFeed candleFeed, EMA emaIndicator, RSI rsiIndicator){
 
-//        this.candleStickFeed.clear();
-//        this.candleStickFeed.getTradingPairs().addAll(candleStickFeed.getTradingPairs());
-//
-//        this.ema.getIndicator().clear();
-//        this.ema.getIndicator().addAll(ema.getIndicator());
-//
-//        this.rsi.getIndicator().clear();
-//        this.rsi.getIndicator().addAll(rsi.getIndicator());
-
         Platform.runLater(new Runnable() {
 
             @Override
             public void run() {
+                if(candleFeed.getTradingPairs().size() == 0){
+                    System.out.println("EQUAL 0");
+                }
+
+                if(candleFeed == null){
+                    System.out.println("NULL");
+                }
                 candleStickFeed = candleFeed;
                 ema = emaIndicator;
                 rsi = rsiIndicator;
@@ -296,6 +294,9 @@ public class MainController {
     }
 
     protected void updatePriceChart(){
+        if(candleStickFeed.getTradingPairs().size() == 0){
+            return;
+        }
         if(tabPanel.getSelectionModel().getSelectedIndex() == 0 || tabPanel.getSelectionModel().getSelectedIndex() == 1){
 
             chartPrice.getData().clear();
@@ -336,6 +337,9 @@ public class MainController {
     }
 
     protected void updateRSIChart(){
+        if(candleStickFeed.getTradingPairs().size() == 0){
+            return;
+        }
         if(tabPanel.getSelectionModel().getSelectedIndex() == 0 || tabPanel.getSelectionModel().getSelectedIndex() == 2){
 
             chartRSI.getData().clear();
