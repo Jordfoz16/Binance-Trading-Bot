@@ -225,11 +225,11 @@
                         <Label layoutX="537.0" layoutY="296.0" text="Minimum" />
                         <Label layoutX="653.0" layoutY="296.0" text="Max" />
                         <TextField fx:id="txtTestPeriodMin" layoutX="532.0" layoutY="317.0" prefHeight="27.0" prefWidth="61.0" text="5" />
-                        <TextField fx:id="txtTestUpperMin" layoutX="531.0" layoutY="354.0" prefHeight="27.0" prefWidth="61.0" text="20" />
+                        <TextField fx:id="txtTestUpperMin" layoutX="531.0" layoutY="354.0" prefHeight="27.0" prefWidth="61.0" text="50" />
                         <TextField fx:id="txtTestLowerMin" layoutX="531.0" layoutY="392.0" prefHeight="27.0" prefWidth="61.0" text="20" />
                         <TextField fx:id="txtTestPeriodMax" layoutX="636.0" layoutY="317.0" prefHeight="27.0" prefWidth="61.0" text="15" />
                         <TextField fx:id="txtTestUpperMax" layoutX="635.0" layoutY="354.0" prefHeight="27.0" prefWidth="61.0" text="80" />
-                        <TextField fx:id="txtTestLowerMax" layoutX="635.0" layoutY="392.0" prefHeight="27.0" prefWidth="61.0" text="80" />
+                        <TextField fx:id="txtTestLowerMax" layoutX="635.0" layoutY="392.0" prefHeight="27.0" prefWidth="61.0" text="50" />
                         <Label layoutX="481.0" layoutY="322.0" text="Period:" />
                         <Label layoutX="437.0" layoutY="359.0" text="Upper Bounds:" />
                         <Label layoutX="436.0" layoutY="397.0" text="Lower Bounds:" />

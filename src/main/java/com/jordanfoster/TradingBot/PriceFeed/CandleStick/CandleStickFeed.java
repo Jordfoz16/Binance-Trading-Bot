@@ -15,7 +15,6 @@ public class CandleStickFeed extends PriceFeed {
     CandleStickFeed - sorts through the data that binance sends
     about the candle sticks for a each of the trading pairs.
 
-
     Information that binance sends
     1: Open Time
     2: Open
@@ -40,8 +39,6 @@ public class CandleStickFeed extends PriceFeed {
     public void update(boolean loadValues) {
         JSONHandler jsonHandler = new JSONHandler();
 
-            tradingPairs.clear();
-
             if(loadValues){
                 interval = TradingBot.fileConfig.getElement("price-feed", "interval-rate");
             }
@@ -50,6 +47,10 @@ public class CandleStickFeed extends PriceFeed {
                 String apiResponse = null;
                 try {
                     apiResponse = binanceAPI.getCandlestick(TradingBot.fileTradingPairs.getSymbol(index), interval, limit);
+
+                    if(index == 0){
+                        tradingPairs.clear();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

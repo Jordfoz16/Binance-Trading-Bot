@@ -4,12 +4,8 @@ import com.jordanfoster.BinanceTradingBot;
 import com.jordanfoster.FileManagement.FileConfig;
 import com.jordanfoster.FileManagement.FileOrders;
 import com.jordanfoster.FileManagement.FileTradingPairs;
-import com.jordanfoster.TradingBot.BackTesting.BackTester;
 import com.jordanfoster.TradingBot.Indicators.EMA.EMA;
 import com.jordanfoster.TradingBot.Indicators.RSI.RSI;
-import com.jordanfoster.TradingBot.Indicators.RSI.Strategy.StrategyRSI;
-import com.jordanfoster.TradingBot.Indicators.Strategy;
-import com.jordanfoster.TradingBot.Indicators.TradingPairIndicator;
 import com.jordanfoster.TradingBot.PracticeAccount.PracticeAccount;
 import com.jordanfoster.TradingBot.PriceFeed.CandleStick.CandleStickFeed;
 
@@ -69,7 +65,7 @@ public class TradingBot extends Thread{
         practiceAccount.update(candleStickFeed, ema, rsi);
 
         //Update line chart data
-        BinanceTradingBot.mainController.updateOverview(candleStickFeed, ema, rsi);
+        BinanceTradingBot.mainController.updateData(candleStickFeed, ema, rsi);
 
         intervalRate = Integer.parseInt(fileConfig.getElement("price-feed", "polling-rate"));
     }
