@@ -1,5 +1,6 @@
 plugins {
-    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
 }
 
 group 'org.example'
@@ -22,8 +23,16 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
     extraLibs group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.12'
 
+
     configurations.compile.extendsFrom(configurations.extraLibs)
 }
+
+javafx {
+    version = "15.0.1"
+    modules = [ 'javafx.controls' , 'javafx.fxml']
+}
+
+mainClassName = 'com.jordanfoster.Launcher'
 
 jar {
     manifest {

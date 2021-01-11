@@ -261,7 +261,6 @@ public class MainController{
         }
         @Override
         public void run(){
-            System.out.println("Feed Size JavaFX Thread = ");
             updatePriceChart(chartData);
             updateRSIChart(chartData);
         }

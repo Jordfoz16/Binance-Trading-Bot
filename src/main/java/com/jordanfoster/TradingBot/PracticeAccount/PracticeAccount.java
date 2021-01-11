@@ -8,6 +8,9 @@ import com.jordanfoster.TradingBot.Indicators.Strategy;
 import com.jordanfoster.TradingBot.Orderbook.OrderBook;
 import com.jordanfoster.TradingBot.PriceFeed.CandleStick.CandleStickFeed;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class PracticeAccount {
 
     private OrderBook orderBook = new OrderBook();
@@ -36,6 +39,11 @@ public class PracticeAccount {
         StrategyEMACrossover strategyEMACrossover = new StrategyEMACrossover();
         StrategyRSI strategyRSI = new StrategyRSI();
 
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+
+        System.out.println(dtf.format(now) + " - Running");
+
         for(int coinIndex = 0; coinIndex < candleStickFeed.getTradingPairs().size(); coinIndex++) {
 
             String symbol = candleStickFeed.getTradingPair(coinIndex).getSymbol();
@@ -57,16 +65,16 @@ public class PracticeAccount {
 
                     orderBook.buyOrder(symbol, price, amount);
 
-                    System.out.println("BUY - " + symbol + " - " + price);
+                    System.out.println(dtf.format(now) + " - BUY - " + symbol + " - " + price);
                 } else {
                     if (strategyEMACrossover.getState(symbol) == Strategy.State.SELL && strategyEMACrossover.getState(symbol) == Strategy.State.SELL) {
                         accountValue = accountValue + (price * orderBook.getOpenOrder(symbol).getAmount());
                         orderBook.sellOrder(symbol, price);
-                        System.out.println("SOLD - " + symbol + " - " + price);
+                        System.out.println(dtf.format(now) + " - SOLD - " + symbol + " - " + price);
                     }
                 }
             }
         }
-        System.out.println("Account Value - " + accountValue);
+        System.out.println(dtf.format(now) + " - Account Value - " + accountValue);
     }
 }
