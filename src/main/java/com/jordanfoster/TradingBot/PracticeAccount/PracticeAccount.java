@@ -67,10 +67,12 @@ public class PracticeAccount {
 
                     System.out.println(dtf.format(now) + " - BUY - " + symbol + " - " + price);
                 } else {
-                    if (strategyEMACrossover.getState(symbol) == Strategy.State.SELL && strategyEMACrossover.getState(symbol) == Strategy.State.SELL) {
-                        accountValue = accountValue + (price * orderBook.getOpenOrder(symbol).getAmount());
-                        orderBook.sellOrder(symbol, price);
-                        System.out.println(dtf.format(now) + " - SOLD - " + symbol + " - " + price);
+                    if (strategyEMACrossover.getState(symbol) == Strategy.State.SELL && strategyRSI.getState(symbol) == Strategy.State.SELL) {
+                        if(orderBook.getOpenOrderSize() > 0) {
+                            accountValue = accountValue + (price * orderBook.getOpenOrder(symbol).getAmount());
+                            orderBook.sellOrder(symbol, price);
+                            System.out.println(dtf.format(now) + " - SOLD - " + symbol + " - " + price);
+                        }
                     }
                 }
             }

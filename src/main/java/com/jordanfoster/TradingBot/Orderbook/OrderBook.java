@@ -39,6 +39,8 @@ public class OrderBook {
         return  closedOrders.get(index);
     }
 
+    public int getOpenOrderSize() { return openOrders.size(); }
+
     public boolean isBought(String symbol){
         boolean bought = false;
 
