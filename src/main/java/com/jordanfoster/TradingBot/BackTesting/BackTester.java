@@ -95,16 +95,16 @@ public class BackTester {
 
                 double price = candleStickFeed.getTradingPair(coinIndex).getCandleStick(candleIndex).close;
 
-                if(strategyEMACrossover.getState(symbol) == Strategy.State.BUY){
-                        emaIndication++;
-                }
-
-                if(strategyRSI.getState(symbol) == Strategy.State.BUY){
-                    rsiIndication++;
-                }
-
                 //Checks if the coin has already been bought
                 if(!orderBook.isBought(symbol)){
+
+                    if(strategyEMACrossover.getState(symbol) == Strategy.State.BUY){
+                        emaIndication++;
+                    }
+
+                    if(strategyRSI.getState(symbol) == Strategy.State.BUY){
+                        rsiIndication++;
+                    }
 
                     if(strategyEMACrossover.getState(symbol) == Strategy.State.BUY && strategyRSI.getState(symbol) == Strategy.State.BUY){
 
@@ -116,13 +116,12 @@ public class BackTester {
 
                         orderBook.buyOrder(symbol, price, amount);
                     }
-
                 }else{
                     if(strategyEMACrossover.getState(symbol) == Strategy.State.SELL && strategyRSI.getState(symbol) == Strategy.State.SELL){
-
-                        accountValue = accountValue + (price * orderBook.getOpenOrder(symbol).getAmount());
-                        orderBook.sellOrder(symbol, price);
-
+                        if(orderBook.getOpenOrderSize() > 0) {
+                            accountValue = accountValue + (price * orderBook.getOpenOrder(symbol).getAmount());
+                            orderBook.sellOrder(symbol, price);
+                        }
                     }
                 }
 

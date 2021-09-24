@@ -46,7 +46,7 @@ public class StrategyRSI extends Strategy {
                 continue;
             }
 
-            //setState(currentTradingPair.getSymbol(), State.HOLD);
+            setState(currentTradingPair.getSymbol(), State.HOLD);
         }
     }
 }

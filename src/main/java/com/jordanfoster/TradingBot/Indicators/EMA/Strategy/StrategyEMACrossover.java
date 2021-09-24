@@ -32,11 +32,11 @@ public class StrategyEMACrossover extends Strategy {
                 }else if(shortEMA < mediumEMA){
                     setState(currentTradingPair.getSymbol(), State.SELL);
                 }else{
-                    //setState(currentTradingPair.getSymbol(), State.HOLD);
+                    setState(currentTradingPair.getSymbol(), State.HOLD);
                 }
 
             }else{
-                //setState(currentTradingPair.getSymbol(), State.SELL);
+                setState(currentTradingPair.getSymbol(), State.SELL);
             }
         }
     }
